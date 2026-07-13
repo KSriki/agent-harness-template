@@ -1,0 +1,51 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+dist/
+build/
+*.egg-info/
+
+# Node
+node_modules/
+npm-debug.log*
+.next/
+coverage/
+
+# Go
+*.exe
+*.test
+*.out
+vendor/
+
+# Env & secrets — NEVER commit these
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+credentials.json
+secrets.yaml
+
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfvars
+!*.tfvars.example
+
+# Eval results — keep committed ON PURPOSE (the trend is the point).
+# Uncomment only if they get too large:
+# evals/results/
+
+# IDE / OS
+.idea/
+.vscode/
+.DS_Store
+*.swp
