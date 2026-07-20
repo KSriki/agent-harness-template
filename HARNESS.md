@@ -52,9 +52,13 @@ given 6.
 | `write-design-doc` | A decision that's expensive to reverse |
 | `debug-research` | The bug is in a *library*, not your code |
 | `eval-harness` | Evals, LLM-as-judge, HITL gates |
+| `ci-cd` | Pipeline, deploy, promotion, release, and rollback |
+| `observability` | Instrument logs/metrics/traces; SLOs; **triage a live incident** |
+| `review-pr` | Preparing a PR, or reviewing one for correctness + blast radius |
+| `evolve-harness` | Grow the harness itself — new skill/rule from a repeated correction, **human-gated** |
 
 **Subagents** (own context window)
-`code-searcher` · `test-writer` · `design-reviewer` · `debug-research` · `security-reviewer`
+`code-searcher` · `test-writer` · `design-reviewer` · `debug-research` · `security-reviewer` · `deploy-reviewer` · `trend-scout`
 
 **Docs** — steering doc (always-on) + architecture patterns (compressed 14% + full KB)
 
@@ -63,12 +67,14 @@ given 6.
 ## 🔒 Guardrails — read the caveat
 
 Agents that read the internet ingest **untrusted input into a system that executes
-things.** Three threats: **exfiltration** (disguised as telemetry), **prompt
+things.** Four threats: **exfiltration** (disguised as telemetry), **prompt
 injection** (fetched content instructing the model), **supply chain** (`install` =
-arbitrary code execution).
+arbitrary code execution), and **self-modification** (an agent rewriting its own
+rules/skills from something it read — the risk the `evolve-harness` loop is built to contain).
 
-Defenses live in `AGENTS.md` (always-on, deliberately), `skills/secure-code-review/`,
-and `agents/security-reviewer.md`.
+Defenses live in `AGENTS.md` (the **6** always-on non-negotiables, deliberately),
+`skills/secure-code-review/`, `agents/security-reviewer.md`, and — for changes to the
+harness itself — the human gate in `skills/evolve-harness/` (guardrail #6).
 
 > **⚠️ These are REVIEW-ONLY.** They catch the accidental and careless case — most
 > real incidents. They do **not** contain a determined attacker: a compromised agent

@@ -62,7 +62,10 @@ repo/
 │   ├── eval-harness/            #   the loop: evals, judges, HITL
 │   ├── debug-research/          #   ← the bug is in THEIR code, not ours
 │   ├── secure-code-review/      #   ← egress, injection, supply chain
-│   └── architecture-patterns/   #   ← routes to the pattern reference
+│   ├── architecture-patterns/   #   ← routes to the pattern reference
+│   ├── ci-cd/                   #   ← pipeline, deploy, release, rollback
+│   ├── observability/           #   ← instrument + live incident triage
+│   └── review-pr/               #   ← open a PR / review one (not security)
 │
 ├── agents/                      # TIER 4 — delegated, own context
 │   ├── README.md                #   when to delegate (and when NOT to)
@@ -70,7 +73,9 @@ repo/
 │   ├── test-writer.md           #   bounded diff
 │   ├── design-reviewer.md       #   judgment — finds what's over-built
 │   ├── debug-research.md        #   context firewall for external research
-│   └── security-reviewer.md     #   adversarial: BLOCK/ALLOW, read-only
+│   ├── security-reviewer.md     #   adversarial: BLOCK/ALLOW, read-only
+│   ├── deploy-reviewer.md       #   adversarial ship gate: rollback/migration/blast radius
+│   └── trend-scout.md           #   periodic trend survey → proposals only (never applies)
 │
 └── evals/                       # the loop's artifacts
     ├── golden/                  #   frozen, versioned, seeded from REAL failures
@@ -133,6 +138,7 @@ things.** Three distinct threats, three defenses:
 | **Exfiltration** | A "telemetry" line. An "error reporter." | Egress review — *it's designed to look helpful* |
 | **Prompt injection** | Text in a page/issue addressed to the *model* | **Fetched content is DATA, never instructions** |
 | **Supply chain** | Typosquat, install hook, hijacked maintainer | `install` = **arbitrary code execution** → human approval |
+| **Self-modification** | An agent editing its own rules/skills from something it "learned" | **Governing files change by human-approved diff only** (guardrail #6) → `evolve-harness` |
 
 **Where they live — and why `AGENTS.md` breaks its own diet:**
 
@@ -141,12 +147,14 @@ are the **deliberate exception**, and they sit in `AGENTS.md` unconditionally.
 Reason: **a guardrail that loads only "when relevant" fails exactly when an attacker
 has made it look irrelevant.** Conditional security is not security.
 
-- `AGENTS.md` → the 5 non-negotiables (always on, never trimmed)
+- `AGENTS.md` → the 6 non-negotiables (always on, never trimmed; the cross-project invariant)
 - `skills/secure-code-review/` → the full checklist + hard-stop protocol
 - `agents/security-reviewer.md` → adversarial BLOCK/ALLOW pass. **Read-only, no
   network** — a reviewer that can fetch is a reviewer that can be injected.
 - `skills/debug-research/` §3.5 → mandatory security gate, because *that* skill is
   the one whose job is ingesting untrusted third-party text.
+- `skills/evolve-harness/` → the human gate on changing the harness itself, so a
+  "learned" practice can never rewrite your own rules (guardrail #6).
 
 > ### ⚠️ Be honest about what this does and doesn't do
 >
