@@ -46,12 +46,13 @@ Needed once? ──────────────────────�
 ```
 repo/
 ├── AGENTS.md                    # ← source of truth. Keep it ~1 screen.
-├── CLAUDE.md                    # → one line: "See AGENTS.md"
+├── CLAUDE.md                    # → one line: @AGENTS.md  (imports it into context)
 │
 ├── docs/                        # the directional docs — SEE docs/README.md
 │   ├── engineering-steering-doc.md   # ALWAYS-ON (imported by AGENTS.md)
 │   ├── architecture-patterns.md      # on-demand: COMPRESSED pattern reference
 │   ├── design-doc-template.md        # on-demand: via write-design-doc
+│   ├── multi-agent-orchestration.md  # on-demand: via orchestrate-agents skill
 │   └── design/                       # filled-in design docs for this system
 │
 ├── skills/                      # TIER 2 — loaded on demand
@@ -65,7 +66,10 @@ repo/
 │   ├── architecture-patterns/   #   ← routes to the pattern reference
 │   ├── ci-cd/                   #   ← pipeline, deploy, release, rollback
 │   ├── observability/           #   ← instrument + live incident triage
-│   └── review-pr/               #   ← open a PR / review one (not security)
+│   ├── review-pr/               #   ← open a PR / review one (not security)
+│   ├── orchestrate-agents/      #   ← parallel agents in worktrees; fan-out + merge-validate
+│   ├── spec-driven-development/ #   ← spec (EARS) → implement in increments → verify
+│   └── evolve-harness/          #   ← grow the harness itself (human-gated)
 │
 ├── agents/                      # TIER 4 — delegated, own context
 │   ├── README.md                #   when to delegate (and when NOT to)
@@ -75,7 +79,8 @@ repo/
 │   ├── debug-research.md        #   context firewall for external research
 │   ├── security-reviewer.md     #   adversarial: BLOCK/ALLOW, read-only
 │   ├── deploy-reviewer.md       #   adversarial ship gate: rollback/migration/blast radius
-│   └── trend-scout.md           #   periodic trend survey → proposals only (never applies)
+│   ├── trend-scout.md           #   periodic trend survey → proposals only (never applies)
+│   └── implementer.md           #   worktree-isolated worker: builds one slice in a fan-out
 │
 └── evals/                       # the loop's artifacts
     ├── golden/                  #   frozen, versioned, seeded from REAL failures

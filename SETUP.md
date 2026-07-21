@@ -100,12 +100,15 @@ skills/
   ci-cd/                ← delete if you don't own the pipeline / deploys here
   observability/        ← delete if something else owns prod monitoring + on-call
   review-pr/            ← keep if you review PRs (you do)
+  orchestrate-agents/   ← keep if you ship with parallel agents (the multi-agent setup)
+  spec-driven-development/ ← keep; spec-first feature building (EARS + increments)
 
 agents/
   code-searcher/ test-writer/ design-reviewer/
   debug-research/ security-reviewer/   ← KEEP security-reviewer
   deploy-reviewer/      ← keep if you ship/deploy from here
   trend-scout/          ← optional: feeds evolve-harness on a schedule (see that skill)
+  implementer/          ← the worktree worker that orchestrate-agents fans out
 ```
 
 ---

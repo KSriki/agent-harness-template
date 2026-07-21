@@ -30,6 +30,7 @@ different mechanisms.** Confusing them is the #1 way this setup silently fails.
 | `engineering-steering-doc.md` | **ALWAYS-ON** | Every turn. Imported by `AGENTS.md`. |
 | `architecture-patterns.md` | **On-demand** | Via the `architecture-patterns` skill |
 | `design-doc-template.md` | **On-demand** | Via the `write-design-doc` skill |
+| `multi-agent-orchestration.md` | **On-demand** | Via the `orchestrate-agents` skill |
 | `design/*.md` | **On-demand** | The filled-in design docs for *this* system |
 
 ### Why the steering doc is always-on and the others are NOT

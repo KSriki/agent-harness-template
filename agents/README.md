@@ -71,6 +71,7 @@ Judgment → strong model. Paying frontier prices to grep is a budget leak.
 | `security-reviewer.md` | Adversarial BLOCK/ALLOW review: egress, injection, supply chain, insecure patterns |
 | `deploy-reviewer.md` | Adversarial BLOCK/ALLOW review of a **ship**: rollback, migration safety, blast radius, contract compat, data safety |
 | `trend-scout.md` | Periodic ecosystem/harness-practice survey → ranked **proposals** for `evolve-harness`. Read-untrusted-only, **propose-never-apply** |
+| `implementer.md` | Worktree-isolated worker: builds one owned slice in a parallel fan-out (`orchestrate-agents`), returns a branch + summary. **Never merges/deploys** |
 
 ## The rule that keeps this honest
 

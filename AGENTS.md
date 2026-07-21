@@ -200,5 +200,7 @@ Skills load on demand; you do not need to read them until the task matches.
 | `ci-cd` | Pipeline/deploy/promotion; cutting a release; rollback |
 | `observability` | Instrumenting logs/metrics/traces; SLOs/alerts; **live incident triage** |
 | `review-pr` | Opening a PR (description, blast radius) or reviewing one for correctness/design |
+| `orchestrate-agents` | Ship a multi-part change with **parallel agents** in worktrees; fan-out + merge-validate |
+| `spec-driven-development` | Spec (EARS acceptance criteria) → implement in increments → verify |
 | `evolve-harness` | Turning a repeated correction / researched practice into a **human-gated** harness change |
 | 〈`…`〉 | 〈…〉 |

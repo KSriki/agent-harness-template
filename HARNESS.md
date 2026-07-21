@@ -57,10 +57,12 @@ a cited § when a decision is expensive to reverse.)
 | `ci-cd` | Pipeline, deploy, promotion, release, and rollback |
 | `observability` | Instrument logs/metrics/traces; SLOs; **triage a live incident** |
 | `review-pr` | Preparing a PR, or reviewing one for correctness + blast radius |
+| `orchestrate-agents` | Run **parallel agents** in worktrees to ship a multi-part change; fan-out + merge-validate |
+| `spec-driven-development` | Spec-first: EARS acceptance criteria → implement in increments → verify |
 | `evolve-harness` | Grow the harness itself — new skill/rule from a repeated correction, **human-gated** |
 
 **Subagents** (own context window)
-`code-searcher` · `test-writer` · `design-reviewer` · `debug-research` · `security-reviewer` · `deploy-reviewer` · `trend-scout`
+`code-searcher` · `test-writer` · `design-reviewer` · `debug-research` · `security-reviewer` · `deploy-reviewer` · `trend-scout` · `implementer`
 
 **Docs** — steering doc (always-on) + architecture patterns (compressed 14% + full KB)
 
