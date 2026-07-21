@@ -33,10 +33,12 @@ Big input, small output? → a subagent
 Needed once?           → just say it in the thread
 ```
 
-**The budget, concretely:** always-on is ~**324 lines**. Naively pasting every doc
-into context would be ~**2,587 lines, every turn** — 8× the cost, and *worse*
-instruction-following, because a model given 40 rules follows them worse than one
-given 6.
+**The budget, concretely:** always-on is ~**344 lines** (`AGENTS.md` + the imported
+steering doc). Naively pasting every skill and doc into context would be ~**3,700
+lines, every turn** — more than **10× the cost**, and *worse* instruction-following,
+because a model given 40 rules follows them worse than one given 6. (That's before
+the ~1,800-line full pattern KB, which is deliberately never pasted — opened only at
+a cited § when a decision is expensive to reverse.)
 
 ---
 

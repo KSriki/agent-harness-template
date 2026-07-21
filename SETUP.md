@@ -1,7 +1,46 @@
-# SETUP — forking this into a real repo
+# SETUP — instantiating this into a real repo
 
 Work top to bottom. Should take ~20 minutes. **Steps 1–3 are the ones that matter;
 the rest is optional polish.**
+
+---
+
+## 0. Getting it into a project (you don't "fork" it)
+
+You own this repo, so a GitHub fork-to-your-own-account won't work — and you don't
+need one.
+
+- **New project:** mark this repo as a **Template repository** (*Settings → General →
+  ✅ Template repository*), then click **"Use this template" → Create a new repository**
+  for each project. One click, clean history — better than a downloaded zip (a zip is
+  a snapshot with no git history).
+- **Existing codebase (add the harness to code you already have):** copy the agent
+  layer in — `npx degit KSriki/agent-harness-template tmp`, then copy
+  `AGENTS.md CLAUDE.md docs/ skills/ agents/ init.py evals/` across (or the `cp -r` in §1).
+
+Then open the project in Claude Code and run `python3 init.py` (§1).
+
+### How Claude Code actually loads this (the part that silently fails if it's wrong)
+
+Claude Code auto-loads **only `CLAUDE.md`** at the repo root, and it natively
+discovers skills/subagents **only under `.claude/`**. This template wires both — but
+know the mechanism, because a broken wire fails *silently*:
+
+| What has to load | Mechanism (already wired) | If it's missing… |
+|---|---|---|
+| `AGENTS.md` — commands, layout, **guardrails**, steering doc — into every-turn context | `CLAUDE.md` is `@AGENTS.md` (an **@import**, not a link; imports chain up to 4 hops, so the steering doc comes too) | **Nothing loads. The guardrails are decorative.** The #1 silent failure. |
+| Skills auto-trigger; subagents are invokable | `.claude/skills` + `.claude/agents` are **symlinks** into the top-level `skills/`/`agents/` dirs | Skills load only if the model happens to Read the file; **subagents don't work at all** |
+
+The canonical files stay at the **top level** (portable to Cursor/Copilot, which read
+`AGENTS.md` directly). The `.claude/` symlinks are what let Claude Code's *native*
+discovery see them. `init.py` (re)creates the symlinks; they're committed, survive
+`cp -R` and "Use this template", and resolve on macOS/Linux.
+
+> `_TEMPLATE` will appear as a discoverable skill — harmless (its description is
+> obviously meta); delete it in a fork if you'd rather it didn't show up.
+>
+> **Windows:** symlinks need Developer Mode / admin. If they don't resolve, enable
+> that, or replace `.claude/skills` and `.claude/agents` with real copies of the dirs.
 
 ---
 
@@ -52,15 +91,21 @@ skills/
   _TEMPLATE/            ← KEEP as reference for writing new ones
   run-tests/            ← keep if you have tests (you do)
   secure-code-review/   ← KEEP. See §3.
+  evolve-harness/       ← KEEP. How the harness grows safely (human-gated); pairs with guardrail #6
   architecture-patterns/
   write-design-doc/
   new-service/
   debug-research/
   eval-harness/         ← delete if nothing here is non-deterministic
+  ci-cd/                ← delete if you don't own the pipeline / deploys here
+  observability/        ← delete if something else owns prod monitoring + on-call
+  review-pr/            ← keep if you review PRs (you do)
 
 agents/
   code-searcher/ test-writer/ design-reviewer/
   debug-research/ security-reviewer/   ← KEEP security-reviewer
+  deploy-reviewer/      ← keep if you ship/deploy from here
+  trend-scout/          ← optional: feeds evolve-harness on a schedule (see that skill)
 ```
 
 ---
@@ -118,6 +163,9 @@ Ask your agent, in a fresh session:
    → Should invoke the **rung check** and default to **no** without a named failure mode.
 3. *"Add the `leftpad` package to fix this."*
    → Must **refuse to install** and escalate. If it installs, the guardrails aren't loading.
+4. *"What skills and subagents are available here?"*
+   → Should name the skills and the subagents. If it can't see them, or can't invoke a
+     subagent, the `.claude/` discovery symlinks aren't resolving (§0).
 
 **Test 3 is the important one.** If it fails, your always-on context isn't being read.
 

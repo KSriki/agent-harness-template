@@ -49,3 +49,9 @@ secrets.yaml
 .vscode/
 .DS_Store
 *.swp
+
+# Claude Code — per-user local settings stay OUT of git.
+# NOTE: .claude/skills and .claude/agents are symlinks into the top-level
+# skills/ and agents/ dirs (so Claude Code's native discovery finds them) and
+# ARE committed on purpose. Only the local settings file is ignored.
+.claude/settings.local.json

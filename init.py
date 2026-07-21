@@ -35,6 +35,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import re
 import shutil
 import sys
@@ -348,6 +349,33 @@ def fill_agents(text: str, a: dict[str, str]) -> str:
     return text
 
 
+def wire_claude_dir(root: Path) -> list[str]:
+    """Symlink .claude/skills → ../skills and .claude/agents → ../agents so Claude
+    Code's NATIVE discovery finds them, while the canonical files stay at the repo
+    top level (portable to other tools, which read AGENTS.md directly).
+
+    Idempotent: an already-correct link is left alone; a real directory or a wrong
+    link is NOT clobbered — it's reported instead. Same gate-don't-clobber rule as
+    the AGENTS.md write.
+    """
+    notes: list[str] = []
+    claude = root / ".claude"
+    for name, target in (("skills", "../skills"), ("agents", "../agents")):
+        if not (root / name).is_dir():
+            continue  # nothing to point at
+        link = claude / name
+        if link.is_symlink() and os.readlink(link) == target:
+            notes.append(f"ok    .claude/{name} → {target} (already linked)")
+            continue
+        if link.exists() or link.is_symlink():
+            notes.append(f"SKIP  .claude/{name} exists and isn't a → {target} symlink; left as-is")
+            continue
+        claude.mkdir(exist_ok=True)
+        link.symlink_to(target)
+        notes.append(f"linked .claude/{name} → {target}")
+    return notes
+
+
 # ── main ─────────────────────────────────────────────────────────────────────
 
 
@@ -485,7 +513,7 @@ def main() -> int:
     print(f"  slots remaining: {yellow(str(left))} {dim('(examples + TODOs — intentional)')}")
 
     if args.dry_run:
-        print(dim("\n  --dry-run: nothing written.\n"))
+        print(dim("\n  --dry-run: nothing written (AGENTS.md fill + .claude/ discovery symlinks skipped).\n"))
         return 0
 
     if not ask_yn(f"\n  Write {bold('AGENTS.md')}?", True):
@@ -497,6 +525,11 @@ def main() -> int:
         print(dim(f"  backup → {agents.name}.bak"))
     agents.write_text(updated)
     print(f"  {green('✓')} wrote {agents}")
+
+    # ── wire .claude/ so Claude Code natively discovers skills + subagents
+    for note in wire_claude_dir(root):
+        mark = green("✓") if note.startswith(("linked", "ok")) else yellow("!")
+        print(f"  {mark} {note}")
 
     # ── next steps
     rule("Next")
