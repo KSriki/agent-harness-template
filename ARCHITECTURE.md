@@ -69,7 +69,8 @@ repo/
 │   ├── review-pr/               #   ← open a PR / review one (not security)
 │   ├── orchestrate-agents/      #   ← parallel agents in worktrees; fan-out + merge-validate
 │   ├── spec-driven-development/ #   ← spec (EARS) → implement in increments → verify
-│   └── evolve-harness/          #   ← grow the harness itself (human-gated)
+│   ├── evolve-harness/          #   ← grow the harness itself (human-gated)
+│   └── init-agent-harness/      #   ← scaffold per-project context as a skill (no installer)
 │
 ├── agents/                      # TIER 4 — delegated, own context
 │   ├── README.md                #   when to delegate (and when NOT to)

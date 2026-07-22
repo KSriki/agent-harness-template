@@ -203,4 +203,5 @@ Skills load on demand; you do not need to read them until the task matches.
 | `orchestrate-agents` | Ship a multi-part change with **parallel agents** in worktrees; fan-out + merge-validate |
 | `spec-driven-development` | Spec (EARS acceptance criteria) → implement in increments → verify |
 | `evolve-harness` | Turning a repeated correction / researched practice into a **human-gated** harness change |
+| `init-agent-harness` | Scaffold this project's context (AGENTS.md + CLAUDE.md + docs) from your global harness |
 | 〈`…`〉 | 〈…〉 |

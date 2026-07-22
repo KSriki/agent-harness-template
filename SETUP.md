@@ -10,6 +10,12 @@ the rest is optional polish.**
 You own this repo, so a GitHub fork-to-your-own-account won't work — and you don't
 need one.
 
+- **Plug-and-play (recommended — from a local clone of this harness):**
+  `bash install.sh /path/to/your-project` — copies the whole agent layer in, wires
+  `.claude/` for native discovery, appends the one `.gitignore` line, and **will not
+  clobber an `AGENTS.md`/`CLAUDE.md` you've already filled** (`--force` to overwrite).
+  It deliberately does **not** fill your project context — that's `init.py` / the SDLC
+  skills. Works for a brand-new folder or an existing codebase. (macOS/Linux.)
 - **New project:** mark this repo as a **Template repository** (*Settings → General →
   ✅ Template repository*), then click **"Use this template" → Create a new repository**
   for each project. One click, clean history — better than a downloaded zip (a zip is
@@ -19,6 +25,29 @@ need one.
   `AGENTS.md CLAUDE.md docs/ skills/ agents/ init.py evals/` across (or the `cp -r` in §1).
 
 Then open the project in Claude Code and run `python3 init.py` (§1).
+
+### Or: your skills in EVERY project on a machine (global toolkit)
+
+The options above put the harness *in a repo*. If instead you want your skills +
+subagents available in **every** project — your personal toolkit, reproducible on a
+new machine — symlink them into your global Claude config **once per machine**:
+
+```bash
+git clone <your-harness-repo> ~/agent-harness    # once per machine
+cd ~/agent-harness && python3 init.py --link-global
+```
+
+- Symlinks `skills/` + `agents/` → `~/.claude/`; live in every project after you
+  restart Claude Code. New skills you add to the repo appear automatically (linked,
+  not copied). Override the location with `--config-dir <path>` or `$CLAUDE_CONFIG_DIR`.
+- Re-runnable and safe: it won't clobber an existing real `~/.claude/skills` dir.
+- **This gives you the skills/subagents everywhere — NOT the guardrails.** Those ride
+  in each project's committed `AGENTS.md`. Global toolkit + per-project context is the
+  intended split.
+- To set up that per-project context, just run the **`init-agent-harness` skill** inside
+  the project — it scaffolds `AGENTS.md` + `CLAUDE.md` + `docs/` from your global harness,
+  no installer script needed. (The scripted `bash install.sh <project>` still works if you
+  prefer.)
 
 ### How Claude Code actually loads this (the part that silently fails if it's wrong)
 
@@ -102,6 +131,7 @@ skills/
   review-pr/            ← keep if you review PRs (you do)
   orchestrate-agents/   ← keep if you ship with parallel agents (the multi-agent setup)
   spec-driven-development/ ← keep; spec-first feature building (EARS + increments)
+  init-agent-harness/   ← keep; scaffolds per-project context as a skill (supersedes install.sh)
 
 agents/
   code-searcher/ test-writer/ design-reviewer/

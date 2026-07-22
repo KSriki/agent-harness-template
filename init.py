@@ -376,6 +376,56 @@ def wire_claude_dir(root: Path) -> list[str]:
     return notes
 
 
+def link_global(config_dir: str | None = None, *, dry_run: bool = False) -> int:
+    """Symlink THIS harness's skills/ + agents/ into the global Claude config dir,
+    so every project on this machine sees them. Run once per machine; re-runnable.
+
+        source = the directory this script lives in (the harness repo)
+        target = config_dir, else $CLAUDE_CONFIG_DIR, else ~/.claude
+
+    Directory-level symlinks on purpose: a new skill you add to the repo shows up
+    everywhere automatically, no re-run needed. Per-project context (AGENTS.md)
+    stays per-repo. Gate-don't-clobber: an existing real dir is never overwritten.
+    """
+    src = Path(__file__).resolve().parent
+    target = Path(
+        config_dir or os.environ.get("CLAUDE_CONFIG_DIR") or (Path.home() / ".claude")
+    ).expanduser()
+
+    rule("Link harness → global Claude config")
+    print(dim(f"  source: {src}"))
+    print(dim(f"  target: {target}"))
+    if dry_run:
+        print(yellow("  --dry-run: nothing will be written.\n"))
+
+    for name in ("skills", "agents"):
+        s = src / name
+        if not s.is_dir():
+            print(yellow(f"  ! {name}/ not found in {src} — skipped"))
+            continue
+        link = target / name
+        if link.is_symlink() and os.path.realpath(str(link)) == os.path.realpath(str(s)):
+            print(f"  {green('✓')} {link}  (already linked)")
+            continue
+        if link.exists() or link.is_symlink():
+            print(yellow(f"  ! {link} exists and is not a link to this repo — left as-is"))
+            print(dim("      move it aside (or pass --config-dir) and re-run"))
+            continue
+        if dry_run:
+            print(f"  · would link {link} → {s}")
+            continue
+        target.mkdir(parents=True, exist_ok=True)
+        link.symlink_to(s)
+        print(f"  {green('✓')} linked {link} → {s}")
+
+    if not dry_run:
+        print()
+        print("  " + bold("Restart Claude Code") + " (or start a new session) to load them.")
+        print(dim("  Available in every project now; new skills you add appear automatically."))
+        print(dim("  Per-project context (AGENTS.md) stays per-repo — run `python3 init.py` there."))
+    return 0
+
+
 # ── main ─────────────────────────────────────────────────────────────────────
 
 
@@ -385,7 +435,22 @@ def main() -> int:
     p.add_argument("--dry-run", action="store_true", help="show changes, write nothing")
     p.add_argument("--force", action="store_true", help="overwrite an already-filled AGENTS.md")
     p.add_argument("--no-backup", action="store_true", help="skip .bak files")
+    p.add_argument(
+        "--link-global",
+        action="store_true",
+        help="symlink THIS harness's skills/ + agents/ into your global Claude config "
+        "dir so they're available in every project, then exit (run once per machine)",
+    )
+    p.add_argument(
+        "--config-dir",
+        default=None,
+        help="global Claude config dir for --link-global "
+        "(default: $CLAUDE_CONFIG_DIR, else ~/.claude)",
+    )
     args = p.parse_args()
+
+    if args.link_global:
+        return link_global(args.config_dir, dry_run=args.dry_run)
 
     root = Path(args.path).resolve()
     agents = root / "AGENTS.md"

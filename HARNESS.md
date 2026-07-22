@@ -6,7 +6,9 @@ that sits alongside your code. Fork it, fill in the slots, delete what you don't
 Portable by design: **`AGENTS.md` is the source of truth**; `CLAUDE.md` is a one-line
 pointer. Works with Claude Code, Cursor, Copilot, or anything that reads repo context.
 
-**→ Quick start:** `python3 init.py` — interactive wizard, detects your stack, fills `AGENTS.md`.
+**→ Use everywhere (global toolkit):** `python3 init.py --link-global` — symlinks `skills/` + `agents/` into `~/.claude/` so they load in every project. Run once per machine; `git pull` to update all of them.
+**→ Install into one project:** `bash install.sh /path/to/project` — copies the suite in and wires Claude Code native discovery (`.claude/` symlinks + `CLAUDE.md` @import). Won't clobber a filled-in `AGENTS.md`.
+**→ Fill a project's context:** `python3 init.py` — interactive wizard, detects your stack, fills `AGENTS.md`.
 **→ Then read [`SETUP.md`](./SETUP.md).**
 **→ Why it's built this way: [`ARCHITECTURE.md`](./ARCHITECTURE.md).**
 
@@ -60,6 +62,7 @@ a cited § when a decision is expensive to reverse.)
 | `orchestrate-agents` | Run **parallel agents** in worktrees to ship a multi-part change; fan-out + merge-validate |
 | `spec-driven-development` | Spec-first: EARS acceptance criteria → implement in increments → verify |
 | `evolve-harness` | Grow the harness itself — new skill/rule from a repeated correction, **human-gated** |
+| `init-agent-harness` | Scaffold a project's context (AGENTS.md + CLAUDE.md + docs) from your global link — no installer script |
 
 **Subagents** (own context window)
 `code-searcher` · `test-writer` · `design-reviewer` · `debug-research` · `security-reviewer` · `deploy-reviewer` · `trend-scout` · `implementer`
