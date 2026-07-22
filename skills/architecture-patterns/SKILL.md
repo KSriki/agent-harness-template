@@ -8,8 +8,11 @@ description: >
   on "should we use X or Y", "what's the right pattern for", "how should we
   structure", "is this over-engineered", CQRS/event-sourcing/saga/outbox/CDN/
   circuit-breaker questions, and any conversation about scaling or coupling.
-  Do NOT use for writing the design doc itself — that's `write-design-doc`; and
-  not for scaffolding a new component — that's `new-service`.
+  Do NOT use for writing the design doc itself — that's `write-design-doc`; not
+  for scaffolding a new component — `new-service`; not for designing one MODULE's
+  interface/seams — `codebase-design`; and not for auditing an existing codebase
+  for refactors — `improve-codebase-architecture`. This skill is SYSTEM-level
+  pattern choice for a decision in front of you.
 ---
 
 # Architecture pattern selection

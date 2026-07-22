@@ -106,7 +106,7 @@ You don't need special tooling — you drive it in the main thread:
 
 ## Worked example: "submission triage" feature
 
-Spec (via `spec-driven-development`) yields three slices with clean boundaries:
+The PRD (via `write-a-prd` → `prd-to-issues`) yields three tickets with clean boundaries:
 
 | Worker | Owns | Contract it depends on |
 |---|---|---|

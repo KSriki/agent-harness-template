@@ -6,7 +6,10 @@ description: >
   an auth model, a sync-vs-async decision, or any choice that is expensive to
   reverse. Also use when asked for an ADR, RFC, or "design doc". Covers
   right-sizing the doc and recording rejected alternatives.
-  Do NOT use for a bug fix or a change that is cheap to reverse — just do it.
+  Do NOT use for a bug fix or a change that is cheap to reverse — just do it. Not
+  for glossary upkeep or a lightweight ADR — `domain-modeling`. Not for product
+  requirements — `write-a-prd`. This is the once-per-project (or major-change)
+  technical design record.
 ---
 
 # Writing the design doc

@@ -66,6 +66,39 @@ If you catch me over-building, say so directly — "the modular monolith covers 
 
 ---
 
+## 4.5 Project workflow (the SDLC the agents follow)
+
+Two altitudes. When orchestrating agents, this is the workflow they follow — treat
+the stage boundaries as checkpoints, not bureaucracy.
+
+**Once per project (bootstrap):** `write-design-doc` + `architecture-patterns` set
+the system-level shape. Revisit only on a major re-architecture.
+
+**Per feature (the loop):**
+
+```mermaid
+flowchart LR
+    G["grill-me"] --> P["write-a-prd"] --> T["prd-to-issues"] --> B["build tickets<br/>tdd · orchestrate-agents<br/>review-pr · secure-code-review"] --> S["ship<br/>ci-cd · deploy-reviewer"]
+    W["wayfinder<br/>(fuzzy scope / open decisions)"] --> P
+    B -. new idea / workaround .-> W
+    B -. debt .-> IA["improve-codebase-architecture"] -.-> B
+```
+
+- **grill-me** before writing anything — confirmed shared understanding is the entry
+  checkpoint. **wayfinder** when scope is fuzzy or too big for one session (and the
+  re-entry point when a new idea/workaround surfaces mid-build — chart it, don't
+  improvise it).
+- **write-a-prd → prd-to-issues**: synthesis, then tracer-bullet tickets with
+  blocking edges, labeled `ready-for-agent`.
+- **Build test-first** (`tdd`: red before green), in parallel where tickets allow
+  (`orchestrate-agents`); refactors surface via `improve-codebase-architecture`,
+  vocabulary via `domain-modeling` / `codebase-design`.
+- **Right-size it (the escape valve):** the pipeline is for non-trivial work. A
+  trivial, reversible change goes straight to build — you don't write a PRD to fix a
+  typo. Over-processing is over-engineering (§2).
+
+---
+
 ## 5. Environments, infra, and cost
 
 - **Separate test / QA / prod environments.** Design with this separation assumed.

@@ -79,6 +79,25 @@ Read whatever's present — `pyproject.toml` / `package.json` / `go.mod` /
 fabricated gotcha is worse than none (the same rule `init.py` follows). They get
 filled in as they're learned.
 
+### 3.5 Configure the SDLC layer — tracker, labels, domain docs
+
+The pipeline skills (`write-a-prd`, `prd-to-issues`, `wayfinder`) publish to an
+issue tracker and read a domain glossary. Configure them now — explore first,
+propose, confirm with the human, then write (never assume):
+
+- **Issue tracker.** Detect from `git remote -v`: 〈GitHub → `gh` CLI · GitLab →
+  `glab` CLI · none/other → local markdown under `.scratch/<feature>/`〉. Record the
+  choice in `docs/agents/issue-tracker.md`.
+- **Triage labels.** Default vocabulary (each label string = its name):
+  `needs-triage` · `needs-info` · **`ready-for-agent`** (fully specified, an agent
+  can take it) · `ready-for-human` · `wontfix`. If the tracker already has an
+  equivalent vocabulary, record the mapping instead of creating duplicates →
+  `docs/agents/triage-labels.md`.
+- **Domain docs.** Default single-context: a root `CONTEXT.md` (glossary — created
+  lazily by `domain-modeling`) + ADRs under 〈`docs/design/` or `docs/adr/`〉. Offer
+  multi-context (`CONTEXT-MAP.md` + per-context files) only on monorepo signals
+  (workspaces, `packages/*`).
+
 ### 4. Wire `.gitignore`
 
 ```bash

@@ -201,7 +201,15 @@ Skills load on demand; you do not need to read them until the task matches.
 | `observability` | Instrumenting logs/metrics/traces; SLOs/alerts; **live incident triage** |
 | `review-pr` | Opening a PR (description, blast radius) or reviewing one for correctness/design |
 | `orchestrate-agents` | Ship a multi-part change with **parallel agents** in worktrees; fan-out + merge-validate |
-| `spec-driven-development` | Spec (EARS acceptance criteria) → implement in increments → verify |
+| `grill-me` | Stress-test a plan — one-question-at-a-time interview until understanding is confirmed |
+| `wayfinder` | Fuzzy/oversized scope → map of DECISION tickets; re-entry for mid-build ideas |
+| `write-a-prd` | Synthesize the discussion into a spec/PRD, published `ready-for-agent` |
+| `prd-to-issues` | PRD → tracer-bullet tickets with blocking edges, in dependency order |
+| `tdd` | Build test-FIRST: red before green, one vertical slice at a time |
+| `codebase-design` | Deep-module vocabulary: interfaces, seams, design-it-twice |
+| `domain-modeling` | The glossary (`CONTEXT.md`) + sparingly-used ADRs |
+| `improve-codebase-architecture` | Audit existing code for deepening/refactor opportunities |
+| `handoff` | Compact the session into a doc a fresh agent can resume from |
 | `evolve-harness` | Turning a repeated correction / researched practice into a **human-gated** harness change |
 | `init-agent-harness` | Scaffold this project's context (AGENTS.md + CLAUDE.md + docs) from your global harness |
 | 〈`…`〉 | 〈…〉 |

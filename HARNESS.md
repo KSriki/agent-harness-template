@@ -60,7 +60,12 @@ a cited § when a decision is expensive to reverse.)
 | `observability` | Instrument logs/metrics/traces; SLOs; **triage a live incident** |
 | `review-pr` | Preparing a PR, or reviewing one for correctness + blast radius |
 | `orchestrate-agents` | Run **parallel agents** in worktrees to ship a multi-part change; fan-out + merge-validate |
-| `spec-driven-development` | Spec-first: EARS acceptance criteria → implement in increments → verify |
+| `grill-me` · `wayfinder` | Interrogate the plan; map fuzzy scope as decision tickets |
+| `write-a-prd` · `prd-to-issues` | Discussion → spec → tracer-bullet tickets with blocking edges |
+| `tdd` | Test-first build loop: red before green, one vertical slice at a time |
+| `codebase-design` · `domain-modeling` | Deep-module vocabulary; the glossary + light ADRs |
+| `improve-codebase-architecture` | Audit existing code for deepening/refactor opportunities |
+| `handoff` | Compact a session for a fresh agent to resume |
 | `evolve-harness` | Grow the harness itself — new skill/rule from a repeated correction, **human-gated** |
 | `init-agent-harness` | Scaffold a project's context (AGENTS.md + CLAUDE.md + docs) from your global link — no installer script |
 

@@ -130,8 +130,9 @@ skills/
   observability/        ← delete if something else owns prod monitoring + on-call
   review-pr/            ← keep if you review PRs (you do)
   orchestrate-agents/   ← keep if you ship with parallel agents (the multi-agent setup)
-  spec-driven-development/ ← keep; spec-first feature building (EARS + increments)
-  init-agent-harness/   ← keep; scaffolds per-project context as a skill (supersedes install.sh)
+  init-agent-harness/   ← keep; scaffolds per-project context + tracker/labels/glossary
+  grill-me/ wayfinder/ write-a-prd/ prd-to-issues/ tdd/   ← the SDLC loop (steering §4.5)
+  codebase-design/ domain-modeling/ improve-codebase-architecture/ handoff/  ← design vocab + upkeep
 
 agents/
   code-searcher/ test-writer/ design-reviewer/

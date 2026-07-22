@@ -68,9 +68,17 @@ repo/
 │   ├── observability/           #   ← instrument + live incident triage
 │   ├── review-pr/               #   ← open a PR / review one (not security)
 │   ├── orchestrate-agents/      #   ← parallel agents in worktrees; fan-out + merge-validate
-│   ├── spec-driven-development/ #   ← spec (EARS) → implement in increments → verify
+│   ├── grill-me/                #   ← interrogate the plan first (SDLC entry)
+│   ├── wayfinder/               #   ← fuzzy scope → decision tickets; mid-build re-entry
+│   ├── write-a-prd/             #   ← discussion → spec, ready-for-agent
+│   ├── prd-to-issues/           #   ← spec → tracer-bullet tickets + blocking edges
+│   ├── tdd/                     #   ← red before green, one vertical slice at a time
+│   ├── codebase-design/         #   ← deep modules, seams, design-it-twice
+│   ├── domain-modeling/         #   ← CONTEXT.md glossary + sparing ADRs
+│   ├── improve-codebase-architecture/  # ← audit existing code for deepening
+│   ├── handoff/                 #   ← compact session → resumable doc
 │   ├── evolve-harness/          #   ← grow the harness itself (human-gated)
-│   └── init-agent-harness/      #   ← scaffold per-project context as a skill (no installer)
+│   └── init-agent-harness/      #   ← scaffold per-project context + tracker/labels/glossary
 │
 ├── agents/                      # TIER 4 — delegated, own context
 │   ├── README.md                #   when to delegate (and when NOT to)

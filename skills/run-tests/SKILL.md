@@ -5,7 +5,9 @@ description: >
   a CI quality gate fails (SonarQube, coverage threshold, lint, typecheck); or
   before declaring any code change complete. Covers unit, integration, contract,
   and e2e tests plus the full local quality-gate sequence.
-  Do NOT use for evaluating LLM/agent outputs — use `eval-harness` instead.
+  Do NOT use for evaluating LLM/agent outputs (`eval-harness`), or for building a
+  feature TEST-FIRST — the red→green loop is `tdd`; this skill is the gate you run
+  on code that exists.
 ---
 
 # Running tests and quality gates
