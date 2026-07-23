@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+# .claude/gate.sh — THIS project's quality gate. Single source of truth for "done":
+# the machine-wide hooks run it (fast on edits, full on turn end) and CI runs
+# `full` on every PR. Copy to <project>/.claude/gate.sh, fill the 〈slots〉 from
+# your AGENTS.md Commands table, chmod +x. Keep it boring and fast.
+set -euo pipefail
+MODE="${1:-full}"
+
+# ── FAST — after every edit. Cheap only (seconds, not minutes). ───────────────
+〈uv run ruff check .〉                       # lint   (Go: golangci-lint run · JS: npm run lint)
+
+[ "$MODE" = "fast" ] && exit 0
+
+# ── FULL — turn end + CI. The whole proof. ────────────────────────────────────
+〈uv run ruff format --check .〉              # format drift
+〈uv run mypy src/〉                          # typecheck (Go: go vet ./... · TS: npm run typecheck)
+
+# Tests + coverage COMPLIANCE in one pass — red tests or coverage below the
+# threshold both fail the gate. Coverage is a floor, not a trophy (steering §3):
+# never game the number with assertion-free tests; fix the untested behavior.
+〈uv run pytest -q --cov=src --cov-fail-under=80〉
+# Go: go test -cover ./...  (+ enforce: go tool cover -func | awk threshold)
+# JS: npm test -- --coverage --coverageThreshold='{"global":{"lines":80}}'
+
+# Evals — uncomment if this project has non-deterministic components (the smoke
+# suite is the test suite for those; a regression is a red gate, same as tests):
+# 〈uv run python -m evals.run --suite smoke〉

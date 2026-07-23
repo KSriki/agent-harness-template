@@ -56,7 +56,7 @@ copy_tree() {  # $1 = dir name under SRC
     mkdir -p "$TARGET/$1" && cp -R "$SRC/$1/." "$TARGET/$1/"
   fi
 }
-for d in skills agents docs evals; do
+for d in skills agents docs evals gates; do
   [ -d "$SRC/$d" ] && copy_tree "$d" && echo "  ✓ $d/"
 done
 

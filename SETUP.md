@@ -49,6 +49,22 @@ cd ~/agent-harness && python3 init.py --link-global
   no installer script needed. (The scripted `bash install.sh <project>` still works if you
   prefer.)
 
+### Enforcement — hooks + CI (the layer that isn't prose)
+
+Context guides; **gates enforce** (see `gates/README.md` for the full model):
+
+```bash
+python3 init.py --install-hooks     # once per machine: PostToolUse (lint, fast) +
+                                    # Stop (full gate: lint·types·tests·coverage) hooks —
+                                    # they no-op until a project defines .claude/gate.sh
+python3 init.py --global-claude     # optional: tiny machine-wide CLAUDE.md baseline
+```
+
+Per project, `init-agent-harness` installs `.claude/gate.sh` (the single source of
+truth for "done" — the hooks and CI both run it) and `.github/workflows/gate.yml`.
+Then enable **branch protection requiring the `gate` check** — that setting, not any
+file, is what makes "PRs do not merge on red" un-bypassable.
+
 ### How Claude Code actually loads this (the part that silently fails if it's wrong)
 
 Claude Code auto-loads **only `CLAUDE.md`** at the repo root, and it natively

@@ -1,0 +1,33 @@
+# Layer 3 — the gate nothing talks its way past.
+# Copy to <project>/.github/workflows/gate.yml, fill the setup slot, then enable
+# BRANCH PROTECTION on main requiring the `gate` check — that setting (not this
+# file alone) is what makes "PRs do not merge on red" physics instead of prose.
+#
+# Runs the SAME .claude/gate.sh the local hooks run: one definition of done.
+name: gate
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  gate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # ── setup — fill for your stack (mirror the AGENTS.md Commands table) ──
+      # Python/uv:
+      #   - uses: astral-sh/setup-uv@v5
+      #   - run: uv sync
+      # Go:
+      #   - uses: actions/setup-go@v5
+      #     with: { go-version-file: go.mod }
+      # Node:
+      #   - uses: actions/setup-node@v4
+      #     with: { node-version-file: .nvmrc, cache: npm }
+      #   - run: npm ci
+
+      - name: Run the gate (same script the local hooks run)
+        run: ./.claude/gate.sh full

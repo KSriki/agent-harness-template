@@ -1,0 +1,29 @@
+{
+  "//": "Merged into ~/.claude/settings.json by `python3 init.py --install-hooks`.",
+  "//2": "<HARNESS> is replaced with this repo's absolute path at install time.",
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write|NotebookEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "<HARNESS>/gates/gate-dispatch.sh fast",
+            "timeout": 120
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "<HARNESS>/gates/gate-dispatch.sh full",
+            "timeout": 600
+          }
+        ]
+      }
+    ]
+  }
+}

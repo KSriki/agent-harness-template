@@ -98,6 +98,29 @@ propose, confirm with the human, then write (never assume):
   multi-context (`CONTEXT-MAP.md` + per-context files) only on monorepo signals
   (workspaces, `packages/*`).
 
+### 3.6 Install the enforcement gate (Layers 2 + 3 — see `gates/README.md`)
+
+Context guides; **the gate enforces.** Two files, both driven by the Commands table
+you just filled:
+
+```bash
+# Layer 2 — the per-project gate the machine-wide hooks run (fast on edits, full on stop)
+mkdir -p .claude && cp "$HARNESS/gates/gate.sh.template" .claude/gate.sh
+# fill the 〈slots〉 from the Commands table: lint · typecheck · tests+coverage threshold
+chmod +x .claude/gate.sh && ./.claude/gate.sh full   # must pass NOW — a red gate at install is a lie waiting to fire
+
+# Layer 3 — CI runs the SAME script; branch protection makes red-means-no-merge physics
+mkdir -p .github/workflows && cp "$HARNESS/gates/github-actions-gate.yml" .github/workflows/gate.yml
+# fill the setup slot for the stack, then remind the human: enable branch protection
+# on main requiring the `gate` check — that setting is the enforcement, not the file.
+```
+
+If the machine-wide hooks aren't installed yet, tell the human once:
+`python3 init.py --install-hooks` (from the harness clone). Without them the gate
+still runs in CI — hooks just add it at the agent layer too. If the project has
+non-deterministic components, uncomment the eval smoke line in `gate.sh`
+(`eval-harness`): an eval regression reds the gate, same as a failing test.
+
 ### 4. Wire `.gitignore`
 
 ```bash

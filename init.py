@@ -423,6 +423,99 @@ def link_global(config_dir: str | None = None, *, dry_run: bool = False) -> int:
         print("  " + bold("Restart Claude Code") + " (or start a new session) to load them.")
         print(dim("  Available in every project now; new skills you add appear automatically."))
         print(dim("  Per-project context (AGENTS.md) stays per-repo — run `python3 init.py` there."))
+        print(dim("  Enforcement (opt-in): --install-hooks (machine-wide gate hooks) and"))
+        print(dim("  --global-claude (tiny baseline CLAUDE.md). See gates/README.md."))
+    return 0
+
+
+def install_hooks(config_dir: str | None = None, *, dry_run: bool = False) -> int:
+    """Merge the gate hooks (gates/settings-hooks.json) into the global Claude
+    settings, pointing at THIS repo's gate-dispatch.sh by absolute path.
+
+    The hooks fire in every project but act only where the project has opted in
+    with .claude/gate.sh — global enforcement, per-project contract. Idempotent
+    (skips if a gate-dispatch hook is already present); backs up settings.json.
+    """
+    src = Path(__file__).resolve().parent
+    dispatch = src / "gates" / "gate-dispatch.sh"
+    target = Path(
+        config_dir or os.environ.get("CLAUDE_CONFIG_DIR") or (Path.home() / ".claude")
+    ).expanduser()
+    settings = target / "settings.json"
+
+    rule("Install gate hooks → global Claude settings")
+    print(dim(f"  dispatch: {dispatch}"))
+    print(dim(f"  settings: {settings}"))
+    if not dispatch.exists():
+        print(red("  gates/gate-dispatch.sh not found — is this the harness repo?"))
+        return 1
+
+    data: dict = {}
+    if settings.exists():
+        try:
+            data = json.loads(settings.read_text())
+        except Exception:
+            print(red(f"  {settings} is not valid JSON — fix it by hand first. Nothing written."))
+            return 1
+
+    hooks = data.setdefault("hooks", {})
+    already = any(
+        "gate-dispatch.sh" in h.get("command", "")
+        for entries in hooks.values()
+        for e in entries
+        for h in e.get("hooks", [])
+    )
+    if already:
+        print(f"  {green('✓')} gate hooks already installed — nothing to do")
+        return 0
+
+    hooks.setdefault("PostToolUse", []).append(
+        {
+            "matcher": "Edit|Write|NotebookEdit",
+            "hooks": [
+                {"type": "command", "command": f"{dispatch} fast", "timeout": 120}
+            ],
+        }
+    )
+    hooks.setdefault("Stop", []).append(
+        {"hooks": [{"type": "command", "command": f"{dispatch} full", "timeout": 600}]}
+    )
+
+    if dry_run:
+        print(yellow("  --dry-run: would add PostToolUse(fast) + Stop(full) hooks. Nothing written."))
+        return 0
+
+    target.mkdir(parents=True, exist_ok=True)
+    if settings.exists():
+        shutil.copy2(settings, settings.with_suffix(".json.bak"))
+        print(dim(f"  backup → {settings.name}.bak"))
+    settings.write_text(json.dumps(data, indent=2) + "\n")
+    print(f"  {green('✓')} hooks installed (PostToolUse fast · Stop full)")
+    print(dim("  They no-op until a project defines .claude/gate.sh — see gates/gate.sh.template."))
+    print("  " + bold("Restart Claude Code") + " to activate.")
+    return 0
+
+
+def install_global_claude(config_dir: str | None = None, *, dry_run: bool = False) -> int:
+    """Copy gates/global-CLAUDE.md → the global CLAUDE.md, if none exists.
+    Never overwrites — a user's existing global context is theirs."""
+    src = Path(__file__).resolve().parent / "gates" / "global-CLAUDE.md"
+    target = Path(
+        config_dir or os.environ.get("CLAUDE_CONFIG_DIR") or (Path.home() / ".claude")
+    ).expanduser()
+    dest = target / "CLAUDE.md"
+
+    rule("Install global CLAUDE.md baseline")
+    print(dim(f"  {dest}"))
+    if dest.exists():
+        print(yellow("  ! a global CLAUDE.md already exists — left as-is (merge by hand if wanted)"))
+        return 0
+    if dry_run:
+        print(yellow("  --dry-run: would create it. Nothing written."))
+        return 0
+    target.mkdir(parents=True, exist_ok=True)
+    shutil.copy2(src, dest)
+    print(f"  {green('✓')} created — loads in every session on this machine. Keep it tiny.")
     return 0
 
 
@@ -444,13 +537,32 @@ def main() -> int:
     p.add_argument(
         "--config-dir",
         default=None,
-        help="global Claude config dir for --link-global "
-        "(default: $CLAUDE_CONFIG_DIR, else ~/.claude)",
+        help="global Claude config dir for --link-global / --install-hooks / "
+        "--global-claude (default: $CLAUDE_CONFIG_DIR, else ~/.claude)",
+    )
+    p.add_argument(
+        "--install-hooks",
+        action="store_true",
+        help="merge the gate hooks into global Claude settings so every project "
+        "with a .claude/gate.sh gets lint/typecheck/tests/coverage enforced "
+        "(see gates/README.md), then exit",
+    )
+    p.add_argument(
+        "--global-claude",
+        action="store_true",
+        help="create a tiny machine-wide CLAUDE.md baseline (never overwrites), then exit",
     )
     args = p.parse_args()
 
-    if args.link_global:
-        return link_global(args.config_dir, dry_run=args.dry_run)
+    if args.link_global or args.install_hooks or args.global_claude:
+        rc = 0
+        if args.link_global:
+            rc = link_global(args.config_dir, dry_run=args.dry_run) or rc
+        if args.install_hooks:
+            rc = install_hooks(args.config_dir, dry_run=args.dry_run) or rc
+        if args.global_claude:
+            rc = install_global_claude(args.config_dir, dry_run=args.dry_run) or rc
+        return rc
 
     root = Path(args.path).resolve()
     agents = root / "AGENTS.md"

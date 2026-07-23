@@ -91,10 +91,16 @@ repo/
 │   ├── trend-scout.md           #   periodic trend survey → proposals only (never applies)
 │   └── implementer.md           #   worktree-isolated worker: builds one slice in a fan-out
 │
-└── evals/                       # the loop's artifacts
-    ├── golden/                  #   frozen, versioned, seeded from REAL failures
-    ├── judges/                  #   rubrics
-    └── results/                 #   committed, so you can SEE the decay
+├── evals/                       # the loop's artifacts
+│   ├── golden/                  #   frozen, versioned, seeded from REAL failures
+│   ├── judges/                  #   rubrics
+│   └── results/                 #   committed, so you can SEE the decay
+│
+└── gates/                       # DETERMINISTIC enforcement — outside the model
+    ├── gate-dispatch.sh         #   machine-wide hook → runs project's .claude/gate.sh
+    ├── gate.sh.template         #   per-project gate: lint · types · TESTS · COVERAGE
+    ├── github-actions-gate.yml  #   CI runs the same gate; branch protection = physics
+    └── global-CLAUDE.md         #   optional tiny machine-wide baseline
 ```
 
 ---

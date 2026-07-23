@@ -7,6 +7,7 @@ Portable by design: **`AGENTS.md` is the source of truth**; `CLAUDE.md` is a one
 pointer. Works with Claude Code, Cursor, Copilot, or anything that reads repo context.
 
 **→ Use everywhere (global toolkit):** `python3 init.py --link-global` — symlinks `skills/` + `agents/` into `~/.claude/` so they load in every project. Run once per machine; `git pull` to update all of them.
+**→ Enforce the gates:** `python3 init.py --install-hooks` — machine-wide hooks run each project's `.claude/gate.sh` (lint · typecheck · **tests · coverage**) on edits and at turn end; CI runs the same script. See [`gates/README.md`](./gates/README.md).
 **→ Install into one project:** `bash install.sh /path/to/project` — copies the suite in and wires Claude Code native discovery (`.claude/` symlinks + `CLAUDE.md` @import). Won't clobber a filled-in `AGENTS.md`.
 **→ Fill a project's context:** `python3 init.py` — interactive wizard, detects your stack, fills `AGENTS.md`.
 **→ Then read [`SETUP.md`](./SETUP.md).**
