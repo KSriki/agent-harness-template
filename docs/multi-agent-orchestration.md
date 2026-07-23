@@ -19,8 +19,8 @@ flowchart TD
     B --> C{"3. Split by ownership boundary"}
     C -->|owns adapters/auth| D["implementer #1<br/>worktree: ../wt-auth"]
     C -->|owns adapters/audit| E["implementer #2<br/>worktree: ../wt-audit"]
-    D --> D2["4. build + write tests<br/>5. run gate IN worktree"]
-    E --> E2["4. build + write tests<br/>5. run gate IN worktree"]
+    D --> D2["4. tdd: red → green<br/>5. gate green IN worktree"]
+    E --> E2["4. tdd: red → green<br/>5. gate green IN worktree"]
     D2 --> F["Orchestrator collects branches"]
     E2 --> F
     F --> G["review each diff<br/>(review-pr · security-reviewer<br/>if external code)"]
@@ -90,7 +90,8 @@ You don't need special tooling — you drive it in the main thread:
    `record(event)` signature. Auth owns `adapters/auth/`; audit owns `adapters/audit/`.
    They don't share files."*
 2. **Fan out:** *"Spawn two `implementer` agents in parallel, each in its own worktree —
-   one for auth, one for audit — against that contract. Each writes tests and runs the
+   one for auth, one for audit — against that contract. Each builds **test-first**
+   (`tdd`: failing test from its acceptance criteria, then minimal code) and runs the
    gate in its tree."*
 3. **Review as they return:** read each diff (not just the summary); run `security-reviewer`
    on anything external.

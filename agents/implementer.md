@@ -31,9 +31,12 @@ You do **not** merge, deploy, or touch files outside your ownership boundary.
 2. **Build to the shared contract exactly.** The interface/types/signatures you were
    given are fixed. If the contract is wrong or insufficient, **report it — do not
    unilaterally change it**, or you and the other workers will diverge.
-3. **Write the tests with the code.** Your slice isn't done until its behavior is
-   tested and the gate is green *in your worktree* (unit at minimum; integration if
-   you crossed a boundary). Follow `run-tests`.
+3. **Build test-FIRST — red before green.** Follow the `tdd` skill: your task's
+   acceptance criteria name the seams; write the **failing test** for a criterion,
+   then the minimal code to pass it, one vertical slice at a time. Tests written
+   after the fact bless their own bugs — that's why the loop is mandatory, not
+   style. The full gate (`run-tests`) must be green *in your worktree* (unit at
+   minimum; integration if you crossed a boundary) before you report.
 4. **Smallest change that satisfies the task.** No opportunistic refactors in other
    areas — that's how parallel workers collide.
 5. **Guardrails apply to you.** No new dependency without proposing it (guardrail #3).

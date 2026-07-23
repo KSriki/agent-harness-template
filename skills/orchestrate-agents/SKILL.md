@@ -44,7 +44,7 @@ it buys before you pay it.
 2. SHARED CONTRACT              the interface/types/API the workers agree on, FIRST
 3. SPLIT by ownership           one worker per boundary; no overlapping files
 4. ISOLATE in a worktree        each worker gets its own git worktree (see below)
-5. TEST per worker              each worker runs the gate in its own tree
+5. TDD per worker               red before green (`tdd`), gate green in its own tree
 6. MERGE-VALIDATE (you)         merge, then ONE full validation pass on the result
 ```
 
@@ -69,10 +69,15 @@ git worktree add ../wt-audit  -b feat/audit
 git worktree remove ../wt-auth
 ```
 
-Fan out with the **`implementer`** subagent (one per boundary), or compose the fleet:
-`implementer` builds → `test-writer` covers → `security-reviewer` / `deploy-reviewer`
-gate → you merge. **SLM workers:** for a cheap, bounded, well-specified subtask, point
-an implementer at a local model (Ollama/vLLM) — measure cost/latency vs. frontier.
+Fan out with the **`implementer`** subagent (one per boundary) — it builds
+**test-first** (`tdd`: failing test from the acceptance criteria, then minimal
+code). Compose the fleet: `implementer` builds → `security-reviewer` /
+`deploy-reviewer` gate → you merge (`test-writer` is for covering code that
+*already exists*, not for the worker loop). Tickets from `prd-to-issues` map
+naturally onto workers: each no-blocker frontier ticket is a slice, and **its
+acceptance criteria become the worker's first failing tests.** **SLM workers:**
+for a cheap, bounded, well-specified subtask, point an implementer at a local
+model (Ollama/vLLM) — measure cost/latency vs. frontier.
 
 ## Guardrails — parallelism multiplies the surface
 
