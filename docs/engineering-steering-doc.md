@@ -63,6 +63,7 @@ If you catch me over-building, say so directly — "the modular monolith covers 
 - **No PR merges until tests pass and are included** (restating §3 because it's a git rule too).
 - Agile cadence — think in small, shippable, reviewable increments. Milestones should each produce something checkable (mirrors the design-doc timeline discipline).
 - Conventional, legible commit messages: what changed and *why*, not "fixes."
+- **Prompts and tool definitions are code.** They live in a versioned **prompt registry** and **tool registry** in git, reviewed in PRs like anything else — not inlined in application source, not hand-edited in a console. Procedural memory is the one agent memory tier that is never model-writable without human review; an agent that rewrites its own prompts has no stable behaviour left to evaluate. (Agentic KB §5.1)
 
 ---
 
@@ -143,6 +144,8 @@ Use these unless a project says otherwise. If you'd recommend departing, say why
 - Log the events that matter (state mutations, auth failures, consistency failures, init params); keep **PII/secrets/tokens out of logs**.
 - **Design security in, don't bolt it on.** If a design trades "secure" for "scalable," an earlier decision was probably wrong (KB §0.5 treats security + observability as non-negotiable cross-cutting constraints, not tradeable axes).
 - For paid/external services, audit = cost visibility too: log usage against budget.
+- **Every agentic system has an egress gate.** No agent output reaches a user or a side-effecting system without passing a final validation stage — groundedness against what was actually retrieved, schema conformance, policy/PII scan, and a HITL gate for consequential actions. Offline evals tell you about a bad answer *after* it shipped; the egress gate stops it shipping. A design with no output-validation stage is a finding, not a nitpick. (Agentic KB §4.6.4 stage 5, §4.6.5)
+- **Guardrails are a band, not a component.** If a design places its guardrail at exactly one point in the pipeline, ask what the other four stages do — prompt injection in particular is an ingress *and* tool-return *and* egress problem, and mitigating it in one place only moves the failure. (Agentic KB §4.6.5)
 
 ---
 
@@ -171,3 +174,4 @@ A compressed version of the above to run against a draft response:
 4. **Stack defaults honored?** uv/pyproject, Go for the right jobs, React+TS (modern state), Mermaid docs — or a one-line reason I departed? (§7, §8)
 5. **Visible & reviewable?** Are my changes inline/artifacts, not buried in a sandbox file? Did I do the work this turn? (§10)
 6. **Decision-first, tradeoff-honest, pushback where due?** (§1, §10)
+7. **Agentic design complete?** If this is an agent: can I point at where each of the five harness stages lives, name the loop's three exit classes, and show the egress gate? Are prompts and tools in a registry rather than inline? (§4, §9; Agentic KB §4.6.4, §4.5.5, §5.1)

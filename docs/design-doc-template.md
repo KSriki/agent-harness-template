@@ -173,6 +173,40 @@
 - **〈Pattern〉 (KB §x):** 〈why this design uses it〉
 - **〈Pattern〉 (KB §x):** 〈why〉
 
+### D-bis. Agentic runtime (delete this subsection if the system isn't agentic)
+
+> GUIDANCE — fill in the harness table. **An empty row is a design gap, not an
+> omission to tidy later.** The five stages come from Agentic KB §4.6.4; the
+> guardrail column from §4.6.5. Reviewers should be able to point at *where* each
+> stage lives in the code, not just agree that it exists conceptually. Stage 5 is
+> the one most designs are missing — if there's no output-validation gate, say so
+> here and put it in Open issues rather than leaving the row blank.
+
+| Stage | Where it lives in this system | Guardrail at this stage |
+|---|---|---|
+| 1 Context engineering | 〈component / module〉 | 〈PII redaction, provenance tags, confidence floor〉 |
+| 2 Prompt assembly | 〈component / module〉 | 〈token ceiling, scoped tool list〉 |
+| 3 Bounded loop | 〈component / module〉 | 〈max iterations, spend cap, no-progress detection〉 |
+| 4 Tool execution | 〈component / module〉 | 〈schema validation, permissions, sandbox, sanitized returns〉 |
+| 5 Output validation | 〈component / module〉 | 〈groundedness, schema conformance, policy scan, HITL gate〉 |
+
+**Loop exit classes** (KB §4.5.5) — all three must be distinguishable in the return value:
+- **Success:** 〈goal predicate〉
+- **Escalation:** 〈what the agent asks a human, and how state is preserved for resume〉
+- **Abort:** 〈the caps: iterations / spend / wall-clock — and what partial result is returned〉
+
+**Memory tiers in use** (KB §5, §5.1):
+
+| Tier | Used? | Backing store | Refresh / eviction |
+|---|---|---|---|
+| Episodic | 〈y/n〉 | 〈 〉 | 〈 〉 |
+| Working (= the assembled prompt) | yes | in-context | rebuilt per iteration |
+| Semantic — private KB | 〈y/n〉 | 〈 〉 | 〈schedule〉 |
+| Semantic — grounding context | 〈y/n〉 | 〈 〉 | 〈per-run eviction〉 |
+| Procedural | 〈y/n〉 | 〈prompt registry + tool registry, git-backed〉 | 〈PR review〉 |
+
+**Write governance:** 〈what an agent may persist unattended vs. what requires human approval — the default is "agent proposes, human approves" for any non-ephemeral write〉
+
 ---
 
 ## Diagrams
@@ -340,8 +374,9 @@ flowchart LR
 | Architecture overview · B | §0.8 Paradigm Choice / Functional Core, Imperative Shell |
 | Architecture overview · C | §1, §1A Structural patterns, DDD + Hexagonal; §0.6 pattern levels |
 | Architecture overview · D | §3–§8 component patterns; §10 anti-patterns; §11 picking workflow |
+| Architecture overview · D-bis | Agentic KB §4.6.4 harness lifecycle; §4.6.5 guardrail band; §4.5.5 loop exit classes; §5.1 memory tiers |
 | Dependencies / infrastructure | §2A Hosting, scaling, load distribution |
-| Monitoring | §0.5 Observability enabler; §0.9.5 decision-path observability (if agentic) |
+| Monitoring | §0.5 Observability enabler; §0.9.5 decision-path observability (if agentic); Agentic KB §5.1 (per-iteration working-memory snapshot = replayable trace) |
 | Security | §5A Security architecture & access control |
 | Alternatives considered | §0.6, §0.7, §11 (record the rejected rung/pattern) |
 | **Appendix B (worked example)** | §0.7 Ladder in motion; §2A, §3.7, §4, §5, §5A, §7 as each rung demands |
