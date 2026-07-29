@@ -77,6 +77,7 @@ repo/
 │   ├── domain-modeling/         #   ← CONTEXT.md glossary + sparing ADRs
 │   ├── improve-codebase-architecture/  # ← audit existing code for deepening
 │   ├── handoff/                 #   ← compact session → resumable doc
+│   ├── graphify/                #   ← structure queries over the code graph (local-first)
 │   ├── evolve-harness/          #   ← grow the harness itself (human-gated)
 │   └── init-agent-harness/      #   ← scaffold per-project context + tracker/labels/glossary
 │

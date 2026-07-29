@@ -149,6 +149,7 @@ skills/
   init-agent-harness/   ← keep; scaffolds per-project context + tracker/labels/glossary
   grill-me/ wayfinder/ write-a-prd/ prd-to-issues/ tdd/   ← the SDLC loop (steering §4.5)
   codebase-design/ domain-modeling/ improve-codebase-architecture/ handoff/  ← design vocab + upkeep
+  graphify/             ← delete if you don't use the graphify CLI (needs `uv tool install graphifyy`)
 
 agents/
   code-searcher/ test-writer/ design-reviewer/

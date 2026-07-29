@@ -67,6 +67,7 @@ a cited § when a decision is expensive to reverse.)
 | `codebase-design` · `domain-modeling` | Deep-module vocabulary; the glossary + light ADRs |
 | `improve-codebase-architecture` | Audit existing code for deepening/refactor opportunities |
 | `handoff` | Compact a session for a fresh agent to resume |
+| `graphify` | Query the repo as a knowledge graph — connections, blast radius, hubs (local-first) |
 | `evolve-harness` | Grow the harness itself — new skill/rule from a repeated correction, **human-gated** |
 | `init-agent-harness` | Scaffold a project's context (AGENTS.md + CLAUDE.md + docs) from your global link — no installer script |
 
