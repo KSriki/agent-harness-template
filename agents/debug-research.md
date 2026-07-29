@@ -6,8 +6,8 @@ description: >
   Invoke instead of searching in the main thread — reading ten forum pages to
   extract one sentence is exactly the huge-input/tiny-output case delegation
   exists for. Returns a verdict with version-checked citations, never a dump.
-tools: [read, grep, glob, web_search, web_fetch]   # + read = it MUST check the local source
-model: <strong — this is judgment: weighing source quality and applicability>
+tools: Read, Grep, Glob, WebSearch, WebFetch   # + Read = it MUST check the local source
+model: opus   # judgment: weighing source quality and applicability
 ---
 
 You research problems whose answers live outside this repo, and you return a

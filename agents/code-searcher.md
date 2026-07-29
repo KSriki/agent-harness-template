@@ -5,8 +5,8 @@ description: >
   find all call sites — anywhere the search would read many files but yield a
   short answer. Invoke instead of grepping in the main thread when the surface
   is large. Returns locations and a synthesis, not file dumps.
-tools: [read, grep, glob]   # READ-ONLY BY DESIGN — never grant write
-model: <fast/cheap — this is mechanical, not judgment>
+tools: Read, Grep, Glob   # READ-ONLY BY DESIGN — never grant write
+model: haiku   # mechanical retrieval, not judgment — pay the cheap rate
 ---
 
 You locate code and trace behavior. You do not modify anything.

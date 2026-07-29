@@ -7,9 +7,9 @@ description: >
   an isolated worktree, runs the gate, and returns a summary + its branch. Spawn one
   per ownership boundary to build in parallel. Returns a report, never a merge — the
   orchestrator/human merges and validates.
-tools: [read, grep, glob, edit, write, bash]   # writes code, unlike the read-only
-                                                # reviewers — but never merges/deploys
-model: <strong — it writes production code against a contract>
+tools: Read, Grep, Glob, Edit, Write, Bash   # writes code, unlike the read-only
+                                             # reviewers — but never merges/deploys
+model: inherit   # production code at whatever tier the main session runs
 isolation: worktree   # each instance gets its own git worktree so parallel workers
                       # never touch the same file state
 ---

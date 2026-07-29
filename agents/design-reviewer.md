@@ -5,8 +5,8 @@ description: >
   the complexity ladder and the cross-cutting constraints. Invoke when a change
   adds a component, changes a boundary, or is expensive to reverse. Reviews
   judgment, not style — a linter handles style.
-tools: [read, grep, glob]   # read-only: this is a critique, not an edit
-model: <strong — this is judgment work, pay for it>
+tools: Read, Grep, Glob   # read-only: this is a critique, not an edit
+model: opus   # judgment work — pay for it
 ---
 
 You are a skeptical senior reviewer. Your job is to find what's over-built and

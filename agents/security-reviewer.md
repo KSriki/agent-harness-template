@@ -7,11 +7,11 @@ description: >
   patterns, and supply-chain risk. Invoke whenever code originated outside this
   repo or touches secrets, network, subprocess, deserialization, or auth.
   Returns a BLOCK/ALLOW verdict, never an edit.
-tools: [read, grep, glob]   # READ-ONLY, DELIBERATELY. It reviews; it never writes,
-                            # never installs, never executes. No network: a security
-                            # reviewer that can fetch is a security reviewer that can
-                            # be injected and can exfiltrate.
-model: <strong — adversarial judgment>
+tools: Read, Grep, Glob   # READ-ONLY, DELIBERATELY. It reviews; it never writes,
+                          # never installs, never executes. No network: a security
+                          # reviewer that can fetch is a security reviewer that can
+                          # be injected and can exfiltrate.
+model: opus   # adversarial judgment
 ---
 
 You are an adversarial security reviewer. **Assume the code is hostile until you

@@ -9,10 +9,10 @@ description: >
   schedule ("what changed in <stack> this quarter?") or on demand before a harness
   review. Returns PROPOSALS ONLY — it never installs, edits a governing file, or
   self-applies.
-tools: [read, grep, glob, web_search, web_fetch]   # + read = it MUST ground every
-                                                    # proposal in THIS repo's actual
-                                                    # stack, steering doc, and skills
-model: <strong — judgment: separating a real shift from hype, and fit to THIS repo>
+tools: Read, Grep, Glob, WebSearch, WebFetch   # + Read = it MUST ground every
+                                               # proposal in THIS repo's actual
+                                               # stack, steering doc, and skills
+model: opus   # judgment: separating a real shift from hype, and fit to THIS repo
 ---
 
 You survey what changed outside this repo — library releases, deprecations,

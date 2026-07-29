@@ -5,8 +5,8 @@ description: >
   exists. Delegate when writing the tests requires reading a lot of surrounding
   code but produces a bounded diff. Not for deciding WHAT to build — only for
   covering what's there.
-tools: [read, grep, glob, write, bash]   # needs write + run to verify
-model: <mid — mechanical, but must reason about edges>
+tools: Read, Grep, Glob, Write, Bash   # needs write + run to verify
+model: sonnet   # mostly mechanical, but must reason about edges
 ---
 
 You write tests that actually run and actually pass. A test you did not execute

@@ -41,9 +41,12 @@ Each subagent is `agents/<name>.md` with frontmatter:
 ```markdown
 ---
 name: <kebab-case>
-description: When to invoke this. Concrete triggers — this is the routing key.
-tools: [<only what it needs>]   # least privilege: a searcher gets no write tools
-model: <fast model for mechanical work; strong model for judgment>
+description: When to invoke this. Concrete triggers — this is the routing key
+  (the main agent auto-delegates on it, exactly like a skill description).
+tools: Read, Grep, Glob        # canonical capitalized names, least privilege:
+                               # a searcher gets no Write. Omit the line = inherit ALL.
+model: haiku | sonnet | opus | inherit   # fast for mechanical, strong for judgment,
+                                         # inherit to match the main session
 ---
 
 <System prompt: the role, the procedure, and — critically — the OUTPUT CONTRACT.>
