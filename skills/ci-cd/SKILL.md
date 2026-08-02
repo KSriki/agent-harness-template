@@ -43,6 +43,8 @@ push / PR ──▶ lint + format ──▶ typecheck ──▶ unit ──▶ b
 ```
 
 - **PR pipeline** runs everything up to and including the slow suites. Red = no merge.
+  (**Stacked PRs**: each layer runs the checks *as if targeting main*, and branch
+  protection is enforced against main — so the gate semantics are unchanged per layer.)
 - **Merge/main pipeline** rebuilds the artifact **once**, tags it, and deploys.
   Never rebuild between environments — **promote the same immutable artifact**, or
   staging and prod are not the same thing you tested.

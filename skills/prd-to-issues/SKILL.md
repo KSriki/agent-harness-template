@@ -47,6 +47,14 @@ independently demoable — not a horizontal "do all the schema" slice.
    **frontier** (any ticket whose blockers are all done). **Do NOT close or modify any
    parent issue.**
 
+   **Stacked PRs (GitHub, public preview since 2026-07):** a *dependent* ticket
+   chain can ship as a **PR stack** — one PR per slice, each targeting the slice
+   below, reviewed as focused per-layer diffs and merged bottom-up (remaining
+   layers auto-rebase server-side). The blocking edges you declared here ARE the
+   stack order; **expand → migrate → contract maps 1:1 onto a stack.** Independent
+   (no-blocker) tickets stay separate PRs. See `gh stack --help` / the official
+   guide — preview feature, don't hardcode syntax.
+
 ## Ticket template
 
 `# <NN> — <Title>` · **What to build** (end-to-end behavior, user's POV — not a layer

@@ -40,7 +40,9 @@ file you didn't mean to touch, a secret or a hardcoded path.
 
 One PR = one reviewable idea. A 1,500-line PR gets rubber-stamped because nobody
 can hold it in their head; a 150-line PR gets *actually* reviewed. If it's big,
-split it — refactor-then-feature as two PRs beats both tangled in one.
+split it — refactor-then-feature as two PRs beats both tangled in one. On GitHub,
+a **PR stack** (public preview 2026-07) is the native mechanism for the split:
+dependent layers, each a focused per-layer diff, merged bottom-up.
 
 ### 3. Commit hygiene
 

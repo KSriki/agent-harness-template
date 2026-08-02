@@ -79,6 +79,13 @@ acceptance criteria become the worker's first failing tests.** **SLM workers:**
 for a cheap, bounded, well-specified subtask, point an implementer at a local
 model (Ollama/vLLM) — measure cost/latency vs. frontier.
 
+**Shipping the branches:** *independent* slices → separate PRs, as always.
+*Dependent* slices (blocked-by chains) → a GitHub **PR stack** (public preview
+2026-07): each PR targets the branch below, per-layer CI runs the same gate as if
+targeting main, merge bottom-up, upper layers auto-rebase. Stacks are for chains —
+never force parallel fan-out into one. The merge-validation pass still applies at
+the top of the stack.
+
 ## Guardrails — parallelism multiplies the surface
 
 - **No auto-merge. Ever.** Every worker's diff is reviewed before it lands — parallel
