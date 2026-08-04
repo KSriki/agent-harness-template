@@ -90,7 +90,9 @@ repo/
 │   ├── security-reviewer.md     #   adversarial: BLOCK/ALLOW, read-only
 │   ├── deploy-reviewer.md       #   adversarial ship gate: rollback/migration/blast radius
 │   ├── trend-scout.md           #   periodic trend survey → proposals only (never applies)
-│   └── implementer.md           #   worktree-isolated worker: builds one slice in a fan-out
+│   ├── implementer.md           #   worktree-isolated worker: builds one slice in a fan-out
+│   ├── frontend-implementer.md  #   the worker, specialized: UI slices (React+TS, a11y)
+│   └── backend-implementer.md   #   the worker, specialized: server slices (domain/adapters)
 │
 ├── evals/                       # the loop's artifacts
 │   ├── golden/                  #   frozen, versioned, seeded from REAL failures

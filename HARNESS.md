@@ -72,7 +72,7 @@ a cited § when a decision is expensive to reverse.)
 | `init-agent-harness` | Scaffold a project's context (AGENTS.md + CLAUDE.md + docs) from your global link — no installer script |
 
 **Subagents** (own context window)
-`code-searcher` · `test-writer` · `design-reviewer` · `debug-research` · `security-reviewer` · `deploy-reviewer` · `trend-scout` · `implementer`
+`code-searcher` · `test-writer` · `design-reviewer` · `debug-research` · `security-reviewer` · `deploy-reviewer` · `trend-scout` · `implementer` (+ `frontend-` / `backend-` variants)
 
 **Docs** — steering doc (always-on) + architecture patterns (compressed 14% + full KB)
 

@@ -74,7 +74,9 @@ Judgment → strong model. Paying frontier prices to grep is a budget leak.
 | `security-reviewer.md` | Adversarial BLOCK/ALLOW review: egress, injection, supply chain, insecure patterns |
 | `deploy-reviewer.md` | Adversarial BLOCK/ALLOW review of a **ship**: rollback, migration safety, blast radius, contract compat, data safety |
 | `trend-scout.md` | Periodic ecosystem/harness-practice survey → ranked **proposals** for `evolve-harness`. Read-untrusted-only, **propose-never-apply** |
-| `implementer.md` | Worktree-isolated worker: builds one owned slice in a parallel fan-out (`orchestrate-agents`), returns a branch + summary. **Never merges/deploys** |
+| `implementer.md` | Worktree-isolated worker: builds one owned slice in a parallel fan-out (`orchestrate-agents`), returns a branch + summary. **Never merges/deploys**. The DEFAULT for mixed/unclear slices |
+| `frontend-implementer.md` | `implementer` specialized for UI slices: React+TS idiom, local-first state, behavior-through-the-rendered-interface tests, a11y as correctness |
+| `backend-implementer.md` | `implementer` specialized for server slices: dependency-points-inward, parameterized SQL, backward-compatible migrations, idempotent consumers |
 
 ## The rule that keeps this honest
 

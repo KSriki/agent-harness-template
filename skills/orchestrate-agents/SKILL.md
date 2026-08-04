@@ -69,7 +69,10 @@ git worktree add ../wt-audit  -b feat/audit
 git worktree remove ../wt-auth
 ```
 
-Fan out with the **`implementer`** subagent (one per boundary) — it builds
+Fan out with the **`implementer`** subagent (one per boundary) — or its stack
+variants **`frontend-implementer`** / **`backend-implementer`** when a slice is
+clearly UI-only or server-only (same worker rules + stack conventions; the
+generic worker remains the default for mixed slices). Every worker builds
 **test-first** (`tdd`: failing test from the acceptance criteria, then minimal
 code). Compose the fleet: `implementer` builds → `security-reviewer` /
 `deploy-reviewer` gate → you merge (`test-writer` is for covering code that

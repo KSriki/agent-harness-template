@@ -6,7 +6,9 @@ description: >
   file-ownership boundary, and the shared contract; it writes the code + tests inside
   an isolated worktree, runs the gate, and returns a summary + its branch. Spawn one
   per ownership boundary to build in parallel. Returns a report, never a merge — the
-  orchestrator/human merges and validates.
+  orchestrator/human merges and validates. For a slice that is CLEARLY UI-only or
+  server-only, prefer the stack variants `frontend-implementer` /
+  `backend-implementer`; this generic worker is the DEFAULT for mixed/unclear slices.
 tools: Read, Grep, Glob, Edit, Write, Bash   # writes code, unlike the read-only
                                              # reviewers — but never merges/deploys
 model: inherit   # production code at whatever tier the main session runs
