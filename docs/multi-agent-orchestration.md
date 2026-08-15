@@ -131,6 +131,10 @@ at merge. Merge → run the full gate → the combination is validated once, tog
 - **No worker installs a dependency** on its own authority (guardrail #3); external
   code still goes through `secure-code-review`.
 - **The merge-validation pass is the safety net.** Isolated-green ≠ combined-green.
+- **Long/overnight runs get a defect ledger** (`DEFECTS.md`, asymmetric writes: QA
+  opens/closes, workers fix, orchestrator never codes) and the exit predicate
+  "success criteria met AND every defect closed" — see the `orchestrate-agents`
+  skill's *Long / autonomous runs* section.
 
 ---
 

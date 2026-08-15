@@ -80,7 +80,10 @@ code). Compose the fleet: `implementer` builds → `security-reviewer` /
 naturally onto workers: each no-blocker frontier ticket is a slice, and **its
 acceptance criteria become the worker's first failing tests.** **SLM workers:**
 for a cheap, bounded, well-specified subtask, point an implementer at a local
-model (Ollama/vLLM) — measure cost/latency vs. frontier.
+model (Ollama/vLLM) — measure cost/latency vs. frontier. **Model choice per
+worker follows the routing ladder in `agents/README.md` (Model routing):**
+default down, escalate on failure; blast radius routes up; volume routes down
+plus an output gate.
 
 **Shipping the branches:** *independent* slices → separate PRs, as always.
 *Dependent* slices (blocked-by chains) → a GitHub **PR stack** (public preview
@@ -101,6 +104,29 @@ the top of the stack.
 - Workers stay **inside their ownership boundary**. A worker editing outside its files
   is a finding, not a convenience.
 
+## Long / autonomous runs: the defect ledger
+
+For a fan-out that runs for hours (or overnight), coordination moves into a
+**defect ledger** — `DEFECTS.md` at the repo root — with **asymmetric write rules**:
+
+- **QA/testing agents OPEN defects** (severity, repro steps, expected vs actual,
+  history) — they never fix code.
+- **Workers FIX code** — they never edit the ledger.
+- **Only the opener retests and CLOSES** a defect after the fix lands.
+- **No victory with open defects:** the run's exit predicate is "all success
+  criteria met AND every defect closed" — never "the model feels done."
+
+One reviewable file, a complete audit trail, and it removes the worst failure mode
+of long runs: declaring success over known breakage.
+
+Two companion rules for long runs:
+- **The orchestrator does not write product code.** It plans, defines contracts,
+  dispatches, arbitrates the ledger, and validates — keeping its context clean for
+  judgment (and its token spend a sliver of the total).
+- **Decorrelate the checker:** where feasible, the QA/review agent runs on a
+  **different model** than the workers it checks (`agents/README.md` Model
+  routing, rule 5). Shared model = shared blind spots.
+
 ## Failure modes
 
 | Symptom | Cause | Fix |
@@ -117,6 +143,7 @@ the top of the stack.
 - [ ] **Shared contract defined first**, in the main thread
 - [ ] Each worker **isolated in its own worktree**; stayed in its lane
 - [ ] Each worker's gate green in isolation
+- [ ] Long runs: **defect ledger empty** — every opened defect retested and closed by its opener
 - [ ] **Merged, then full gate re-run on the result** (merge-validation pass)
 - [ ] Every diff reviewed before merge; **no auto-merge**; external code went through `secure-code-review`
 

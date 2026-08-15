@@ -62,6 +62,41 @@ and it makes the agent's job clearer.
 
 **Match the model to the work.** Mechanical retrieval → fast/cheap model.
 Judgment → strong model. Paying frontier prices to grep is a budget leak.
+→ The full routing policy: **Model routing** below.
+
+## Model routing (which model for which task)
+
+The ladder, cheapest first. **Default DOWN a tier and escalate on observed
+failure** — same rule as the eval-harness scorer ladder: the cheapest model that
+works. "It might need the big model" is not evidence; a failed cheap attempt is.
+
+| Tier | 〈Models〉 | Task shapes it owns |
+|---|---|---|
+| **Local SLM** | 〈Ollama/vLLM: `llama3.2:3b`, `qwen2.5:7b`〉 | High-volume mechanical work with a tight spec + schema: bulk classification/extraction/transforms, doc summarization at scale. Free + private; quality must be **spot-checked or eval-gated**, never assumed |
+| **Fast API** | 〈haiku〉 | Search/retrieval across many files, mechanical summarization, format conversions — `code-searcher` lives here |
+| **Mid** | 〈sonnet〉 | Day-to-day implementation, tests for existing code, well-specified bounded edits — `test-writer` lives here |
+| **Frontier** | 〈opus〉 | Judgment: adversarial review, security, architecture, weighing ambiguous evidence — all three reviewers + both researchers live here |
+| **inherit** | session model | Production-code workers (`implementer` + variants): the code ships, so it gets whatever tier you chose for the session |
+
+**Five routing rules (in order):**
+1. **Mechanical vs judgment** — can a competent junior do it with a checklist?
+   Then it's mechanical: route down.
+2. **Blast radius overrides cost** — anything irreversible, security-relevant, or
+   contract-defining routes UP regardless of how mechanical it looks. A cheap
+   model reviewing a migration is a false economy.
+3. **Volume routes down + gates** — 1,000 small calls belong on a small model
+   **with** a deterministic check or eval sampling on the output (`eval-harness`),
+   not on a frontier model unsampled.
+4. **Measure, don't vibe** — log cost/latency per agent run (steering §5). A
+   model choice nobody measured is a guess; revisit the tier when the numbers say so.
+5. **Decorrelate the checker from the doer** — where feasible, the agent
+   verifying work (QA, review, judge) runs on a **different model** than the one
+   that produced it. Shared model = shared blind spots; `eval-harness` applies the
+   same rule to judges (self-judging inflates).
+
+Static assignments live in each agent's `model:` frontmatter. When orchestrating
+ad-hoc (`orchestrate-agents`, one-off subagent spawns), apply the same ladder in
+the spawn — the orchestrator names the tier deliberately, not by default.
 
 ## Provided
 
