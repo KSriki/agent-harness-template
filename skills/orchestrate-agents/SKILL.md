@@ -104,6 +104,15 @@ the top of the stack.
 - Workers stay **inside their ownership boundary**. A worker editing outside its files
   is a finding, not a convenience.
 
+## Two ways to drive this
+
+**You orchestrate** (default): run the pattern yourself in the main thread — full
+visibility, you review as workers return. **Or delegate the management**: spawn the
+**`orchestrator`** subagent (it can spawn workers itself) for multi-ticket or
+long/autonomous runs — it plans, contracts, dispatches, arbitrates the ledger, and
+reports an explicit exit class (success / escalation / abort). Either way, the
+human gate on merges and dependencies is unchanged.
+
 ## Long / autonomous runs: the defect ledger
 
 For a fan-out that runs for hours (or overnight), coordination moves into a

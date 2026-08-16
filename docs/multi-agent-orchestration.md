@@ -41,10 +41,10 @@ flowchart TD
 | Agent | Role | Tools | Merges? |
 |---|---|---|---|
 | **you / main thread** | orchestrator: plan, contract, split, review, merge, validate | all | ✅ you do |
-| [`implementer`](../agents/implementer.md) | build one owned slice in an isolated worktree | read/edit/write/bash | ❌ never |
-| [`test-writer`](../agents/test-writer.md) | cover a slice with tests | read/grep/glob/write/bash | ❌ |
-| [`security-reviewer`](../agents/security-reviewer.md) | BLOCK/ALLOW on external code/deps | read-only | ❌ |
-| [`deploy-reviewer`](../agents/deploy-reviewer.md) | ship gate on the merged result | read-only | ❌ |
+| [`implementer`](../agents/engineering/implementer.md) | build one owned slice in an isolated worktree | read/edit/write/bash | ❌ never |
+| [`test-writer`](../agents/qa/test-writer.md) | cover a slice with tests | read/grep/glob/write/bash | ❌ |
+| [`security-reviewer`](../agents/review/security-reviewer.md) | BLOCK/ALLOW on external code/deps | read-only | ❌ |
+| [`deploy-reviewer`](../agents/review/deploy-reviewer.md) | ship gate on the merged result | read-only | ❌ |
 
 Spawn **one `implementer` per ownership boundary**. The reviewers are read-only by
 design — a reviewer that can write is a reviewer you can't trust.

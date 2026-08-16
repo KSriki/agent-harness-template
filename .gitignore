@@ -53,6 +53,10 @@ secrets.yaml
 # Graphify output — generated artifact, rebuildable; never commit
 graphify-out/
 
+# Orchestrator machine state (per-target-repo). runs.jsonl can be un-ignored
+# per-project if you want the spend/outcome trend committed like evals/results.
+.orchestrator/
+
 # Claude Code — per-user local settings stay OUT of git.
 # NOTE: .claude/skills and .claude/agents are symlinks into the top-level
 # skills/ and agents/ dirs (so Claude Code's native discovery finds them) and

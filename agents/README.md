@@ -98,20 +98,37 @@ Static assignments live in each agent's `model:` frontmatter. When orchestrating
 ad-hoc (`orchestrate-agents`, one-off subagent spawns), apply the same ladder in
 the spawn — the orchestrator names the tier deliberately, not by default.
 
+**Where model config actually lives (three control points, most→least specific):**
+1. **Per-invocation** — the Agent tool's `model` parameter at spawn time (what the
+   `orchestrator` uses to route per-slice).
+2. **Per-agent** — the `model:` frontmatter in these files. **This is the versioned
+   registry**: model choice is behavior, so it changes by PR like everything else.
+3. **Fleet-wide** — `CLAUDE_CODE_SUBAGENT_MODEL` env overrides ALL subagents (e.g.
+   force `haiku` for a cheap bulk run); `ANTHROPIC_DEFAULT_〈OPUS|SONNET|HAIKU〉_MODEL`
+   re-points what each alias resolves to. Use for experiments, not as the default —
+   an env override is invisible in git.
+
+**Other frontmatter worth knowing:** `skills:` (preload a skill's full content —
+how workers get `tdd` as law; keep to 1–2, it's paid on every spawn) · `Skill` in
+`tools:` (dynamic skill invocation) · `effort:` · `maxTurns:` (cap runaway agents)
+· `permissionMode:` — exists, but **`bypassPermissions` is never used in this
+harness**; an agent that skips permission checks is outside the guardrail model.
+
 ## Provided
 
 | Agent | Use for |
 |---|---|
-| `code-searcher.md` | Locating code/behavior across the repo without polluting main context |
-| `test-writer.md` | Writing tests for a specified module against the quality gates |
-| `design-reviewer.md` | Reviewing a design/PR against the rung check + cross-cutting constraints |
-| `debug-research.md` | External research (library bugs, API checks, lib evaluation) without dragging forum noise into main context |
-| `security-reviewer.md` | Adversarial BLOCK/ALLOW review: egress, injection, supply chain, insecure patterns |
-| `deploy-reviewer.md` | Adversarial BLOCK/ALLOW review of a **ship**: rollback, migration safety, blast radius, contract compat, data safety |
-| `trend-scout.md` | Periodic ecosystem/harness-practice survey → ranked **proposals** for `evolve-harness`. Read-untrusted-only, **propose-never-apply** |
-| `implementer.md` | Worktree-isolated worker: builds one owned slice in a parallel fan-out (`orchestrate-agents`), returns a branch + summary. **Never merges/deploys**. The DEFAULT for mixed/unclear slices |
-| `frontend-implementer.md` | `implementer` specialized for UI slices: React+TS idiom, local-first state, behavior-through-the-rendered-interface tests, a11y as correctness |
-| `backend-implementer.md` | `implementer` specialized for server slices: dependency-points-inward, parameterized SQL, backward-compatible migrations, idempotent consumers |
+| `research/code-searcher.md` | Locating code/behavior across the repo without polluting main context |
+| `qa/test-writer.md` | Writing tests for a specified module against the quality gates |
+| `review/design-reviewer.md` | Reviewing a design/PR against the rung check + cross-cutting constraints |
+| `research/debug-research.md` | External research (library bugs, API checks, lib evaluation) without dragging forum noise into main context |
+| `review/security-reviewer.md` | Adversarial BLOCK/ALLOW review: egress, injection, supply chain, insecure patterns |
+| `review/deploy-reviewer.md` | Adversarial BLOCK/ALLOW review of a **ship**: rollback, migration safety, blast radius, contract compat, data safety |
+| `research/trend-scout.md` | Periodic ecosystem/harness-practice survey → ranked **proposals** for `evolve-harness`. Read-untrusted-only, **propose-never-apply** |
+| `engineering/implementer.md` | Worktree-isolated worker: builds one owned slice in a parallel fan-out (`orchestrate-agents`), returns a branch + summary. **Never merges/deploys**. The DEFAULT for mixed/unclear slices |
+| `engineering/frontend-implementer.md` | `implementer` specialized for UI slices: React+TS idiom, local-first state, behavior-through-the-rendered-interface tests, a11y as correctness |
+| `engineering/backend-implementer.md` | `implementer` specialized for server slices: dependency-points-inward, parameterized SQL, backward-compatible migrations, idempotent consumers |
+| `orchestration/orchestrator.md` | **The manager**: plans, contracts, dispatches workers (it CAN spawn subagents), arbitrates `DEFECTS.md`, merge-validates, exits by class (success/escalation/abort). **Writes no product code** |
 
 ## The rule that keeps this honest
 

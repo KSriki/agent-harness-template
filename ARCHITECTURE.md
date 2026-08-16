@@ -81,29 +81,45 @@ repo/
 │   ├── evolve-harness/          #   ← grow the harness itself (human-gated)
 │   └── init-agent-harness/      #   ← scaffold per-project context + tracker/labels/glossary
 │
-├── agents/                      # TIER 4 — delegated, own context
-│   ├── README.md                #   when to delegate (and when NOT to)
-│   ├── code-searcher.md         #   read-only, huge input → tiny output
-│   ├── test-writer.md           #   bounded diff
-│   ├── design-reviewer.md       #   judgment — finds what's over-built
-│   ├── debug-research.md        #   context firewall for external research
-│   ├── security-reviewer.md     #   adversarial: BLOCK/ALLOW, read-only
-│   ├── deploy-reviewer.md       #   adversarial ship gate: rollback/migration/blast radius
-│   ├── trend-scout.md           #   periodic trend survey → proposals only (never applies)
-│   ├── implementer.md           #   worktree-isolated worker: builds one slice in a fan-out
-│   ├── frontend-implementer.md  #   the worker, specialized: UI slices (React+TS, a11y)
-│   └── backend-implementer.md   #   the worker, specialized: server slices (domain/adapters)
+├── agents/                      # TIER 4 — delegated, own context (departments)
+│   ├── README.md                #   when to delegate · model routing · frontmatter guide
+│   ├── orchestration/
+│   │   └── orchestrator.md      #   the manager: dispatches the fleet, arbitrates the
+│   │                            #   ledger, merge-validates. Writes no product code
+│   ├── engineering/
+│   │   ├── implementer.md       #   worktree-isolated worker (default for mixed slices)
+│   │   ├── frontend-implementer.md  # UI slices: React+TS, a11y as correctness
+│   │   └── backend-implementer.md   # server slices: domain/adapters, safe migrations
+│   ├── qa/
+│   │   └── test-writer.md       #   senior test judgment for EXISTING code
+│   ├── review/                  #   adversarial, read-only, BLOCK/ALLOW
+│   │   ├── security-reviewer.md #   egress, injection, supply chain
+│   │   ├── design-reviewer.md   #   finds what's over-built
+│   │   └── deploy-reviewer.md   #   ship gate: rollback/migration/blast radius
+│   └── research/                #   context firewalls for untrusted input
+│       ├── code-searcher.md     #   read-only, huge input → tiny output
+│       ├── debug-research.md    #   external research → verdicts
+│       └── trend-scout.md       #   trend survey → proposals only (never applies)
 │
 ├── evals/                       # the loop's artifacts
 │   ├── golden/                  #   frozen, versioned, seeded from REAL failures
 │   ├── judges/                  #   rubrics
 │   └── results/                 #   committed, so you can SEE the decay
 │
-└── gates/                       # DETERMINISTIC enforcement — outside the model
-    ├── gate-dispatch.sh         #   machine-wide hook → runs project's .claude/gate.sh
-    ├── gate.sh.template         #   per-project gate: lint · types · TESTS · COVERAGE
-    ├── github-actions-gate.yml  #   CI runs the same gate; branch protection = physics
-    └── global-CLAUDE.md         #   optional tiny machine-wide baseline
+├── gates/                       # DETERMINISTIC enforcement — outside the model
+│   ├── gate-dispatch.sh         #   machine-wide hook → runs project's .claude/gate.sh
+│   ├── gate.sh.template         #   per-project gate: lint · types · TESTS · COVERAGE
+│   ├── github-actions-gate.yml  #   CI runs the same gate; branch protection = physics
+│   └── global-CLAUDE.md         #   optional tiny machine-wide baseline
+│
+└── orchestrator_engine/         # DETERMINISTIC orchestration scaffolding (python, stdlib)
+    ├── state.py                 #   the registry: .orchestrator/state.json + product-docs/
+    │                            #   scaffold (PRODUCT.md + REGISTRY.md knowledge catalog)
+    ├── complexity.py budget.py  #   assess_complexity · check_budget
+    ├── models.py ledger.py      #   get_model_for_agent · log_agent_completion (runs.jsonl)
+    ├── deploy.py abort.py       #   topo-sorted merge plans · recorded aborts + wind-down
+    ├── research.py cli.py       #   research dispatch plans · the CLI the orchestrator calls
+    └── tests/                   #   stdlib unittest — the engine is code, so it has tests
 ```
 
 ---
@@ -172,7 +188,7 @@ has made it look irrelevant.** Conditional security is not security.
 
 - `AGENTS.md` → the 6 non-negotiables (always on, never trimmed; the cross-project invariant)
 - `skills/secure-code-review/` → the full checklist + hard-stop protocol
-- `agents/security-reviewer.md` → adversarial BLOCK/ALLOW pass. **Read-only, no
+- `agents/review/security-reviewer.md` → adversarial BLOCK/ALLOW pass. **Read-only, no
   network** — a reviewer that can fetch is a reviewer that can be injected.
 - `skills/debug-research/` §3.5 → mandatory security gate, because *that* skill is
   the one whose job is ingesting untrusted third-party text.

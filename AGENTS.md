@@ -153,7 +153,7 @@ exact self-corruption these rules exist to prevent. → Procedure: `skills/evolv
 **On a hard stop: STOP, do not work around it, escalate to the human, and wait
 for an explicit decision. Silence is not consent. Never rationalize past it.**
 
-→ Full procedure: `skills/secure-code-review/`. Adversarial review: `agents/security-reviewer.md`.
+→ Full procedure: `skills/secure-code-review/`. Adversarial review: `agents/review/security-reviewer.md`.
 → Changing a skill/rule safely: `skills/evolve-harness/` (human-gated).
 
 ## Repo-specific rules
