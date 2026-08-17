@@ -86,8 +86,14 @@ issue tracker and read a domain glossary. Configure them now — explore first,
 propose, confirm with the human, then write (never assume):
 
 - **Issue tracker.** Detect from `git remote -v`: 〈GitHub → `gh` CLI · GitLab →
-  `glab` CLI · none/other → local markdown under `.scratch/<feature>/`〉. Record the
-  choice in `docs/agents/issue-tracker.md`.
+  `glab` CLI · **agent-heavy/solo → Beads (`bd`)** · fallback → local markdown under
+  `.scratch/<feature>/`〉. Record the choice in `docs/agents/issue-tracker.md`.
+  - **Beads** (git-backed graph tracker, agent-native): `bd init` in the repo;
+    needs `brew install beads` once per machine (a dependency — human approval,
+    guardrail #3). Blocking edges are data (`bd dep add`), the frontier is computed
+    (`bd ready`), claims are atomic (`--claim`). Prefer it over `.scratch/` markdown.
+    Do NOT run `bd setup claude` or install its plugin — this harness's skills own
+    the procedure (same rule as `graphify install`).
 - **Triage labels.** Default vocabulary (each label string = its name):
   `needs-triage` · `needs-info` · **`ready-for-agent`** (fully specified, an agent
   can take it) · `ready-for-human` · `wontfix`. If the tracker already has an

@@ -17,6 +17,9 @@ description: >
 
 # Wayfinder: chart the decisions before you build
 
+> Tracker note: on a Beads-tracked project (`bd`), the map and decision tickets are
+> beads — edges via `bd dep add`, the unblocked frontier via `bd ready`.
+
 > Adapted from `mattpocock/skills` (MIT) — reimplemented in this repo's style.
 
 ## When to use this

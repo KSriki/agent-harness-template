@@ -79,6 +79,13 @@ word on budget/order/state is final — you never overrule arithmetic with vibes
 3. **Assess scale before orchestrating.** One bounded slice → dispatch ONE worker
    (or hand it back) — spinning up a fleet for a one-file fix is over-processing,
    which is over-engineering.
+4. **Beads-tracked products** (tracker = `bd`, per `docs/agents/issue-tracker.md`):
+   the frontier is `bd ready --json`; assignment is `bd update <id> --claim`
+   (atomic — no double-dispatch); work a worker discovers mid-slice is filed with a
+   `discovered-from` link, never ignored and never improvised into the build.
+   **Boundary: Beads is the WORK GRAPH only** — learnings stay in
+   `learnings.jsonl`, run state stays in `.orchestrator/` (never `bd remember`;
+   one memory store, not two).
 
 ## Operating loop
 

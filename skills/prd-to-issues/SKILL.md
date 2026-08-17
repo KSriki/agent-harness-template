@@ -42,10 +42,12 @@ independently demoable — not a horizontal "do all the schema" slice.
    **Title · Blocked by · What it delivers.** Ask: granularity right? blocking edges
    correct? merge or split any? Iterate until approved.
 5. **Publish to the tracker** 〈GitHub/GitLab via native blocking / sub-issue links ·
-   or local files under `.scratch/<feature-slug>/issues/NN-slug.md`, numbered in
-   dependency order〉. Apply **`ready-for-agent`** unless told otherwise. Work the
-   **frontier** (any ticket whose blockers are all done). **Do NOT close or modify any
-   parent issue.**
+   **Beads**: `bd create "<title>" -p <prio>` per ticket + `bd dep add <child> <blocker>`
+   per edge · or local files under `.scratch/<feature-slug>/issues/NN-slug.md`,
+   numbered in dependency order〉. Apply **`ready-for-agent`** unless told otherwise
+   (on Beads the label is unnecessary — membership in `bd ready` IS the signal).
+   Work the **frontier** (any ticket whose blockers are all done; Beads computes it).
+   **Do NOT close or modify any parent issue.**
 
    **Stacked PRs (GitHub, public preview since 2026-07):** a *dependent* ticket
    chain can ship as a **PR stack** — one PR per slice, each targeting the slice
