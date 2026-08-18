@@ -214,4 +214,5 @@ Skills load on demand; you do not need to read them until the task matches.
 | `graphify` | STRUCTURE questions over the code graph: "how does X reach Y", blast radius, hubs |
 | `evolve-harness` | Turning a repeated correction / researched practice into a **human-gated** harness change |
 | `init-agent-harness` | Scaffold this project's context (AGENTS.md + CLAUDE.md + docs) from your global harness |
+| `harness-help` | "Where do I add a rule / change the gate / customize X?" — routes to the file + section |
 | 〈`…`〉 | 〈…〉 |
