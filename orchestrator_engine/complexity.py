@@ -18,7 +18,9 @@ def assess_complexity(
     score = tickets + 2 * boundaries + max_chain_depth + (2 if crosses_stack else 0)
     if tickets <= 1 and boundaries <= 1:
         level = "single-worker"
-        advice = "Do NOT orchestrate: dispatch one worker (or hand back to the main thread)."
+        advice = (
+            "Do NOT orchestrate: dispatch one worker (or hand back to the main thread)."
+        )
     elif boundaries <= 3:
         level = "small-fanout"
         advice = "Fan out 2-3 workers in parallel; contract first; merge-validate."

@@ -126,7 +126,13 @@ class Registry:
     def load(self) -> dict:
         if self.path.exists():
             return json.loads(self.path.read_text())
-        return {"run": None, "status": "idle", "workers": [], "spend_usd": 0.0, "updated": None}
+        return {
+            "run": None,
+            "status": "idle",
+            "workers": [],
+            "spend_usd": 0.0,
+            "updated": None,
+        }
 
     def save(self, data: dict) -> dict:
         self.path.parent.mkdir(parents=True, exist_ok=True)
@@ -134,12 +140,19 @@ class Registry:
         self.path.write_text(json.dumps(data, indent=2) + "\n")
         return data
 
-    def init_run(self, goal: str, work_type: str, budget_usd: float | None = None) -> dict:
+    def init_run(
+        self, goal: str, work_type: str, budget_usd: float | None = None
+    ) -> dict:
         """Start (or restart) a run. Scaffolds product-docs/PRODUCT.md if absent."""
         data = self.load()
         data.update(
             {
-                "run": {"goal": goal, "work_type": work_type, "started": _now(), "budget_usd": budget_usd},
+                "run": {
+                    "goal": goal,
+                    "work_type": work_type,
+                    "started": _now(),
+                    "budget_usd": budget_usd,
+                },
                 "status": "running",
                 "workers": [],
                 "spend_usd": 0.0,
@@ -149,11 +162,17 @@ class Registry:
         product = docs / "PRODUCT.md"
         if not product.exists():
             docs.mkdir(parents=True, exist_ok=True)
-            product.write_text(PRODUCT_TEMPLATE.format(goal=goal, date=_now()[:10], work_type=work_type))
+            product.write_text(
+                PRODUCT_TEMPLATE.format(
+                    goal=goal, date=_now()[:10], work_type=work_type
+                )
+            )
         registry_md = docs / "REGISTRY.md"
         if not registry_md.exists():
             docs.mkdir(parents=True, exist_ok=True)
-            registry_md.write_text(REGISTRY_TEMPLATE.format(root=str(self.root.resolve())))
+            registry_md.write_text(
+                REGISTRY_TEMPLATE.format(root=str(self.root.resolve()))
+            )
         vision = docs / "docs" / "vision" / "product-vision.md"
         if not vision.exists():
             vision.parent.mkdir(parents=True, exist_ok=True)
@@ -161,15 +180,33 @@ class Registry:
         (docs / "docs" / "sprints").mkdir(parents=True, exist_ok=True)
         return self.save(data)
 
-    def upsert_worker(self, name: str, slice_: str, branch: str | None = None, status: str = "dispatched") -> dict:
+    def upsert_worker(
+        self,
+        name: str,
+        slice_: str,
+        branch: str | None = None,
+        status: str = "dispatched",
+    ) -> dict:
         data = self.load()
         for w in data["workers"]:
             if w["name"] == name and w["slice"] == slice_:
-                w.update({"branch": branch or w.get("branch"), "status": status, "updated": _now()})
+                w.update(
+                    {
+                        "branch": branch or w.get("branch"),
+                        "status": status,
+                        "updated": _now(),
+                    }
+                )
                 break
         else:
             data["workers"].append(
-                {"name": name, "slice": slice_, "branch": branch, "status": status, "updated": _now()}
+                {
+                    "name": name,
+                    "slice": slice_,
+                    "branch": branch,
+                    "status": status,
+                    "updated": _now(),
+                }
             )
         return self.save(data)
 

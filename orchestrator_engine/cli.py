@@ -59,14 +59,18 @@ def main(argv: list[str] | None = None) -> int:
     s = sub.add_parser("log-completion")
     s.add_argument("--agent", required=True)
     s.add_argument("--model", required=True)
-    s.add_argument("--outcome", required=True, choices=["success", "escalation", "abort", "failed"])
+    s.add_argument(
+        "--outcome", required=True, choices=["success", "escalation", "abort", "failed"]
+    )
     s.add_argument("--turns", type=int, default=None)
     s.add_argument("--cost-usd", type=float, default=None)
     s.add_argument("--notes", default=None)
 
     sub.add_parser("ledger-summary")
 
-    s = sub.add_parser("log-learning", help="append a product-scoped operational learning")
+    s = sub.add_parser(
+        "log-learning", help="append a product-scoped operational learning"
+    )
     s.add_argument("--agent", required=True)
     s.add_argument("--learning", required=True)
 
@@ -79,10 +83,14 @@ def main(argv: list[str] | None = None) -> int:
     s = sub.add_parser("abort")
     s.add_argument("--reason", required=True)
 
-    s = sub.add_parser("research-plan", help="questions JSON list on stdin or --questions-json")
+    s = sub.add_parser(
+        "research-plan", help="questions JSON list on stdin or --questions-json"
+    )
     s.add_argument("--questions-json", default=None)
 
-    s = sub.add_parser("format-research", help="findings JSON list on stdin or --findings-json")
+    s = sub.add_parser(
+        "format-research", help="findings JSON list on stdin or --findings-json"
+    )
     s.add_argument("--findings-json", default=None)
 
     a = p.parse_args(argv)
@@ -103,7 +111,11 @@ def main(argv: list[str] | None = None) -> int:
     elif a.cmd == "get-model":
         _out(get_model_for_agent(a.agent, a.root))
     elif a.cmd == "log-completion":
-        _out(log_agent_completion(a.agent, a.model, a.outcome, a.turns, a.cost_usd, a.notes, a.root))
+        _out(
+            log_agent_completion(
+                a.agent, a.model, a.outcome, a.turns, a.cost_usd, a.notes, a.root
+            )
+        )
     elif a.cmd == "ledger-summary":
         _out(summarize_runs(a.root))
     elif a.cmd == "log-learning":

@@ -32,7 +32,9 @@ def log_agent_completion(
 ) -> dict:
     """outcome: success | escalation | abort | failed"""
     entry = {
-        "ts": datetime.datetime.now(datetime.timezone.utc).isoformat(timespec="seconds"),
+        "ts": datetime.datetime.now(datetime.timezone.utc).isoformat(
+            timespec="seconds"
+        ),
         "agent": agent,
         "model": model,
         "outcome": outcome,
@@ -51,7 +53,14 @@ def summarize_runs(root: str | Path = ".") -> dict:
     p = _path(root)
     if not p.exists():
         return {"runs": 0, "by_agent": {}, "note": "no ledger yet"}
-    by_agent: dict = defaultdict(lambda: {"runs": 0, "outcomes": defaultdict(int), "cost_usd": 0.0, "models": defaultdict(int)})
+    by_agent: dict = defaultdict(
+        lambda: {
+            "runs": 0,
+            "outcomes": defaultdict(int),
+            "cost_usd": 0.0,
+            "models": defaultdict(int),
+        }
+    )
     total = 0
     for line in p.read_text().splitlines():
         if not line.strip():
@@ -66,5 +75,8 @@ def summarize_runs(root: str | Path = ".") -> dict:
             a["cost_usd"] = round(a["cost_usd"] + e["cost_usd"], 4)
     return {
         "runs": total,
-        "by_agent": {k: {**v, "outcomes": dict(v["outcomes"]), "models": dict(v["models"])} for k, v in by_agent.items()},
+        "by_agent": {
+            k: {**v, "outcomes": dict(v["outcomes"]), "models": dict(v["models"])}
+            for k, v in by_agent.items()
+        },
     }

@@ -1,5 +1,5 @@
 """Engine tests — stdlib unittest, no deps. Run:
-    python3 -m unittest discover -s orchestrator_engine/tests -v
+python3 -m unittest discover -s orchestrator_engine/tests -v
 """
 
 import json
@@ -32,11 +32,23 @@ class TestRegistry(unittest.TestCase):
             self.assertEqual(data["run"]["budget_usd"], 25.0)
             self.assertTrue((Path(d) / "product-docs" / "PRODUCT.md").exists())
             self.assertTrue((Path(d) / "product-docs" / "REGISTRY.md").exists())
-            self.assertIn("Component Registry", (Path(d) / "product-docs" / "REGISTRY.md").read_text())
+            self.assertIn(
+                "Component Registry",
+                (Path(d) / "product-docs" / "REGISTRY.md").read_text(),
+            )
             product = (Path(d) / "product-docs" / "PRODUCT.md").read_text()
-            for section in ("Gate history", "Decision log", "Pipeline state", "Git workflow"):
+            for section in (
+                "Gate history",
+                "Decision log",
+                "Pipeline state",
+                "Git workflow",
+            ):
                 self.assertIn(section, product)
-            self.assertTrue((Path(d) / "product-docs" / "docs" / "vision" / "product-vision.md").exists())
+            self.assertTrue(
+                (
+                    Path(d) / "product-docs" / "docs" / "vision" / "product-vision.md"
+                ).exists()
+            )
             self.assertTrue((Path(d) / "product-docs" / "docs" / "sprints").is_dir())
 
     def test_worker_upsert_updates_not_duplicates(self):
@@ -89,8 +101,12 @@ class TestModels(unittest.TestCase):
         with tempfile.TemporaryDirectory() as d:
             od = Path(d) / ".orchestrator"
             od.mkdir()
-            (od / "models.json").write_text(json.dumps({"implementer": "sonnet", "test-writer": "gpt-9"}))
-            self.assertEqual(get_model_for_agent("implementer", d)["source"], "override")
+            (od / "models.json").write_text(
+                json.dumps({"implementer": "sonnet", "test-writer": "gpt-9"})
+            )
+            self.assertEqual(
+                get_model_for_agent("implementer", d)["source"], "override"
+            )
             self.assertEqual(get_model_for_agent("implementer", d)["model"], "sonnet")
             # invalid value falls back safely
             self.assertEqual(get_model_for_agent("test-writer", d)["model"], "inherit")
@@ -102,9 +118,13 @@ class TestModels(unittest.TestCase):
 class TestLedger(unittest.TestCase):
     def test_append_and_summarize(self):
         with tempfile.TemporaryDirectory() as d:
-            log_agent_completion("implementer", "inherit", "success", turns=12, cost_usd=0.5, root=d)
+            log_agent_completion(
+                "implementer", "inherit", "success", turns=12, cost_usd=0.5, root=d
+            )
             log_agent_completion("implementer", "inherit", "failed", root=d)
-            log_agent_completion("security-reviewer", "opus", "success", cost_usd=0.2, root=d)
+            log_agent_completion(
+                "security-reviewer", "opus", "success", cost_usd=0.2, root=d
+            )
             s = summarize_runs(d)
             self.assertEqual(s["runs"], 3)
             self.assertEqual(s["by_agent"]["implementer"]["runs"], 2)
@@ -152,24 +172,48 @@ class TestAbort(unittest.TestCase):
 class TestLearnings(unittest.TestCase):
     def test_append_and_list(self):
         with tempfile.TemporaryDirectory() as d:
-            log_learning("orchestrator", "docker compose is the standalone binary at /usr/local/bin", root=d)
-            log_learning("backend-implementer", "pydantic String without max_length bypasses validation", root=d)
+            log_learning(
+                "orchestrator",
+                "docker compose is the standalone binary at /usr/local/bin",
+                root=d,
+            )
+            log_learning(
+                "backend-implementer",
+                "pydantic String without max_length bypasses validation",
+                root=d,
+            )
             got = list_learnings(d)
             self.assertEqual(got["count"], 2)
             self.assertEqual(got["learnings"][1]["agent"], "backend-implementer")
-            self.assertEqual(list_learnings(d, limit=1)["learnings"][0]["agent"], "backend-implementer")
+            self.assertEqual(
+                list_learnings(d, limit=1)["learnings"][0]["agent"],
+                "backend-implementer",
+            )
             # lives in committed product-docs, not gitignored machine state
-            self.assertTrue((Path(d) / "product-docs" / "docs" / "learnings.jsonl").exists())
+            self.assertTrue(
+                (Path(d) / "product-docs" / "docs" / "learnings.jsonl").exists()
+            )
 
 
 class TestResearch(unittest.TestCase):
     def test_routing(self):
-        plan = create_research_plan(["why does httpx timeout on streams", "what changed in the React ecosystem"])
+        plan = create_research_plan(
+            ["why does httpx timeout on streams", "what changed in the React ecosystem"]
+        )
         agents = [q["agent"] for q in plan["questions"]]
         self.assertEqual(agents, ["debug-research", "trend-scout"])
 
     def test_summary_format(self):
-        md = format_research_summary([{"question": "q1", "verdict": "yes", "confidence": "high", "sources": ["a", "b"]}])
+        md = format_research_summary(
+            [
+                {
+                    "question": "q1",
+                    "verdict": "yes",
+                    "confidence": "high",
+                    "sources": ["a", "b"],
+                }
+            ]
+        )
         self.assertIn("| 1 | q1 | yes | high | a · b |", md)
 
 

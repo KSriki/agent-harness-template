@@ -8,10 +8,14 @@ is reported, never silently broken.
 from __future__ import annotations
 
 
-def generate_deployment_plan(branches: list[dict], gate_cmd: str = "./.claude/gate.sh full") -> dict:
+def generate_deployment_plan(
+    branches: list[dict], gate_cmd: str = "./.claude/gate.sh full"
+) -> dict:
     """branches: [{"name": str, "slice": str, "blocked_by": [names]}]"""
     names = {b["name"] for b in branches}
-    deps = {b["name"]: [d for d in b.get("blocked_by", []) if d in names] for b in branches}
+    deps = {
+        b["name"]: [d for d in b.get("blocked_by", []) if d in names] for b in branches
+    }
     indegree = {n: len(ds) for n, ds in deps.items()}
     ready = sorted([n for n, d in indegree.items() if d == 0])
     order: list[str] = []
@@ -26,7 +30,11 @@ def generate_deployment_plan(branches: list[dict], gate_cmd: str = "./.claude/ga
         ready.sort()
     if len(order) != len(branches):
         cycle = sorted(names - set(order))
-        return {"ok": False, "error": "dependency cycle — fix the blocked_by edges", "in_cycle": cycle}
+        return {
+            "ok": False,
+            "error": "dependency cycle — fix the blocked_by edges",
+            "in_cycle": cycle,
+        }
 
     steps: list[str] = []
     for n in order:

@@ -38,5 +38,9 @@ def get_model_for_agent(agent: str, root: str | Path = ".") -> dict:
     if model is None:
         return {"agent": agent, "model": "inherit", "source": "unknown-agent-fallback"}
     if model not in VALID:
-        return {"agent": agent, "model": "inherit", "source": f"invalid-value({model})-fallback"}
+        return {
+            "agent": agent,
+            "model": "inherit",
+            "source": f"invalid-value({model})-fallback",
+        }
     return {"agent": agent, "model": model, "source": source}

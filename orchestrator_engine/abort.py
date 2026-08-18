@@ -15,7 +15,9 @@ from .state import Registry
 def execute_abort(reason: str, root: str = ".") -> dict:
     reg = Registry(root)
     data = reg.set_status("aborted", reason)
-    open_workers = [w for w in data.get("workers", []) if w.get("status") not in ("done", "merged")]
+    open_workers = [
+        w for w in data.get("workers", []) if w.get("status") not in ("done", "merged")
+    ]
     branches = [w["branch"] for w in data.get("workers", []) if w.get("branch")]
     return {
         "exit_class": "ABORT",
@@ -23,6 +25,9 @@ def execute_abort(reason: str, root: str = ".") -> dict:
         "dispatch": "STOP — no new workers; let in-flight workers finish or discard their worktrees",
         "preserve_branches": branches,
         "open_workers": open_workers,
-        "cleanup": [f"git worktree remove <path-of:{w['name']}:{w['slice']}> --force" for w in open_workers],
+        "cleanup": [
+            f"git worktree remove <path-of:{w['name']}:{w['slice']}> --force"
+            for w in open_workers
+        ],
         "report": "Return partial state + branch names + what remains. Never dress an abort as success.",
     }

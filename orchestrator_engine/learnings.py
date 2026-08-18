@@ -27,7 +27,9 @@ def _path(root: str | Path) -> Path:
 
 def log_learning(agent: str, learning: str, root: str | Path = ".") -> dict:
     entry = {
-        "ts": datetime.datetime.now(datetime.timezone.utc).isoformat(timespec="seconds"),
+        "ts": datetime.datetime.now(datetime.timezone.utc).isoformat(
+            timespec="seconds"
+        ),
         "agent": agent,
         "learning": learning,
     }
