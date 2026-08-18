@@ -1,8 +1,12 @@
-"""log_agent_completion / summarize_runs — the run ledger.
+"""log_agent_completion / summarize_runs — the RUN/TELEMETRY record.
 
 Append-only JSONL at <repo>/.orchestrator/runs.jsonl. This is routing rule 4
 ("measure, don't vibe") made real: every agent completion is a data point, and
 the summary is what re-tiers models on evidence.
+
+Named runs.py, not ledger.py: "the ledger" in this harness means Beads (bd) —
+the WORK ledger (tickets, dependencies, the frontier). This file is the
+run/telemetry record. Two different jobs; don't merge them.
 """
 
 from __future__ import annotations
