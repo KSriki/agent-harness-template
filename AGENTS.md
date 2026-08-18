@@ -201,7 +201,8 @@ Skills load on demand; you do not need to read them until the task matches.
 | `observability` | Instrumenting logs/metrics/traces; SLOs/alerts; **live incident triage** |
 | `review-pr` | Opening a PR (description, blast radius) or reviewing one for correctness/design |
 | `orchestrate-agents` | Ship a multi-part change with **parallel agents** in worktrees; fan-out + merge-validate |
-| `grill-me` | Stress-test a plan — one-question-at-a-time interview until understanding is confirmed |
+| `grill-me` | Stress-test a plan — frontier rounds of recommended-answer questions until understanding is confirmed |
+| `writing-for-agents` | Creating/editing anything an AGENT reads: skills, AGENTS.md, agent files |
 | `wayfinder` | Fuzzy/oversized scope → map of DECISION tickets; re-entry for mid-build ideas |
 | `write-a-prd` | Synthesize the discussion into a spec/PRD, published `ready-for-agent` |
 | `prd-to-issues` | PRD → tracer-bullet tickets with blocking edges, in dependency order |

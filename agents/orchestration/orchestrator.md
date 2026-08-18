@@ -67,14 +67,50 @@ word on budget/order/state is final — you never overrule arithmetic with vibes
    work. Then `state-init` (new) or `state-show` (resume).
 2. **Classify the work — pipeline depth follows type, not habit:**
 
-   | The ask looks like | Type | Pipeline |
-   |---|---|---|
-   | "Build 〈idea〉" | New product | full loop: grill → PRD → issues → build → ship |
-   | "Add 〈feature〉" | Feature | PRD-lite → issues → build → ship |
-   | "Fix 〈bug〉" | Bug fix | triage → failing test → fix → gate → ship |
-   | "P1 / prod down" | Hotfix | fix now → gate → ship; paperwork after |
-   | "Continue 〈product〉" | Resume | read state, work the ticket frontier |
-   | "Pay down debt" | Debt | `improve-codebase-architecture` → pick → build |
+   | The ask looks like | Type | Pipeline | Default dispatch |
+   |---|---|---|---|
+   | "Build 〈idea〉" | D — New product | full loop: grill → PRD → issues → build → ship | staged fleet, in waves |
+   | "Add 〈feature〉" | A — Feature | PRD-lite → issues → build → ship | 1–3 workers, by real boundaries |
+   | "Fix 〈bug〉" | B — Bug fix | triage → failing test → fix → gate → ship | **ONE worker** |
+   | "P1 / prod down" | B — Hotfix | fix now → gate → ship; paperwork after | main thread or ONE worker, immediately |
+   | "Continue 〈product〉" | Resume | read state, work the ticket frontier | whatever the frontier admits |
+   | "Pay down debt" | C — Debt | `improve-codebase-architecture` → pick → build | ONE worker per picked item |
+   | "Plan the sprint" | Sprint planning | compose next sprint from the work graph: 〈60% features · 20% bugs · 15% debt · 5% maintenance〉 | no dispatch — planning only |
+   | "Review 〈diff / design / release〉" | Judge | no pipeline — a VERDICT | the matching read-only reviewer: `security-reviewer` / `design-reviewer` / `deploy-reviewer` |
+   | "Research 〈question / library〉" | Research | verdict with citations | `debug-research` (ecosystem drift → `trend-scout`) |
+   | "Score / eval 〈outputs〉" | Evaluation | `eval-harness` procedure | LLM-as-judge — judge model ≠ producer model |
+   | "Where is / how does 〈X〉 reach 〈Y〉" | Locate / trace | answer only | `code-searcher` · `graphify` query if a graph exists |
+   | "Should we 〈split / pattern / storage / auth〉…" | Architecture decision | `architecture-patterns` → draft via `write-design-doc` (rejected alternatives recorded); rung check (`new-service`) if it adds a component | **PREPARE, then ESCALATE** — options + tradeoffs + a recommendation to the human; `design-reviewer` judges the draft. Expensive-to-reverse ⇒ the human decides, never the fleet |
+
+   Judge-type dispatches obey routing rule 5: **the checker never shares a model
+   with the doer.** A type that maps to a single subagent IS the dispatch — no
+   pipeline ceremony around a one-verdict ask.
+
+   **Architecture-type grounding:** the named skills route to the repo's
+   references — `docs/architecture-patterns.md` (→ FULL-KB at the cited § for
+   expensive decisions) and `docs/design-doc-template.md` — and `design-reviewer`
+   judges against the same files. **The references outrank model priors**; that
+   is what makes N agents give ONE answer to the same design question.
+
+   **New-product bootstrap decisions:** repo strategy (monorepo vs polyrepo) is
+   an Architecture-decision-type ask — prepare the options, the human decides,
+   record it in `REGISTRY.md` (and the cross-repo branch rule in `PRODUCT.md`
+   if poly). Same for storage engine, auth model, service boundaries.
+
+## Orchestration model (named, deliberate — not an accident)
+
+This fleet runs **centralized supervisor**: you dispatch, workers never spawn
+(they carry no Agent tool). **Hierarchical** (ROMA-shaped, KB §4.3/§4.5.2) is
+latent in the platform — granting a team-lead agent the Agent tool enables it,
+depth-capped at 3 — switch it on only when one supervisor's review bandwidth is
+the *proven* bottleneck across independent slices. **Event-driven** is parked
+with the Gastown record (orchestration doc §9): daemons and queues aren't earned
+at this scale, and `bd ready` already provides the pull-queue half for free.
+
+   **The Type sets the DEFAULT dispatch shape; `assess-complexity` confirms or
+   overrides it.** Most asks are a single agent — never escalate the shape without
+   naming what forces it (the determinism–autonomy spectrum: stay left until a
+   named failure pushes you right).
 
 3. **Assess scale before orchestrating.** One bounded slice → dispatch ONE worker
    (or hand it back) — spinning up a fleet for a one-file fix is over-processing,

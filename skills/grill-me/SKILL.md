@@ -2,10 +2,11 @@
 name: grill-me
 description: >
   Use to grill the user relentlessly about a plan, decision, or idea — a
-  one-question-at-a-time interview down the decision tree to reach confirmed shared
-  understanding BEFORE any work starts. Triggers on "grill me", "grill this plan",
-  "stress-test my thinking", "poke holes in this", "what am I missing before I
-  build", "interview me about this".
+  frontier-batched interview down the design tree (rounds of ready questions,
+  each with a recommended answer) until confirmed shared understanding, BEFORE any
+  work starts. Triggers on "grill me", "grill this plan", "stress-test my
+  thinking", "poke holes in this", "what am I missing before I build",
+  "interview me about this".
   Do NOT use to gather facts you could look up yourself (look them up — don't ask),
   to score model outputs (`eval-harness`), to write the design record
   (`write-design-doc`), or to decompose a big initiative into tickets (`wayfinder`).
@@ -13,35 +14,56 @@ description: >
 
 # Grill me: interrogate the plan before you build
 
-> Adapted from `mattpocock/skills` (MIT) — reimplemented in this repo's style.
+> Adapted from `mattpocock/skills` (MIT), v1.2 — the frontier-rounds rework.
+> v1.2 replaced one-question-at-a-time (our previous version) with batched rounds:
+> same depth, a third of the turns.
 
 ## When to use this
 
 Before committing to a plan or design, when being wrong is cheaper to fix now than
-after it's built. The goal is **confirmed shared understanding**, not a vibe check —
-this is the discipline that separates a senior engineer from an eager one.
+after it's built. The goal is **confirmed shared understanding**, not a vibe check.
 
 **Not this skill if:** you need a discoverable fact — read it, don't ask. You're
 scoring outputs → `eval-harness`. You're recording the decision → `write-design-doc`.
 You're mapping a large initiative into tickets → `wayfinder`.
 
-## The interview
+## The interview: work the question frontier, in rounds
 
-1. **Walk every branch of the decision tree**, resolving dependencies between
-   decisions **one by one** — don't jump around.
-2. **One question at a time. Never batch.** Multiple questions at once is bewildering
-   and gets shallow, averaged answers. One sharp question keeps momentum.
-3. **Lead with your recommended answer**, then ask. A question with no recommendation
-   is lazy — you've thought about this, so say what you'd do and why, *then* ask.
-4. **Facts vs. decisions.** Anything discoverable from the repo, the docs, the tools,
-   or the environment — **look it up yourself.** Pestering the human for lookup-able
-   facts burns trust. Reserve every question for a genuine **decision** only they can make.
-5. **Do not act** on the plan until the human **confirms** shared understanding is
-   reached. The confirmation is the gate.
+Map the subject as a **design tree** — every decision branches into the decisions
+hanging off it. Then:
+
+1. **The frontier** = every decision whose prerequisites are already settled — the
+   questions you can ask *now* without guessing at answers you haven't heard yet.
+2. **Ask the whole frontier in one round.** Number each question and give your
+   recommended answer, then wait for ALL answers before the next round. A question
+   that depends on another question still open *this* round belongs to a *later*
+   round.
+3. **Per-question format** (scannable, answer-in-bulk friendly):
+
+   ```
+   ❓ **Q1 — <question title>**: <question body; may include choices>
+
+   ➡️ <your recommended answer, and why in a phrase>
+   ```
+
+4. **Each answered round reshapes the tree.** Settled decisions push the frontier
+   outward; recompute it and ask the next round. Early rounds may be a single
+   critical question; endgame rounds sweep up the easy ones in one pass.
+5. **Facts vs decisions.** Finding *facts* is your job, never the user's — a
+   frontier question that needs an environment fact gets a **subagent dispatched
+   non-blocking** (`code-searcher` / `debug-research`): a running exploration is an
+   unsettled prerequisite, so only its downstream questions wait — ask the rest of
+   the frontier now. The *decisions* are the user's: put each to them and wait.
+6. **Exit:** done when **the frontier is empty** — every branch visited, nothing
+   left silently assumed. **Do not act until the user confirms** shared
+   understanding is reached. The confirmation is the gate.
+
+> Prefer the old cadence? Say "ask one question at a time" — the rounds are a
+> default, not a law.
 
 ## Definition of done
 
-- [ ] Every open **decision** (not fact) surfaced and resolved, in dependency order
-- [ ] Each asked **one at a time**, recommendation-first
-- [ ] Facts were **looked up**, not asked
+- [ ] The design tree walked to an **empty frontier** — no branch silently assumed
+- [ ] Every question carried a **recommendation**; rounds respected dependencies
+- [ ] Facts were **looked up (subagents, non-blocking)**, never asked
 - [ ] The human **explicitly confirmed** shared understanding — only then does work start

@@ -1,7 +1,17 @@
 # SETUP — instantiating this into a real repo
 
-Work top to bottom. Should take ~20 minutes. **Steps 1–3 are the ones that matter;
-the rest is optional polish.**
+**Three journeys, pick yours:**
+
+1. **New machine** → §0 "global toolkit": clone + `python3 init.py --link-global
+   --install-hooks --global-claude` + restart. Done — every project sees the suite.
+2. **New / existing project** → §0 install paths, then §1 wizard (or the
+   `init-agent-harness` skill from inside the project) → fill Commands → §3
+   security → §6 verify it actually loads.
+3. **Daily use** → you don't read this file; see "How to use it" in
+   [`HARNESS.md`](./HARNESS.md) — say what you want, the routing does the rest.
+
+Work top to bottom for journey 2. Should take ~20 minutes. **Steps 1–3 are the
+ones that matter; the rest is optional polish.**
 
 ---
 
@@ -150,6 +160,7 @@ skills/
   grill-me/ wayfinder/ write-a-prd/ prd-to-issues/ tdd/   ← the SDLC loop (steering §4.5)
   codebase-design/ domain-modeling/ improve-codebase-architecture/ handoff/  ← design vocab + upkeep
   graphify/             ← delete if you don't use the graphify CLI (needs `uv tool install graphifyy`)
+  writing-for-agents/ wait-what/   ← agent-doc craft; plain-English re-pitch corrective
 
 agents/
   code-searcher/ test-writer/ design-reviewer/

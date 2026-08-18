@@ -90,7 +90,9 @@ This is the high-risk path, and the whole reason this skill is guardrailed.
 
 Never a live edit of a governing file. Produce a diff a human can read and reject.
 
-- **Match house style.** Skills follow [`skills/_TEMPLATE/SKILL.md`](skills/_TEMPLATE/SKILL.md):
+- **Match house style — and write it per `writing-for-agents`** (pointers, hierarchy,
+  completion criteria, the no-op test). Skills follow
+  [`skills/_TEMPLATE/SKILL.md`](skills/_TEMPLATE/SKILL.md):
   a `description` of **triggers + an explicit NOT-clause**, a body of *procedure with
   exact commands*, ≤ ~500 lines. Subagents follow [`agents/README.md`](agents/README.md):
   least-privilege `tools`, a strict output contract.

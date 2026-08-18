@@ -1,7 +1,8 @@
 # Context Changelog
 
-Every promotion into `docs/` gets one entry. A PR that changes `docs/` without
-changing this file is a promotion without a record — gate on it.
+Every promotion into `docs/` gets one entry — and so does any behavior-changing
+promotion to `skills/` or `agents/`. A PR that changes those without changing this
+file is a promotion without a record — gate on it.
 
 **Version semantics** — pinned to *agent behaviour*, not edit size:
 
@@ -14,6 +15,29 @@ The test for MAJOR: *if an agent had memorised the previous version and acted on
 would it now be wrong?* If yes, major. If it would merely be missing something, minor.
 
 ---
+
+## 2026-08-18
+
+- `skills/grill-me` — → **2.0.0** (MAJOR — agent-breaking; upstream mattpocock v1.2, firewall-reviewed)
+  - One-question-at-a-time is GONE. The interview now works the **question
+    frontier in rounds**: all currently-unblocked questions per round, numbered,
+    each with a recommended answer; facts fetched by non-blocking subagents;
+    exit = empty frontier + explicit confirmation.
+  - **Re-check:** any procedure or habit that assumes one question per turn.
+    Batched answers ("Q1 agree, Q2 change X…") are now the expected reply shape.
+- `skills/writing-for-agents` — **new** (MINOR; upstream v1.2 adaptation)
+  - The craft reference for anything an agent reads: context pointers,
+    information hierarchy/progressive disclosure, completion criteria
+    (clarity + demand), leading words vs negation, no-op-test pruning.
+    `evolve-harness` STEP 3 now points at it.
+- `skills/wait-what` — **new** (MINOR; upstream v1.2, user-invoked)
+  - Three-line corrective: re-pitch the last answer in plain English +
+    `CONTEXT.md` vocabulary. Zero context cost until invoked.
+- `agents/orchestration/orchestrator` — work-type table gains a **Default
+  dispatch** column + sprint-planning row (MINOR)
+  - Each work type now sets the default dispatch shape (most = ONE worker);
+    `assess-complexity` confirms or overrides; never escalate the shape without
+    naming what forces it.
 
 ## 2026-08-17
 

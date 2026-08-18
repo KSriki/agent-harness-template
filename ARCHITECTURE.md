@@ -78,6 +78,8 @@ repo/
 │   ├── improve-codebase-architecture/  # ← audit existing code for deepening
 │   ├── handoff/                 #   ← compact session → resumable doc
 │   ├── graphify/                #   ← structure queries over the code graph (local-first)
+│   ├── writing-for-agents/      #   ← the craft of agent-facing docs (pointers, pruning)
+│   ├── wait-what/               #   ← user-invoked: re-pitch the last answer plainly
 │   ├── evolve-harness/          #   ← grow the harness itself (human-gated)
 │   └── init-agent-harness/      #   ← scaffold per-project context + tracker/labels/glossary
 │

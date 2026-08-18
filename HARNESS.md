@@ -15,6 +15,46 @@ pointer. Works with Claude Code, Cursor, Copilot, or anything that reads repo co
 
 ---
 
+## How to use it (the five-minute version)
+
+**Once per machine:**
+
+```bash
+git clone <this repo> ~/agent-harness && cd ~/agent-harness
+python3 init.py --link-global --install-hooks --global-claude
+# restart Claude Code → every project on this machine now has the suite
+```
+
+**Once per project** — in the project, in Claude Code, say **"set up the agent
+harness here"** (`init-agent-harness`). It scaffolds `AGENTS.md` (guardrails +
+your commands), the quality gate, and the CI file. Fill the Commands table
+honestly; add Gotchas as you learn them.
+
+**Daily — just say what you want; the skill routing does the rest:**
+
+| You say | What fires |
+|---|---|
+| "grill me about 〈idea〉" | `grill-me` — frontier rounds of questions until understanding is confirmed |
+| "write the PRD" → "break it into tickets" | `write-a-prd` → `prd-to-issues` (Beads: `bd ready` = the frontier) |
+| "build 〈one ticket〉" | one worker, test-first (`tdd`) — most asks need exactly one agent |
+| "use the orchestrator: build 〈these tickets〉" | classify type → route → managed fleet (worktrees, ledger, gates) |
+| "review this 〈diff / design / release〉" | the matching read-only reviewer, verdict only |
+| "research 〈question / library〉" | `debug-research` — verdict with citations |
+| "how does 〈X〉 reach 〈Y〉" | `code-searcher` / `graphify` |
+| "/wait-what" | the last answer, re-pitched in plain English |
+| "you keep getting 〈X〉 wrong" | `evolve-harness` — turn the correction into a rule (you approve it) |
+
+**Done = the gate passes** (lint · typecheck · tests · coverage) — enforced by
+hooks and CI, not by the model's opinion. **And the rule of scale:** the pipeline
+is for non-trivial work; a typo fix goes straight to build, and most asks need
+one agent, not a fleet.
+
+Deeper: [`SETUP.md`](./SETUP.md) (install paths, verification) ·
+[`agents/README.md`](./agents/README.md) (the fleet + model routing) ·
+[`docs/README.md`](./docs/README.md) (the doc tiers).
+
+---
+
 ## The idea in one table
 
 **Context is a budget, and always-on context is the expensive kind.** A token in
@@ -68,6 +108,8 @@ a cited § when a decision is expensive to reverse.)
 | `improve-codebase-architecture` | Audit existing code for deepening/refactor opportunities |
 | `handoff` | Compact a session for a fresh agent to resume |
 | `graphify` | Query the repo as a knowledge graph — connections, blast radius, hubs (local-first) |
+| `writing-for-agents` | The craft of agent-facing docs: pointers, hierarchy, completion criteria, pruning |
+| `wait-what` | User-invoked: "re-pitch that in plain English" when an answer doesn't land |
 | `evolve-harness` | Grow the harness itself — new skill/rule from a repeated correction, **human-gated** |
 | `init-agent-harness` | Scaffold a project's context (AGENTS.md + CLAUDE.md + docs) from your global link — no installer script |
 
