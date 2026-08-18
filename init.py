@@ -41,7 +41,6 @@ import shutil
 import sys
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Callable
 
 # ── tiny terminal helpers ────────────────────────────────────────────────────
 
@@ -120,7 +119,11 @@ def ask_yn(prompt: str, default: bool = True) -> bool:
     d = "Y/n" if default else "y/N"
     while True:
         try:
-            got = input(f"  {prompt} {dim('[' + d + ']')}\n  {cyan('›')} ").strip().lower()
+            got = (
+                input(f"  {prompt} {dim('[' + d + ']')}\n  {cyan('›')} ")
+                .strip()
+                .lower()
+            )
         except (EOFError, KeyboardInterrupt):
             print("\n" + yellow("Aborted. Nothing written."))
             sys.exit(1)
@@ -188,7 +191,11 @@ def detect(root: Path) -> Stack:
             s.py_mgr = "poetry"
         else:
             s.py_mgr = "pip"
-        for name, fw in (("fastapi", "FastAPI"), ("django", "Django"), ("flask", "Flask")):
+        for name, fw in (
+            ("fastapi", "FastAPI"),
+            ("django", "Django"),
+            ("flask", "Flask"),
+        ):
             if name in txt.lower():
                 s.frameworks.append(fw)
     elif ex("requirements.txt") or ex("setup.py"):
@@ -202,7 +209,11 @@ def detect(root: Path) -> Stack:
         except Exception:
             pkg = {}
         deps = {**pkg.get("dependencies", {}), **pkg.get("devDependencies", {})}
-        s.langs.append("TypeScript" if ex("tsconfig.json") or "typescript" in deps else "JavaScript")
+        s.langs.append(
+            "TypeScript"
+            if ex("tsconfig.json") or "typescript" in deps
+            else "JavaScript"
+        )
         s.js_mgr = (
             "pnpm" if ex("pnpm-lock.yaml") else "yarn" if ex("yarn.lock") else "npm"
         )
@@ -220,7 +231,9 @@ def detect(root: Path) -> Stack:
         s.langs.append("Go")
 
     s.has_docker = ex("Dockerfile")
-    s.has_compose = ex("docker-compose.yml") or ex("compose.yaml") or ex("docker-compose.yaml")
+    s.has_compose = (
+        ex("docker-compose.yml") or ex("compose.yaml") or ex("docker-compose.yaml")
+    )
     s.has_tf = ex("main.tf") or ex("infra") or ex("terraform")
     return s
 
@@ -295,11 +308,14 @@ def fill_agents(text: str, a: dict[str, str]) -> str:
         # header
         (
             "〈One or two sentences. What the system does and who uses it.\n"
-            " e.g. \"Ingest pipeline + CV inference tier for document scans. Internal API,\n"
-            " consumed by the review UI and the batch reprocessor.\"〉",
+            ' e.g. "Ingest pipeline + CV inference tier for document scans. Internal API,\n'
+            ' consumed by the review UI and the batch reprocessor."〉',
             a["what"],
         ),
-        ("〈Python 3.12 / uv · Go 1.23 · React+TS · Postgres · Redis · S3 · Docker〉", a["stack"]),
+        (
+            "〈Python 3.12 / uv · Go 1.23 · React+TS · Postgres · Redis · S3 · Docker〉",
+            a["stack"],
+        ),
         ("〈modular monolith | 3 services | …〉", a["rung"]),
         # commands
         ("〈`uv sync`〉", f"`{a['install']}`"),
@@ -307,10 +323,19 @@ def fill_agents(text: str, a: dict[str, str]) -> str:
         ("〈`uv run pytest path/to/test.py::test_name`〉", f"`{a['test_one']}`"),
         ("〈`uv run ruff check --fix . && uv run ruff format .`〉", f"`{a['lint']}`"),
         ("〈`uv run mypy src/`〉", f"`{a['typecheck']}`"),
-        ("〈`uv run pytest --cov=src --cov-report=term-missing`〉", f"`{a['coverage']}`"),
+        (
+            "〈`uv run pytest --cov=src --cov-report=term-missing`〉",
+            f"`{a['coverage']}`",
+        ),
         ("〈`docker compose up -d`〉", f"`{a['stack_up']}`" if a["stack_up"] else "—"),
-        ("〈`uv run alembic upgrade head`〉", f"`{a['migrate']}`" if a["migrate"] else "—"),
-        ("〈`uv run python -m evals.run --suite smoke`〉", f"`{a['evals']}`" if a["evals"] else "—"),
+        (
+            "〈`uv run alembic upgrade head`〉",
+            f"`{a['migrate']}`" if a["migrate"] else "—",
+        ),
+        (
+            "〈`uv run python -m evals.run --suite smoke`〉",
+            f"`{a['evals']}`" if a["evals"] else "—",
+        ),
         ("〈`docker build -t 〈svc〉 .`〉", f"`{a['build']}`" if a["build"] else "—"),
         ("〈tests · lint · typecheck · coverage ≥ 〈N〉%〉", a["gates"]),
         # guardrails: the install command line
@@ -323,7 +348,9 @@ def fill_agents(text: str, a: dict[str, str]) -> str:
         text = text.replace(old, new)
 
     # Layout block
-    text = SLOT.sub(lambda m: m.group(1) if "src/" in m.group(1) else m.group(0), text, count=0)
+    text = SLOT.sub(
+        lambda m: m.group(1) if "src/" in m.group(1) else m.group(0), text, count=0
+    )
 
     # Tribal-knowledge sections: DO NOT FABRICATE.
     text = re.sub(
@@ -368,7 +395,9 @@ def wire_claude_dir(root: Path) -> list[str]:
             notes.append(f"ok    .claude/{name} → {target} (already linked)")
             continue
         if link.exists() or link.is_symlink():
-            notes.append(f"SKIP  .claude/{name} exists and isn't a → {target} symlink; left as-is")
+            notes.append(
+                f"SKIP  .claude/{name} exists and isn't a → {target} symlink; left as-is"
+            )
             continue
         claude.mkdir(exist_ok=True)
         link.symlink_to(target)
@@ -404,11 +433,15 @@ def link_global(config_dir: str | None = None, *, dry_run: bool = False) -> int:
             print(yellow(f"  ! {name}/ not found in {src} — skipped"))
             continue
         link = target / name
-        if link.is_symlink() and os.path.realpath(str(link)) == os.path.realpath(str(s)):
+        if link.is_symlink() and os.path.realpath(str(link)) == os.path.realpath(
+            str(s)
+        ):
             print(f"  {green('✓')} {link}  (already linked)")
             continue
         if link.exists() or link.is_symlink():
-            print(yellow(f"  ! {link} exists and is not a link to this repo — left as-is"))
+            print(
+                yellow(f"  ! {link} exists and is not a link to this repo — left as-is")
+            )
             print(dim("      move it aside (or pass --config-dir) and re-run"))
             continue
         if dry_run:
@@ -420,17 +453,33 @@ def link_global(config_dir: str | None = None, *, dry_run: bool = False) -> int:
 
     if not dry_run:
         print()
-        print("  " + bold("Restart Claude Code") + " (or start a new session) to load them.")
-        print(dim("  Available in every project now; new skills you add appear automatically."))
-        print(dim("  Per-project context (AGENTS.md) stays per-repo — run `python3 init.py` there."))
-        print(dim("  Enforcement (opt-in): --install-hooks (machine-wide gate hooks) and"))
+        print(
+            "  "
+            + bold("Restart Claude Code")
+            + " (or start a new session) to load them."
+        )
+        print(
+            dim(
+                "  Available in every project now; new skills you add appear automatically."
+            )
+        )
+        print(
+            dim(
+                "  Per-project context (AGENTS.md) stays per-repo — run `python3 init.py` there."
+            )
+        )
+        print(
+            dim("  Enforcement (opt-in): --install-hooks (machine-wide gate hooks) and")
+        )
         print(dim("  --global-claude (tiny baseline CLAUDE.md). See gates/README.md."))
     return 0
 
 
 def install_hooks(config_dir: str | None = None, *, dry_run: bool = False) -> int:
     """Merge the gate hooks (gates/settings-hooks.json) into the global Claude
-    settings, pointing at THIS repo's gate-dispatch.sh by absolute path.
+    settings. No path is baked in: the hook command resolves the harness at
+    runtime via the ~/.claude/skills symlink (created by --link-global), so the
+    same settings.json works on any machine and survives moving this repo.
 
     The hooks fire in every project but act only where the project has opted in
     with .claude/gate.sh — global enforcement, per-project contract. Idempotent
@@ -443,19 +492,37 @@ def install_hooks(config_dir: str | None = None, *, dry_run: bool = False) -> in
     ).expanduser()
     settings = target / "settings.json"
 
+    # The command the hooks run: resolve <harness>/gates/gate-dispatch.sh from
+    # the skills symlink at fire time; missing link or script → silent no-op.
+    resolve = (
+        'd="$(dirname "$(readlink -f "${CLAUDE_CONFIG_DIR:-$HOME/.claude}/skills"'
+        ' 2>/dev/null)")/gates/gate-dispatch.sh"; [ -x "$d" ] && exec "$d" %s; exit 0'
+    )
+
     rule("Install gate hooks → global Claude settings")
-    print(dim(f"  dispatch: {dispatch}"))
+    print(dim(f"  dispatch: resolved at runtime via {target / 'skills'} symlink"))
     print(dim(f"  settings: {settings}"))
     if not dispatch.exists():
         print(red("  gates/gate-dispatch.sh not found — is this the harness repo?"))
         return 1
+    if not (target / "skills").is_symlink():
+        print(
+            yellow(
+                f"  note: {target / 'skills'} is not a symlink yet — hooks will no-op "
+                "until you run `python3 init.py --link-global`."
+            )
+        )
 
     data: dict = {}
     if settings.exists():
         try:
             data = json.loads(settings.read_text())
         except Exception:
-            print(red(f"  {settings} is not valid JSON — fix it by hand first. Nothing written."))
+            print(
+                red(
+                    f"  {settings} is not valid JSON — fix it by hand first. Nothing written."
+                )
+            )
             return 1
 
     hooks = data.setdefault("hooks", {})
@@ -472,17 +539,19 @@ def install_hooks(config_dir: str | None = None, *, dry_run: bool = False) -> in
     hooks.setdefault("PostToolUse", []).append(
         {
             "matcher": "Edit|Write|NotebookEdit",
-            "hooks": [
-                {"type": "command", "command": f"{dispatch} fast", "timeout": 120}
-            ],
+            "hooks": [{"type": "command", "command": resolve % "fast", "timeout": 120}],
         }
     )
     hooks.setdefault("Stop", []).append(
-        {"hooks": [{"type": "command", "command": f"{dispatch} full", "timeout": 600}]}
+        {"hooks": [{"type": "command", "command": resolve % "full", "timeout": 600}]}
     )
 
     if dry_run:
-        print(yellow("  --dry-run: would add PostToolUse(fast) + Stop(full) hooks. Nothing written."))
+        print(
+            yellow(
+                "  --dry-run: would add PostToolUse(fast) + Stop(full) hooks. Nothing written."
+            )
+        )
         return 0
 
     target.mkdir(parents=True, exist_ok=True)
@@ -491,12 +560,18 @@ def install_hooks(config_dir: str | None = None, *, dry_run: bool = False) -> in
         print(dim(f"  backup → {settings.name}.bak"))
     settings.write_text(json.dumps(data, indent=2) + "\n")
     print(f"  {green('✓')} hooks installed (PostToolUse fast · Stop full)")
-    print(dim("  They no-op until a project defines .claude/gate.sh — see gates/gate.sh.template."))
+    print(
+        dim(
+            "  They no-op until a project defines .claude/gate.sh — see gates/gate.sh.template."
+        )
+    )
     print("  " + bold("Restart Claude Code") + " to activate.")
     return 0
 
 
-def install_global_claude(config_dir: str | None = None, *, dry_run: bool = False) -> int:
+def install_global_claude(
+    config_dir: str | None = None, *, dry_run: bool = False
+) -> int:
     """Copy gates/global-CLAUDE.md → the global CLAUDE.md, if none exists.
     Never overwrites — a user's existing global context is theirs."""
     src = Path(__file__).resolve().parent / "gates" / "global-CLAUDE.md"
@@ -508,14 +583,20 @@ def install_global_claude(config_dir: str | None = None, *, dry_run: bool = Fals
     rule("Install global CLAUDE.md baseline")
     print(dim(f"  {dest}"))
     if dest.exists():
-        print(yellow("  ! a global CLAUDE.md already exists — left as-is (merge by hand if wanted)"))
+        print(
+            yellow(
+                "  ! a global CLAUDE.md already exists — left as-is (merge by hand if wanted)"
+            )
+        )
         return 0
     if dry_run:
         print(yellow("  --dry-run: would create it. Nothing written."))
         return 0
     target.mkdir(parents=True, exist_ok=True)
     shutil.copy2(src, dest)
-    print(f"  {green('✓')} created — loads in every session on this machine. Keep it tiny.")
+    print(
+        f"  {green('✓')} created — loads in every session on this machine. Keep it tiny."
+    )
     return 0
 
 
@@ -523,10 +604,14 @@ def install_global_claude(config_dir: str | None = None, *, dry_run: bool = Fals
 
 
 def main() -> int:
-    p = argparse.ArgumentParser(description="Fill the 〈slots〉 in the agent harness template.")
+    p = argparse.ArgumentParser(
+        description="Fill the 〈slots〉 in the agent harness template."
+    )
     p.add_argument("--path", default=".", help="repo root (default: cwd)")
     p.add_argument("--dry-run", action="store_true", help="show changes, write nothing")
-    p.add_argument("--force", action="store_true", help="overwrite an already-filled AGENTS.md")
+    p.add_argument(
+        "--force", action="store_true", help="overwrite an already-filled AGENTS.md"
+    )
     p.add_argument("--no-backup", action="store_true", help="skip .bak files")
     p.add_argument(
         "--link-global",
@@ -620,7 +705,10 @@ def main() -> int:
     a["what"] = ask("One or two sentences — what it does and who uses it.")
     a["stack"] = ask("Stack", s.label())
 
-    rule("Architecture rung  " + dim("(§0.7 — default LOW; climb only on a named failure)"))
+    rule(
+        "Architecture rung  "
+        + dim("(§0.7 — default LOW; climb only on a named failure)")
+    )
     print(dim("  Rung 2 (modular monolith) is where most systems should stop.\n"))
     a["rung"] = ask_choice(
         "Current rung:",
@@ -657,12 +745,20 @@ def main() -> int:
     a["gates"] = f"tests · lint · typecheck · coverage ≥ {cov}%"
 
     # dependency-add command, for the guardrail line
-    a["add_dep"] = {
-        "uv": "uv add",
-        "poetry": "poetry add",
-        "pip": "pip install",
-    }.get(s.py_mgr) or ({"npm": "npm install", "pnpm": "pnpm add", "yarn": "yarn add"}.get(s.js_mgr)) or (
-        "go get" if "Go" in s.langs else "uv add / pip install / npm install / go get"
+    a["add_dep"] = (
+        {
+            "uv": "uv add",
+            "poetry": "poetry add",
+            "pip": "pip install",
+        }.get(s.py_mgr)
+        or (
+            {"npm": "npm install", "pnpm": "pnpm add", "yarn": "yarn add"}.get(s.js_mgr)
+        )
+        or (
+            "go get"
+            if "Go" in s.langs
+            else "uv add / pip install / npm install / go get"
+        )
     )
 
     # ── the honest part
@@ -675,7 +771,9 @@ def main() -> int:
         + " are left as TODO.\n"
     )
     print(dim("  Those are the highest-value sections in AGENTS.md, and they're only"))
-    print(dim("  valuable because they're TRUE. A wizard that invents plausible-sounding"))
+    print(
+        dim("  valuable because they're TRUE. A wizard that invents plausible-sounding")
+    )
     print(dim("  gotchas makes the file actively harmful. So: they get a marked TODO."))
     print()
     print("  " + bold("Fill them in as you learn them.") + dim(" The rule:"))
@@ -687,10 +785,16 @@ def main() -> int:
 
     rule("Result")
     print(f"  slots filled:    {green(str(n_slots - left))}")
-    print(f"  slots remaining: {yellow(str(left))} {dim('(examples + TODOs — intentional)')}")
+    print(
+        f"  slots remaining: {yellow(str(left))} {dim('(examples + TODOs — intentional)')}"
+    )
 
     if args.dry_run:
-        print(dim("\n  --dry-run: nothing written (AGENTS.md fill + .claude/ discovery symlinks skipped).\n"))
+        print(
+            dim(
+                "\n  --dry-run: nothing written (AGENTS.md fill + .claude/ discovery symlinks skipped).\n"
+            )
+        )
         return 0
 
     if not ask_yn(f"\n  Write {bold('AGENTS.md')}?", True):

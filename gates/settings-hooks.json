@@ -1,6 +1,8 @@
 {
   "//": "Merged into ~/.claude/settings.json by `python3 init.py --install-hooks`.",
-  "//2": "<HARNESS> is replaced with this repo's absolute path at install time.",
+  "//2": "No paths are baked in: the command resolves the harness at runtime via the",
+  "//3": "~/.claude/skills symlink (created by `init.py --link-global`). New machine =",
+  "//4": "clone anywhere + link once; hooks follow. No link / no dispatch → silent no-op.",
   "hooks": {
     "PostToolUse": [
       {
@@ -8,7 +10,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "<HARNESS>/gates/gate-dispatch.sh fast",
+            "command": "d=\"$(dirname \"$(readlink -f \"${CLAUDE_CONFIG_DIR:-$HOME/.claude}/skills\" 2>/dev/null)\")/gates/gate-dispatch.sh\"; [ -x \"$d\" ] && exec \"$d\" fast; exit 0",
             "timeout": 120
           }
         ]
@@ -19,7 +21,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "<HARNESS>/gates/gate-dispatch.sh full",
+            "command": "d=\"$(dirname \"$(readlink -f \"${CLAUDE_CONFIG_DIR:-$HOME/.claude}/skills\" 2>/dev/null)\")/gates/gate-dispatch.sh\"; [ -x \"$d\" ] && exec \"$d\" full; exit 0",
             "timeout": 600
           }
         ]

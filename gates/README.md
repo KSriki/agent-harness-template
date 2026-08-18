@@ -25,6 +25,10 @@ Claude tries to stop ─▶ Stop hook ────────▶ gate-dispatch.
   (`python3 init.py --install-hooks`) and fires in *every* project — but it only
   acts where the project has opted in by defining `.claude/gate.sh`. Different
   stacks, one convention.
+- **No baked-in paths.** The hook command resolves the harness at fire time via
+  the `~/.claude/skills` symlink (from `init.py --link-global`), so the same
+  `settings.json` works on any machine — clone the harness anywhere, link once,
+  done. No link (or no dispatch script) → silent no-op.
 - **The Stop hook blocks "I'm done" on a red gate** (exit 2 feeds the failures back
   and the agent keeps working). Loop guard: if the gate is still red on the *second*
   stop attempt of a turn, it allows the stop with a loud warning instead of looping
