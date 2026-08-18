@@ -1,4 +1,30 @@
+---
+doc: architecture-patterns-FULL-KB
+version: 1.0.0
+updated: 2026-08-17
+status: active
+source: claude-project:AI Architecture/software-architecture-patterns-knowledge-base.md
+source_version: 1.0.0
+derivation: verbatim
+load: reference-only        # see the read guard below
+review_after: 2026-11-17
+---
+
 # Software Architecture Patterns — Knowledge Base
+
+> ## 🛑 DO NOT READ THIS FILE WHOLE
+>
+> ~1,800 lines. Reading it entirely spends the context budget the four-tier system
+> exists to protect, and dilutes the always-on rules for the rest of the session.
+>
+> **Correct use:** `docs/architecture-patterns.md` cites a §. Open **that § only** —
+> grep for the heading and read the section. If you find yourself wanting the whole
+> file, the real question is which decision you're making; go back to the compressed
+> file and follow its trigger.
+>
+> **When to open it at all:** the decision is expensive or irreversible — storage
+> engine, service boundary, auth model, sync-vs-async, event sourcing, sharding.
+> Cheap and reversible? The compressed file is sufficient.
 
 > A living reference for designing software systems — when to reach for which pattern, how it's actually used in production, and which real-world systems anchor each one.
 > Sibling document to `agentic-frameworks-knowledge-base.md`. That doc is the agent-stack reference; this one is the substrate underneath it. When designing an agent system you're also designing a software system, and most failure modes in the former are failure modes in the latter.

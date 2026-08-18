@@ -1,3 +1,16 @@
+---
+doc: design-doc-template
+version: 1.0.0
+updated: 2026-08-17
+status: active
+source: claude-project:AI Architecture/software-architecture-design-doc-template.md
+source_version: 1.0.0
+derivation: compressed
+load: on-trigger
+triggers: [design doc, RFC, architecture decision, expensive to reverse]
+review_after: 2026-11-17
+---
+
 # Software Architecture Design Doc — Template & Playbook
 
 > A reusable template for writing a software architecture design doc, fused with the decision frameworks from `docs/architecture-patterns-FULL-KB.md`.

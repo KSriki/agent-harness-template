@@ -1,3 +1,15 @@
+---
+doc: engineering-steering-doc
+version: 1.0.0
+updated: 2026-08-17
+status: active
+source: claude-project:AI Architecture/engineering-steering-doc.md
+source_version: 1.0.0
+derivation: verbatim        # kept byte-identical on purpose
+load: always
+review_after: 2026-11-17
+---
+
 # Engineering Steering Doc
 
 > **What this is.** A standing set of engineering standards and working preferences for my projects — written to be dropped into an LLM's system prompt / project instructions, and to read cleanly as human onboarding. It is *self-contained*: a model with only this doc should behave correctly.

@@ -31,6 +31,9 @@ different mechanisms.** Confusing them is the #1 way this setup silently fails.
 | `architecture-patterns.md` | **On-demand** | Via the `architecture-patterns` skill |
 | `design-doc-template.md` | **On-demand** | Via the `write-design-doc` skill |
 | `multi-agent-orchestration.md` | **On-demand** | Via the `orchestrate-agents` skill |
+| `architecture-patterns-FULL-KB.md` | **Reference-only** | Opened at a cited § — never read whole |
+| `agentic-frameworks-knowledge-base.md` | **Reference-only** | Opened at a cited § (steering cites "Agentic KB §x") — never read whole |
+| `CHANGELOG.md` | **Never loaded** | Human record of promotions |
 | `design/*.md` | **On-demand** | The filled-in design docs for *this* system |
 
 ### Why the steering doc is always-on and the others are NOT
@@ -71,12 +74,39 @@ Cheap/reversible (→ the summary is fine): a library choice · a cache TTL · n
 
 The honest risk of duplication: they diverge, and nobody notices.
 
-- **The full docs are the source of truth.** Edit them first.
-- **The compressed version is derived.** When the KB's *decision rules* change,
-  regenerate it. When only prose/examples change, don't bother.
-- **The steering doc is short enough to keep byte-identical** in both places. Do that.
-- **Cheap check:** if an agent ever cites a § that doesn't exist, or gives advice
-  the KB contradicts, the compression has drifted. Fix it then.
+- **The full docs are the content source.** Edit them first.
+- **The repo is the durable record.** Git is where a change persists and is versioned.
+  These are different axes, not a contradiction — content flows project → repo;
+  durability lives in git.
+- **The compressed version is derived.** When the source's *decision rules* change,
+  regenerate it. When only prose or examples change, don't bother.
+- **Never edit a derived file in place.** Fix the source and re-derive. Editing the
+  copy gives it improvements the source doesn't have, and then neither one is right —
+  this is exactly how the two forked last time.
+- **The steering doc stays byte-identical** in both places (`derivation: verbatim`).
+
+### How you can actually tell
+
+Every file here carries a provenance header. The field that does the work is
+`source_version`:
+
+| Question | Answer |
+|---|---|
+| Is this copy current? | `source_version` == the source doc's current version |
+| Is it a summary or the whole truth? | `derivation: compressed` vs `verbatim` |
+| Has anyone confirmed it lately? | `last_verified` / `review_after` |
+
+**Monthly, one question in the project:** *"what version is each doc at?"* — diff
+against these headers. Manual by necessity: Claude Code can't read Project knowledge
+and the project can't read the repo, so no automated check can span the gap. Pretending
+otherwise produces a check that silently passes.
+
+**Log every promotion** in [`CHANGELOG.md`](./CHANGELOG.md). A PR that changes `docs/`
+without touching the changelog is a promotion with no record — that's how this
+discipline quietly stops being followed in month three. Worth a gate.
+
+- **Still worth keeping:** if an agent cites a § that doesn't exist, or gives advice
+  the source contradicts, the compression has drifted. Fix it then.
 
 ---
 

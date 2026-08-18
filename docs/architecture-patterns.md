@@ -1,4 +1,22 @@
+---
+doc: architecture-patterns
+version: 1.0.0
+updated: 2026-08-17
+status: active
+source: docs/architecture-patterns-FULL-KB.md
+source_version: 1.0.0
+derivation: compressed
+compression_ratio: 0.14
+load: on-trigger
+triggers: [architecture, pattern, scaling, database, caching, resilience, sync-vs-async]
+review_after: 2026-11-17
+---
+
 # Architecture Patterns — Agent Reference
+
+> **Derived doc** (`derivation: compressed`, ~14% of the source). Decision rules and
+> triggers only — when detail matters, open the FULL KB at the cited §; say you are
+> reading a derivation rather than inferring detail this file doesn't carry.
 
 > **Compressed operational version** of `docs/architecture-patterns-FULL-KB.md`
 > (~1,800 lines). This file is **decision rules and triggers**, not exposition —
