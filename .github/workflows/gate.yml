@@ -1,0 +1,26 @@
+# Layer 3 — the gate nothing talks its way past.
+# Runs the SAME .claude/gate.sh the local hooks run: one definition of done.
+# Branch protection on main requiring the `gate` check is what makes
+# "PRs do not merge on red" physics — enable it in repo settings.
+name: gate
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  gate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      # This repo is stdlib-only; the gate's tools are the only installs.
+      - run: pip install ruff pytest
+
+      - name: Run the gate (same script the local hooks run)
+        run: ./.claude/gate.sh full

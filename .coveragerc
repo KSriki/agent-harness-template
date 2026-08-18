@@ -1,0 +1,6 @@
+# Coverage config for the gate. Test files are excluded from the measurement —
+# counting them inflates the number (steering §3: a floor signal, not a trophy).
+[run]
+omit =
+    orchestrator_engine/tests/*
+    orchestrator_engine/__main__.py
