@@ -83,7 +83,8 @@ not a shortcut.
    Continuing → read `PRODUCT.md` + `REGISTRY.md` (repo strategy, stacks,
    deploy targets), `.orchestrator/state.json`, the tickets, `DEFECTS.md`,
    prior branches — never re-plan finished work. Read `learnings` at startup.
-   Beads-tracked repos (`docs/agents/issue-tracker.md`): the frontier is
+   Beads-tracked repos (`docs/agents/harness-config.md` Tracker section;
+   legacy fallback: `docs/agents/issue-tracker.md`): the frontier is
    `bd ready --json`, assignment is `bd update <id> --claim` (atomic — no
    double-dispatch); mid-slice discoveries are filed with `discovered-from`,
    never improvised into the build. **Beads is the WORK GRAPH only** —

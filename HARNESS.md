@@ -26,7 +26,7 @@ python3 init.py --link-global --install-hooks --global-claude
 ```
 
 **Once per project** — in the project, in Claude Code, say **"set up the agent
-harness here"** (`init-agent-harness`). It scaffolds `AGENTS.md` (guardrails +
+harness here"** (`setup-harness`). It scaffolds `AGENTS.md` (guardrails +
 your commands), the quality gate, and the CI file. Fill the Commands table
 honestly; add Gotchas as you learn them.
 
@@ -113,7 +113,7 @@ a cited § when a decision is expensive to reverse.)
 | `writing-for-agents` | The craft of agent-facing docs: pointers, hierarchy, completion criteria, pruning |
 | `wait-what` | User-invoked: "re-pitch that in plain English" when an answer doesn't land |
 | `evolve-harness` | Grow the harness itself — new skill/rule from a repeated correction, **human-gated** |
-| `init-agent-harness` | Scaffold a project's context (AGENTS.md + CLAUDE.md + docs) from your global link — no installer script |
+| `setup-harness` | Per-project first pass: context (AGENTS.md + CLAUDE.md + docs), gate + CI, tracker, config doc — no installer script |
 
 **Subagents** (own context window)
 `orchestrator` (the manager — spawns the fleet, backed by the deterministic `orchestrator_engine/`) · `code-searcher` · `test-writer` · `design-reviewer` · `debug-research` · `security-reviewer` · `deploy-reviewer` · `trend-scout` · `implementer` (+ `frontend-` / `backend-` variants) — organized in `agents/` by department: orchestration · engineering · qa · review · research

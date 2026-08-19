@@ -16,6 +16,26 @@ would it now be wrong?* If yes, major. If it would merely be missing something, 
 
 ---
 
+## 2026-08-19
+
+- `skills/init-agent-harness` → **`skills/setup-harness`** (MAJOR — agent-breaking rename, no alias; ticket agent-harness-template-6zd, PRD `harness-prd-setup-harness.md` fresh-repo slice)
+  - The per-project first pass now also: creates `.claude/gate.sh` from the
+    template and **proves it green** (autofixable findings → one propose+apply
+    confirm; substantive findings → reported, gate left honestly red — full
+    fix-routing is ticket 04), copies the CI workflow, runs `bd init` when
+    tracker = Beads, writes `docs/agents/harness-config.md` from
+    `docs/harness-config-template.md` (uninterviewed sections marked
+    `TODO — ticket 03's interview`), and ends on the customization map.
+    The three-way rule (interview decisions · self-heal mechanics ·
+    hard-stop dependencies) is canonical in the skill body. Every mechanic
+    is idempotent — re-running changes nothing, never clobbers.
+  - `docs/agents/issue-tracker.md` is superseded: consumers (orchestrator
+    step 4, the skill) now read the config doc's Tracker section, with
+    `issue-tracker.md` accepted as a legacy fallback.
+  - **Re-check:** anything that invokes `init-agent-harness` by name (it no
+    longer exists), and any procedure that reads `docs/agents/issue-tracker.md`
+    as the primary tracker record.
+
 ## 2026-08-18
 
 - `skills/grill-me` — → **2.0.0** (MAJOR — agent-breaking; upstream mattpocock v1.2, firewall-reviewed)

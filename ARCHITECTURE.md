@@ -81,7 +81,7 @@ repo/
 │   ├── writing-for-agents/      #   ← the craft of agent-facing docs (pointers, pruning)
 │   ├── wait-what/               #   ← user-invoked: re-pitch the last answer plainly
 │   ├── evolve-harness/          #   ← grow the harness itself (human-gated)
-│   └── init-agent-harness/      #   ← scaffold per-project context + tracker/labels/glossary
+│   └── setup-harness/           #   ← per-project first pass: context + gate + CI + tracker + config doc
 │
 ├── agents/                      # TIER 4 — delegated, own context (departments)
 │   ├── README.md                #   when to delegate · model routing · frontmatter guide

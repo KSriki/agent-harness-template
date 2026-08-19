@@ -27,7 +27,8 @@ design decision → `write-design-doc`. You're breaking it into buildable ticket
 
 ## Prerequisites
 
-- The project's tracker + label vocabulary configured (via `init-agent-harness`):
+- The project's tracker + label vocabulary configured (via `setup-harness` —
+  recorded in `docs/agents/harness-config.md`, Tracker section):
   〈GitHub via `gh` · GitLab via `glab` · local files under `.scratch/`〉.
 
 ## Procedure

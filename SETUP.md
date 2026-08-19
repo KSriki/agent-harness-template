@@ -5,7 +5,7 @@
 1. **New machine** → §0 "global toolkit": clone + `python3 init.py --link-global
    --install-hooks --global-claude` + restart. Done — every project sees the suite.
 2. **New / existing project** → §0 install paths, then §1 wizard (or the
-   `init-agent-harness` skill from inside the project) → fill Commands → §3
+   `setup-harness` skill from inside the project) → fill Commands → §3
    security → §6 verify it actually loads.
 3. **Daily use** → you don't read this file; see "How to use it" in
    [`HARNESS.md`](./HARNESS.md) — say what you want, the routing does the rest.
@@ -54,7 +54,7 @@ cd ~/agent-harness && python3 init.py --link-global
 - **This gives you the skills/subagents everywhere — NOT the guardrails.** Those ride
   in each project's committed `AGENTS.md`. Global toolkit + per-project context is the
   intended split.
-- To set up that per-project context, just run the **`init-agent-harness` skill** inside
+- To set up that per-project context, just run the **`setup-harness` skill** inside
   the project — it scaffolds `AGENTS.md` + `CLAUDE.md` + `docs/` from your global harness,
   no installer script needed. (The scripted `bash install.sh <project>` still works if you
   prefer.)
@@ -70,7 +70,7 @@ python3 init.py --install-hooks     # once per machine: PostToolUse (lint, fast)
 python3 init.py --global-claude     # optional: tiny machine-wide CLAUDE.md baseline
 ```
 
-Per project, `init-agent-harness` installs `.claude/gate.sh` (the single source of
+Per project, `setup-harness` installs `.claude/gate.sh` (the single source of
 truth for "done" — the hooks and CI both run it) and `.github/workflows/gate.yml`.
 Then enable **branch protection requiring the `gate` check** — that setting, not any
 file, is what makes "PRs do not merge on red" un-bypassable.
@@ -156,7 +156,7 @@ skills/
   observability/        ← delete if something else owns prod monitoring + on-call
   review-pr/            ← keep if you review PRs (you do)
   orchestrate-agents/   ← keep if you ship with parallel agents (the multi-agent setup)
-  init-agent-harness/   ← keep; scaffolds per-project context + tracker/labels/glossary
+  setup-harness/        ← keep; the per-project first pass: context + gate + CI + tracker + config doc
   grill-me/ wayfinder/ write-a-prd/ prd-to-issues/ tdd/   ← the SDLC loop (steering §4.5)
   codebase-design/ domain-modeling/ improve-codebase-architecture/ handoff/  ← design vocab + upkeep
   graphify/             ← delete if you don't use the graphify CLI (needs `uv tool install graphifyy`)
