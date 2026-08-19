@@ -60,9 +60,14 @@ review_after: 2026-11-18
 
 ## Agent isolation
 
-> GUIDANCE: worktrees are the default (cheap, git-native). Docker/devcontainer
-> is a rung up — climb only for a named failure (untrusted deps, system deps,
-> destructive tests).
+> GUIDANCE: worktrees are the default (cheap, git-native) — but they isolate
+> FILE EDITS only, never the OS: workers share env, credentials, and network
+> (two 2026 worktree CVEs; require Claude Code ≥ 2.1.163). OS-level controls are
+> the sandbox settings' job. Docker/devcontainer is a rung up — the NAMED
+> triggers, per Anthropic's isolation ladder: (a) you pass
+> `--dangerously-skip-permissions` / run fully unattended, (b) a worker must
+> execute untrusted third-party code or unreviewed deps, (c) you need MCP
+> servers/hooks inside the boundary (the Bash sandbox structurally can't).
 
 - **Isolation:** 〈git worktrees (default) | Docker/devcontainer: 〈image/config〉〉
 - **Parallel dispatch:** 〈allowed | single-threaded only〉 · ownership boundaries per 〈component registry | AGENTS.md Layout〉

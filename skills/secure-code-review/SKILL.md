@@ -193,6 +193,11 @@ already in the lockfile. **Propose it; do not install it.**
 - [ ] **Its own dependency tree** — you're trusting all of it, transitively.
 - [ ] **License** compatible.
 - [ ] **Pin + lock it.** Exact versions, committed lockfile.
+- [ ] **Diff the agent-config surface after ANY install or lockfile change:**
+  `git diff .claude/settings*.json .mcp.json .vscode/tasks.json` — install-time
+  worms plant `SessionStart` hooks and `folderOpen` tasks there (the 2026-08
+  keyv/cacheable npm worm did exactly this). A hook you didn't add is an
+  incident, not a diff to skim.
 
 ```bash
 〈uv pip list --outdated〉  〈npm audit〉  〈pip-audit〉  〈govulncheck ./...〉

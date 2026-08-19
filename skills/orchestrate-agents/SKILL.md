@@ -57,6 +57,14 @@ merge is a rewrite. Define the types/signatures/API first, in the main thread.
 Each worker runs in its own git worktree — a separate working directory backed by
 the one shared `.git`, so parallel edits never touch the same file state.
 
+**Worktrees isolate FILE EDITS, not the operating system** — workers still share
+the host's env, credentials, and network (Anthropic's own wording: worktrees "are
+not operating-system sandboxes"). Two 2026 CVEs attacked exactly this mechanism
+(CVE-2026-55607 sandbox escape via worktree path confusion, fixed in Claude Code
+2.1.163; CVE-2026-40068 trust-dialog bypass via worktree spoofing, fixed 2.1.84)
+— **run Claude Code ≥ 2.1.163**, and treat OS-level isolation as the sandbox
+settings' job, not the worktree's.
+
 Two ways:
 - **Subagent frontmatter:** the `implementer` agent declares `isolation: worktree`,
   so each spawned instance gets a fresh worktree automatically.

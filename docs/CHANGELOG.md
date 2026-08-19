@@ -97,3 +97,16 @@ TEMPLATE — copy for the next entry:
   - What changed, in terms of what an agent would now do differently.
   - **Re-check:** <MAJOR only — what has to be revisited>
 -->
+
+## 2026-08-19 — isolation survey adoptions (P1/P2/P4/P5; human-approved)
+
+- `orchestrate-agents` MINOR: worktrees = file isolation, NOT an OS boundary;
+  Claude Code ≥ 2.1.163 floor (two 2026 worktree CVEs).
+- `harness-config-template` MINOR: named container triggers (unattended /
+  untrusted code / MCC-in-boundary) per Anthropic's isolation ladder.
+- `secure-code-review` MINOR: §4 post-install diff of .claude/settings*.json,
+  .mcp.json, .vscode/tasks.json (npm-worm hook persistence).
+- `.claude/settings.json`: guardrail-6 ask-rules on governing paths (P2).
+- `orchestrator` PATCH: Go recorded as the language IF the event-driven rung is
+  ever earned; engine stays Python CLI until then.
+- Deferred: P3 Bash-sandbox trial until Claude Code ≥ 2.1.221 (currently 2.1.197).

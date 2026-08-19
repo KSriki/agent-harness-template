@@ -1,4 +1,25 @@
 {
+  "//": "Guardrail 6, OS-enforced (isolation survey P2, 2026-08-19): edits to the",
+  "//2": "files that govern agent behavior prompt the human — the gate mechanized,",
+  "//3": "not a new rule. 'ask' (not 'deny') so evolve-harness can still draft diffs.",
+  "//4": "SessionStart hook is bd's (Beads context priming) — diff this file after",
+  "//5": "any install: hooks here are the npm-worm persistence slot (P4).",
+  "permissions": {
+    "ask": [
+      "Edit(/skills/**)",
+      "Write(/skills/**)",
+      "Edit(/agents/**)",
+      "Write(/agents/**)",
+      "Edit(/AGENTS.md)",
+      "Write(/AGENTS.md)",
+      "Edit(/docs/engineering-steering-doc.md)",
+      "Write(/docs/engineering-steering-doc.md)",
+      "Edit(/gates/**)",
+      "Write(/gates/**)",
+      "Edit(/.claude/gate.sh)",
+      "Write(/.claude/gate.sh)"
+    ]
+  },
   "hooks": {
     "SessionStart": [
       {

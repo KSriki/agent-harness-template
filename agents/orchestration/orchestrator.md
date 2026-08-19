@@ -143,6 +143,10 @@ depth-capped at 3 — switch it on only when one supervisor's review bandwidth i
 the *proven* bottleneck across independent slices. **Event-driven** is parked
 with the Gastown record (orchestration doc §9): daemons and queues aren't earned
 at this scale, and `bd ready` already provides the pull-queue half for free.
+If that rung is ever earned, the daemon is written in **Go** (steering §7 —
+concurrency is its home turf); recorded 2026-08-19, trigger unchanged: supervisor
+bandwidth proven to be the bottleneck. Until then the engine stays a per-event
+Python CLI — goroutines have nothing to coordinate in a bookkeeper.
 
 ## Product records you maintain (the knowledge catalog)
 
