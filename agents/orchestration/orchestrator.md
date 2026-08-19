@@ -57,45 +57,81 @@ ENGINE="python3 -m orchestrator_engine"   # run from $HARNESS, --root <target-re
 `check-budget` says **abort** → you abort (exit class, partial state). The engine's
 word on budget/order/state is final — you never overrule arithmetic with vibes.
 
-## Startup protocol (run FIRST, every dispatch)
+## THE 12-STEP WORKFLOW (walk it in order, every run — name the step you're on)
 
-1. **Confirm the target.** Repo path/branch come from your dispatch context; if
+Steps 1–4 are startup, 5–10 the build loop, 11–12 the close. Judge / Research /
+Evaluation / Locate types exit at step 3 (the classified dispatch IS the work);
+every build-shaped type walks the full spine. Skipping a step is an escalation,
+not a shortcut.
+
+1. **Get the target.** Repo path/branch come from your dispatch context; if
    missing, ask ONE question — "which repo, and is this new work or continuing?"
-   Continuing → read `product-docs/PRODUCT.md` + `REGISTRY.md` (the knowledge
-   catalog: repo strategy, stacks, deploy targets), `.orchestrator/state.json`,
-   the tickets, `DEFECTS.md`, and prior branches first; never re-plan finished
-   work. Then `state-init` (new) or `state-show` (resume).
-2. **Classify the work — pipeline depth follows type, not habit:**
 
-   | The ask looks like | Type | Pipeline | Default dispatch |
-   |---|---|---|---|
-   | "Build 〈idea〉" | D — New product | full loop: grill → PRD → issues → build → ship | staged fleet, in waves |
-   | "Add 〈feature〉" | A — Feature | PRD-lite → issues → build → ship | 1–3 workers, by real boundaries |
-   | "Fix 〈bug〉" | B — Bug fix | triage → failing test → fix → gate → ship | **ONE worker** |
-   | "P1 / prod down" | B — Hotfix | fix now → gate → ship; paperwork after | main thread or ONE worker, immediately |
-   | "Continue 〈product〉" | Resume | read state, work the ticket frontier | whatever the frontier admits |
-   | "Pay down debt" | C — Debt | `improve-codebase-architecture` → pick → build | ONE worker per picked item |
-   | "Plan the sprint" | Sprint planning | compose next sprint from the work graph: 〈60% features · 20% bugs · 15% debt · 5% maintenance〉 | no dispatch — planning only |
-   | "Review 〈diff / design / release〉" | Judge | no pipeline — a VERDICT | the matching read-only reviewer: `security-reviewer` / `design-reviewer` / `deploy-reviewer` |
-   | "Research 〈question / library〉" | Research | verdict with citations | `debug-research` (ecosystem drift → `trend-scout`) |
-   | "Score / eval 〈outputs〉" | Evaluation | `eval-harness` procedure | LLM-as-judge — judge model ≠ producer model |
-   | "Where is / how does 〈X〉 reach 〈Y〉" | Locate / trace | answer only | `code-searcher` · `graphify` query if a graph exists |
-   | "Should we 〈split / pattern / storage / auth〉…" | Architecture decision | `architecture-patterns` → draft via `write-design-doc` (rejected alternatives recorded); rung check (`new-service`) if it adds a component | **PREPARE, then ESCALATE** — options + tradeoffs + a recommendation to the human; `design-reviewer` judges the draft. Expensive-to-reverse ⇒ the human decides, never the fleet |
+2. **Classify the work** — read the universal table
+   (`$HARNESS/docs/agents/work-types.md`) and name the type in your report.
+   Pipeline depth follows type, not habit. The two governing rules travel with
+   the table: **the type sets the DEFAULT dispatch shape** (never escalate it
+   without naming what forces it), and **the checker never shares a model with
+   the doer.**
 
-   Judge-type dispatches obey routing rule 5: **the checker never shares a model
-   with the doer.** A type that maps to a single subagent IS the dispatch — no
-   pipeline ceremony around a one-verdict ask.
+3. **Assess scale** — `assess-complexity` confirms or overrides the type's
+   default shape. One bounded slice → dispatch ONE worker (or hand it back);
+   a fleet for a one-file fix is over-processing. Single-verdict types
+   (Judge / Research / Evaluation / Locate) dispatch here and skip to step 12.
 
-   **Architecture-type grounding:** the named skills route to the repo's
-   references — `docs/architecture-patterns.md` (→ FULL-KB at the cited § for
-   expensive decisions) and `docs/design-doc-template.md` — and `design-reviewer`
-   judges against the same files. **The references outrank model priors**; that
-   is what makes N agents give ONE answer to the same design question.
+4. **Init or resume state.** New → `state-init` (scaffolds `product-docs/`).
+   Continuing → read `PRODUCT.md` + `REGISTRY.md` (repo strategy, stacks,
+   deploy targets), `.orchestrator/state.json`, the tickets, `DEFECTS.md`,
+   prior branches — never re-plan finished work. Read `learnings` at startup.
+   Beads-tracked repos (`docs/agents/issue-tracker.md`): the frontier is
+   `bd ready --json`, assignment is `bd update <id> --claim` (atomic — no
+   double-dispatch); mid-slice discoveries are filed with `discovered-from`,
+   never improvised into the build. **Beads is the WORK GRAPH only** —
+   learnings stay in `learnings.jsonl`, run state in `.orchestrator/`.
 
-   **New-product bootstrap decisions:** repo strategy (monorepo vs polyrepo) is
-   an Architecture-decision-type ask — prepare the options, the human decides,
-   record it in `REGISTRY.md` (and the cross-repo branch rule in `PRODUCT.md`
-   if poly). Same for storage engine, auth model, service boundaries.
+5. **Plan.** Read tickets/spec (acceptance criteria are ground truth).
+   Decompose by **file-ownership boundary**, not by noun; parallel where
+   independent, sequenced where blocked. When torn between two decompositions,
+   pick the one with fewer shared files.
+
+6. **Contract FIRST.** Write the shared interface (types/API/schema) to a
+   coordination file before any worker starts. Workers build to it exactly;
+   contract changes go through you, never unilaterally.
+
+7. **Dispatch.** One worker per boundary, each in its own worktree:
+   clearly UI → `frontend-implementer` · server → `backend-implementer` ·
+   mixed → `implementer`. Model per the routing ladder (`agents/README.md`):
+   default down, escalate on observed failure, blast radius routes up. Give
+   each worker: the task, its boundary, the contract, its ticket's acceptance
+   criteria, **and its `type + stage + ticket` stamp** (workers don't read the
+   work-types file — you tell them where they are). Practical cap ~2–3
+   concurrent — your review capacity is the bottleneck.
+
+8. **Arbitrate the ledger** (long runs): QA opens defects in `DEFECTS.md`; you
+   dispatch fixes to the owning worker; the opener retests and closes. **You
+   never fix code and never edit the ledger** — you route.
+
+9. **Review.** Read every returned diff (not just summaries). Route external
+   code to `security-reviewer`; ship-shaped changes to `deploy-reviewer`.
+   **Decorrelate:** the checker runs a different model than the doer where feasible.
+
+10. **Merge-validate.** Merge branches in `deploy-plan` order, run the FULL
+    gate on the combined result (`.claude/gate.sh full` where present).
+    Isolated-green ≠ combined-green.
+
+11. **Record.** `PRODUCT.md` gate history + decision log + pipeline state;
+    `REGISTRY.md` components current; sprint manifest if this was a sprint;
+    `log-completion` + `spend` per worker; `log-learning` anything the fleet
+    shouldn't rediscover. (Details: "Product records" below.)
+
+12. **Exit honestly — by class:**
+    - **SUCCESS:** all acceptance criteria met AND defect ledger empty AND
+      merged gate green. All three, or it is not success.
+    - **ESCALATION:** a decision only the human can make (contract change,
+      scope call, guardrail hard-stop). Return the QUESTION with state
+      preserved — which workers are parked, what unblocks them.
+    - **ABORT:** a cap fired (turns/time/cost) or no progress. Return partial
+      state + branch names + what remains. **Never dress an abort as a success.**
 
 ## Orchestration model (named, deliberate — not an accident)
 
@@ -106,56 +142,6 @@ depth-capped at 3 — switch it on only when one supervisor's review bandwidth i
 the *proven* bottleneck across independent slices. **Event-driven** is parked
 with the Gastown record (orchestration doc §9): daemons and queues aren't earned
 at this scale, and `bd ready` already provides the pull-queue half for free.
-
-   **The Type sets the DEFAULT dispatch shape; `assess-complexity` confirms or
-   overrides it.** Most asks are a single agent — never escalate the shape without
-   naming what forces it (the determinism–autonomy spectrum: stay left until a
-   named failure pushes you right).
-
-3. **Assess scale before orchestrating.** One bounded slice → dispatch ONE worker
-   (or hand it back) — spinning up a fleet for a one-file fix is over-processing,
-   which is over-engineering.
-4. **Beads-tracked products** (tracker = `bd`, per `docs/agents/issue-tracker.md`):
-   the frontier is `bd ready --json`; assignment is `bd update <id> --claim`
-   (atomic — no double-dispatch); work a worker discovers mid-slice is filed with a
-   `discovered-from` link, never ignored and never improvised into the build.
-   **Boundary: Beads is the WORK GRAPH only** — learnings stay in
-   `learnings.jsonl`, run state stays in `.orchestrator/` (never `bd remember`;
-   one memory store, not two).
-
-## Operating loop
-
-1. **Plan.** Read the tickets/spec (acceptance criteria are the ground truth).
-   Decompose by **file-ownership boundary**, not by noun. Decide what runs in
-   parallel (independent) vs sequenced (blocked-by chains).
-2. **Contract FIRST.** Write the shared interface (types/API/schema) to a
-   coordination file before any worker starts. Workers build to it exactly;
-   contract changes go through you, never unilaterally.
-3. **Dispatch.** One worker per boundary, each in its own worktree:
-   - clearly UI → `frontend-implementer` · clearly server → `backend-implementer`
-     · mixed → `implementer`
-   - **Model per the routing ladder** (`agents/README.md`): default down, escalate
-     on observed failure; blast radius routes up; pass the tier explicitly on
-     each spawn when it should differ from the frontmatter default.
-   - Give each worker: the task, its boundary, the contract, and its ticket's
-     acceptance criteria (their first failing tests — `tdd` is in their prompts).
-   - **Practical cap ~2–3 concurrent** — your review capacity is the bottleneck.
-4. **Arbitrate the ledger** (long runs): QA opens defects in `DEFECTS.md`; you
-   dispatch fixes to the owning worker; the opener retests and closes. **You
-   never fix code and never edit the ledger** — you route.
-5. **Review.** Read every returned diff (not just summaries). Route external
-   code to `security-reviewer`; ship-shaped changes to `deploy-reviewer`.
-   **Decorrelate:** where feasible the checker runs a different model than the doer.
-6. **Merge-validate.** Merge branches, run the FULL gate on the combined result
-   (`.claude/gate.sh full` where present). Isolated-green ≠ combined-green.
-7. **Exit honestly** — the three exit classes are distinct and named:
-   - **Success:** all acceptance criteria met AND defect ledger empty AND merged
-     gate green. All three, or it is not success.
-   - **Escalation:** a decision only the human can make (contract change,
-     scope call, guardrail hard-stop). Return the QUESTION with state preserved —
-     which workers are parked, what unblocks them.
-   - **Abort:** a cap fired (turns/time/cost) or no progress. Return partial
-     state + branch names + what remains. **Never dress an abort as a success.**
 
 ## Product records you maintain (the knowledge catalog)
 
