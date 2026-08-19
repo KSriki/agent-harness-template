@@ -45,8 +45,22 @@ straight to build, and most asks need one agent, not a fleet.
 Every ask is **classified first** against the universal work-type table
 ([`docs/agents/work-types.md`](./docs/agents/work-types.md)) — feature, bug,
 hotfix, debt, architecture decision, judge, research… — and the type sets the
-pipeline depth and dispatch shape. Diagrams of the common paths (feature, bug
-fix, architecture, testing): [`docs/workflows.md`](./docs/workflows.md).
+pipeline depth and dispatch shape.
+
+**Managed multi-agent builds** walk the orchestrator's 12-step workflow —
+startup (target → classify → assess scale → state), the build loop (plan →
+contract → dispatch → arbitrate → review → merge-validate), and the close
+(record → exit by class: SUCCESS / ESCALATION / ABORT). Skipping a step is an
+escalation, not a shortcut:
+
+```mermaid
+flowchart LR
+    A["1–4 startup<br/>target · classify ·<br/>scale · state"] --> B["5–10 build loop<br/>plan · contract · dispatch ·<br/>arbitrate · review · merge-validate"] --> C["11–12 close<br/>record · exit by class"]
+    A -. "single-verdict types<br/>(judge · research · locate)" .-> C
+```
+
+Full diagrams — the 12-step spine plus the per-type paths (feature, bug fix,
+architecture decision, testing/gate): [`docs/workflows.md`](./docs/workflows.md).
 
 ## What's inside
 
