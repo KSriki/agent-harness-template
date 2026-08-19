@@ -65,6 +65,12 @@ Where does it belong — if anywhere?
 | **Big-input / small-output** delegable work | a subagent (`agents/<name>.md`) | its tokens shouldn't touch main context |
 | Needed **once** | just say it in the thread | institutionalizing it is bloat |
 
+**Always-on additions pay rent forever.** Adding a line to an always-on file
+(the steering doc, `AGENTS.md` top matter) requires **naming what you remove or
+demote to a lower tier in the same diff** — the budget holds. If nothing can be
+demoted, the rule probably isn't universal: route it to a skill, an agent file,
+or the repo's `harness-config.md`.
+
 **Default answer to "should this be a *new* skill?" is often "no — extend an
 existing one."** Overlapping skills are the #1 failure mode: the model opens the
 wrong one and confidently follows the wrong procedure. Prefer editing an existing
