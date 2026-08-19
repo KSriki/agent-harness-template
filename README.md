@@ -42,6 +42,12 @@ definition of done — edit-time hooks, turn-end hooks, and CI all run it.
 And the rule of scale: the pipeline is for non-trivial work; a typo fix goes
 straight to build, and most asks need one agent, not a fleet.
 
+Every ask is **classified first** against the universal work-type table
+([`docs/agents/work-types.md`](./docs/agents/work-types.md)) — feature, bug,
+hotfix, debt, architecture decision, judge, research… — and the type sets the
+pipeline depth and dispatch shape. Diagrams of the common paths (feature, bug
+fix, architecture, testing): [`docs/workflows.md`](./docs/workflows.md).
+
 ## What's inside
 
 | Path | What it is |

@@ -31,6 +31,8 @@ different mechanisms.** Confusing them is the #1 way this setup silently fails.
 | `architecture-patterns.md` | **On-demand** | Via the `architecture-patterns` skill |
 | `design-doc-template.md` | **On-demand** | Via the `write-design-doc` skill |
 | `multi-agent-orchestration.md` | **On-demand** | Via the `orchestrate-agents` skill |
+| `agents/work-types.md` | **On-demand** | Universal work classification — read by entry points (orchestrator step 2, main thread) at classify time |
+| `workflows.md` | **On-demand** | Diagrams of the common paths (spine, feature, bug, architecture, testing) — pictures over the canonical files |
 | `architecture-patterns-FULL-KB.md` | **Reference-only** | Opened at a cited § — never read whole |
 | `agentic-frameworks-knowledge-base.md` | **Reference-only** | Opened at a cited § (steering cites "Agentic KB §x") — never read whole |
 | `CHANGELOG.md` | **Never loaded** | Human record of promotions |

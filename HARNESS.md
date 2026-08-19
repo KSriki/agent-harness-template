@@ -30,7 +30,9 @@ harness here"** (`init-agent-harness`). It scaffolds `AGENTS.md` (guardrails +
 your commands), the quality gate, and the CI file. Fill the Commands table
 honestly; add Gotchas as you learn them.
 
-**Daily — just say what you want; the skill routing does the rest:**
+**Daily — just say what you want; the skill routing does the rest** (this table
+is the human view of [`docs/agents/work-types.md`](./docs/agents/work-types.md),
+the universal classification — if they drift, that file wins):
 
 | You say | What fires |
 |---|---|
