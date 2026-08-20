@@ -110,3 +110,16 @@ TEMPLATE — copy for the next entry:
 - `orchestrator` PATCH: Go recorded as the language IF the event-driven rung is
   ever earned; engine stays Python CLI until then.
 - Deferred: P3 Bash-sandbox trial until Claude Code ≥ 2.1.221 (currently 2.1.197).
+
+## 2026-08-20 — Anthropic eval/caps survey adoptions (P1/P2/P3+P5 stance; human-approved)
+
+- `eval-harness` MINOR: pass@k vs pass^k, declared noise floor (~3pp start),
+  N-trials rule for agents; judge "Unknown" out + isolated judge per dimension;
+  corrected the pin-temp/seed failure-mode row for stochastic agents.
+- `evals/README` MINOR: mirrored trial/noise bullets + recorded framework
+  stance (hand-rolled first; hosted eval platforms = guardrail-2 egress).
+- `agents/README` MINOR: control point 4 — runtime subagent caps (depth /
+  concurrency / max_budget_usd, ≥2.1.217); effort named the primary Opus 5
+  cost dial (eval-driven sweep).
+- `.claude/settings.json`: depth 3 / concurrent 8 pinned (arm on update).
+- `orchestrator` PATCH: check-budget reframed as warn band inside the hard caps.

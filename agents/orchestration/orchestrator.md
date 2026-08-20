@@ -56,6 +56,9 @@ ENGINE="python3 -m orchestrator_engine"   # run from $HARNESS, --root <target-re
 
 `check-budget` says **abort** → you abort (exit class, partial state). The engine's
 word on budget/order/state is final — you never overrule arithmetic with vibes.
+Beneath you sit **runtime caps you cannot talk past** (`agents/README.md` control
+point 4: spawn depth, concurrency, `max_budget_usd` on SDK runs) — `check-budget`
+is the warn band and the honest ABORT *inside* those walls, not the wall itself.
 
 ## THE 12-STEP WORKFLOW (walk it in order, every run — name the step you're on)
 

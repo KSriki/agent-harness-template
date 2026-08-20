@@ -94,6 +94,11 @@ The judge is a component under test too. Treat it as one.
   last) slot.
 - **A different model than the one under test**, where feasible. Self-judging
   inflates.
+- **Give the judge a way out** — an explicit "Unknown / not enough information"
+  verdict. A judge forced to score everything scores noise confidently.
+- **One judge per rubric dimension**, isolated — a single judge scoring all
+  dimensions at once bleeds them into each other (a fluent answer scores
+  "grounded" better than it should).
 
 **Validate the judge against humans — this is the step people skip.** Score
 〈30–50〉 cases by hand, compare to the judge, measure agreement (κ or raw). If the
@@ -153,6 +158,15 @@ output alone. This is the observability requirement, applied to the model tier.
 - **Track cost and latency per run**, not just quality. A prompt that's 2% better
   and 3× the tokens is usually a bad trade — and you can only see that if you
   measure it.
+- **Agent evals need trials, not runs — and a noise floor.** One trial per case
+  measures luck: report **pass@k** for capability suites ("can it ever?") and
+  **pass^k** for regression suites ("does it, reliably?") — a 75% per-trial agent
+  passes 3-of-3 only ≈42% of the time, so a "flaky regression" may just be
+  arithmetic. And **declare the noise floor**: Anthropic measured ~6pp of spread
+  from infrastructure alone — a delta inside your floor (start ≈3pp, or measure
+  your own via repeated identical runs) is NOT a regression and must not flip
+  the gate. Capability suites should start with low pass rates; regression
+  suites should sit near 100%.
 
 ---
 
@@ -160,7 +174,7 @@ output alone. This is the observability requirement, applied to the model tier.
 
 | Symptom | Cause | Fix |
 |---|---|---|
-| Scores swing between identical runs | Temperature > 0; no seed; tiny eval set | Pin temp/seed for evals; grow the set |
+| Scores swing between identical runs | Single-trial scoring of a stochastic component; no noise floor | Deterministic components: pin temp/seed. **Agents: run N trials, score pass^k, declare a noise floor** — tool-call nondeterminism cannot be pinned away |
 | Judge agrees with everything | Rubric too vague; leading prompt | Concrete anchors; binary criteria; ask for reason first |
 | Evals pass, production fails | Golden set is synthetic | Reseed from real traffic and real incidents |
 | "It feels better" but numbers flat | You're measuring the wrong thing | Fix the rubric to match what you actually care about |

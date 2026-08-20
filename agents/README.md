@@ -98,6 +98,11 @@ Static assignments live in each agent's `model:` frontmatter. When orchestrating
 ad-hoc (`orchestrate-agents`, one-off subagent spawns), apply the same ladder in
 the spawn — the orchestrator names the tier deliberately, not by default.
 
+**`effort` is the primary cost dial on Opus 5 — before you change tiers.**
+Anthropic: `low`/`medium` effort produce strong quality at a fraction of the
+tokens/latency; adjust based on YOUR evals (an effort sweep, not a guess), and
+re-run the sweep when the model changes. Tier-switching is the second lever.
+
 **Where model config actually lives (three control points, most→least specific):**
 1. **Per-invocation** — the Agent tool's `model` parameter at spawn time (what the
    `orchestrator` uses to route per-slice).
@@ -107,6 +112,15 @@ the spawn — the orchestrator names the tier deliberately, not by default.
    force `haiku` for a cheap bulk run); `ANTHROPIC_DEFAULT_〈OPUS|SONNET|HAIKU〉_MODEL`
    re-points what each alias resolves to. Use for experiments, not as the default —
    an env override is invisible in git.
+4. **Runtime caps (deterministic backstops — Claude Code ≥ 2.1.217/SDK-bundled
+   2.1.219):** `CLAUDE_CODE_MAX_SUBAGENT_SPAWN_DEPTH` (default 3) ·
+   `CLAUDE_CODE_MAX_CONCURRENT_SUBAGENTS` (default 20) · SDK `max_budget_usd`
+   (no default; at the cap: refuses spawns, stops background subagents, exits
+   `error_max_budget_usd`). These enforce what prompts only request — Opus 5
+   over-delegates, and Anthropic's own guidance is *set the limits, don't just
+   instruct*. This repo pins depth 3 / concurrent 8 in `.claude/settings.json`;
+   the orchestrator's `check-budget` remains the warn band + ABORT bookkeeping
+   inside these hard walls.
 
 **Other frontmatter worth knowing:** `skills:` (preload a skill's full content —
 how workers get `tdd` as law; keep to 1–2, it's paid on every spawn) · `Skill` in

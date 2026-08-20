@@ -4,6 +4,14 @@
   "//3": "not a new rule. 'ask' (not 'deny') so evolve-harness can still draft diffs.",
   "//4": "SessionStart hook is bd's (Beads context priming) — diff this file after",
   "//5": "any install: hooks here are the npm-worm persistence slot (P4).",
+  "//6": "Runtime subagent caps (survey P1): deterministic backstops for what the",
+  "//7": "orchestrator's check-budget only *asks* for. Inactive below Claude Code",
+  "//8": "2.1.217 — they arm on update. Depth matches doctrine; concurrent leaves",
+  "//9": "headroom over the 2-3 practical cap without the permissive default of 20.",
+  "env": {
+    "CLAUDE_CODE_MAX_SUBAGENT_SPAWN_DEPTH": "3",
+    "CLAUDE_CODE_MAX_CONCURRENT_SUBAGENTS": "8"
+  },
   "permissions": {
     "ask": [
       "Edit(/skills/**)",
