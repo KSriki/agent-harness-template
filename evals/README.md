@@ -4,13 +4,27 @@ The test suite for non-deterministic components. See `skills/eval-harness/SKILL.
 for the full procedure.
 
 ```
-golden/    # Frozen, versioned cases. Seed from REAL inputs and REAL failures.
-           #   {input, expected|rubric, tags}  →  <golden/*.jsonl>
-judges/    # Judge prompts + rubrics. Validate against human labels before trusting.
-runners/   # Execution + scoring.
+golden/    # Frozen, versioned, APPEND-ONLY cases. Seed from REAL inputs/failures.
+           #   {id, input, expected, tags}  →  golden/*.jsonl
+prompts/   # Prompt templates per suite ({input} placeholder). Prompts are code.
+runners/   # Execution + scoring (loader, scorers, metrics, the model seam).
 results/   # Scored runs, timestamped. COMMIT THESE — the trend is the point.
-run.py     # <uv run python -m evals.run --suite smoke|full>
+config.json  # suites (golden file, scorer, case cap, pass floor), trials,
+             # noise floor, model, cost-rate table
+run.py     # python3 -m evals.run --suite smoke|full [--trials N] [--dry-run]
 ```
+
+**Runner facts (hand-rolled, stdlib-only — portable to other projects):**
+- Scorers implemented: `exact`, `regex` (whole-output match). Judge scoring is a
+  named extension point in `runners/scorers.py` — deliberately not built yet.
+- The ONLY model touchpoint is `runners/model.py::call_model` (shells out to
+  `claude -p`). Tests mock this seam; they never call the real CLI.
+- Missing/unauthenticated CLI → LOUD "EVALS SKIPPED … this is not a pass" and
+  exit 0. Never silent, never fake-green, never red for absence of the tool.
+- Gate: exit 1 when per-trial accuracy < the suite's `pass_floor`, unless the
+  delta vs the last committed result is within `noise_floor_pp`.
+- Costs in results are ESTIMATES (tokens ~= chars/4 x config rate table).
+- Tests live in `evals/tests/` (stdlib unittest, pytest-discoverable).
 
 **Rules that make this work:**
 - Golden set is **frozen and versioned** — if it moves, regressions are meaningless.
