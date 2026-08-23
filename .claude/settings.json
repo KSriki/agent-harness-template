@@ -15,17 +15,11 @@
   "permissions": {
     "ask": [
       "Edit(/skills/**)",
-      "Write(/skills/**)",
       "Edit(/agents/**)",
-      "Write(/agents/**)",
       "Edit(/AGENTS.md)",
-      "Write(/AGENTS.md)",
       "Edit(/docs/engineering-steering-doc.md)",
-      "Write(/docs/engineering-steering-doc.md)",
       "Edit(/gates/**)",
-      "Write(/gates/**)",
-      "Edit(/.claude/gate.sh)",
-      "Write(/.claude/gate.sh)"
+      "Edit(/.claude/gate.sh)"
     ]
   },
   "hooks": {

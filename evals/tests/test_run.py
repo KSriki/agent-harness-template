@@ -10,6 +10,7 @@ from pathlib import Path
 
 from evals.run import main, run_suite
 from evals.runners.loader import load_config
+from evals.runners.model import ModelUnavailable
 
 GOLDEN = (
     '{"id": "c1", "input": "Add dark mode", "expected": "feature",'
@@ -153,6 +154,26 @@ class TestMainCli(unittest.TestCase):
             self.assertIn("EVALS SKIPPED", out)
             self.assertIn("this is not a pass", out)
             self.assertIn("not found", out)
+
+    def test_midrun_model_unavailable_is_loud_skip_not_traceback(self):
+        # An UNAUTHENTICATED CLI passes the PATH pre-flight but fails at call
+        # time — that must be the same loud skip, never a raw traceback.
+        def raises(prompt, model):
+            raise ModelUnavailable(
+                "'claude' exited 1: Not logged in · Please run /login"
+            )
+
+        with tempfile.TemporaryDirectory() as tmp:
+            cfg = _scaffold(Path(tmp))
+            code, out = self._main(
+                ["--suite", "smoke", "--config", str(cfg)],
+                model_fn=raises,
+                availability_check=lambda: (True, ""),
+            )
+            self.assertEqual(code, 0)
+            self.assertIn("EVALS SKIPPED", out)
+            self.assertIn("Not logged in", out)
+            self.assertIn("this is not a pass", out)
 
     def test_dry_run_validates_without_model_calls(self):
         with tempfile.TemporaryDirectory() as tmp:

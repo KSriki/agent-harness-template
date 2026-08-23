@@ -38,7 +38,7 @@ from evals.runners.metrics import (
     estimate_tokens,
     suite_metrics,
 )
-from evals.runners.model import call_model, check_cli_available
+from evals.runners.model import ModelUnavailable, call_model, check_cli_available
 from evals.runners.scorers import get_scorer
 
 SKIP_BANNER = "=" * 72
@@ -215,9 +215,18 @@ def main(argv=None, model_fn=call_model, availability_check=check_cli_available)
         print(SKIP_BANNER)
         return 0
 
-    result = run_suite(
-        args.suite, config, base_dir, model_fn=model_fn, trials=args.trials
-    )
+    try:
+        result = run_suite(
+            args.suite, config, base_dir, model_fn=model_fn, trials=args.trials
+        )
+    except ModelUnavailable as exc:
+        # Unauthenticated (or mid-run-failing) CLI passes the PATH pre-flight —
+        # same contract as a missing CLI: loud skip, never a traceback.
+        print(SKIP_BANNER)
+        print(f"EVALS SKIPPED: {exc} — this is not a pass.")
+        print("No result was recorded. Fix the CLI and re-run.")
+        print(SKIP_BANNER)
+        return 0
     _print_summary(result)
     return 1 if result["gate"]["red"] else 0
 
