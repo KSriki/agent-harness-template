@@ -12,8 +12,12 @@ ruff check .
 
 # ── FULL — turn end + CI. The whole proof. ───────────────────────────────────
 ruff format --check .
-python3 -m pytest orchestrator_engine/tests -q \
-    --cov=orchestrator_engine --cov-fail-under=80 --cov-report=term:skip-covered
+python3 -m pytest orchestrator_engine/tests evals/tests -q \
+    --cov=orchestrator_engine --cov=evals --cov-fail-under=80 --cov-report=term:skip-covered
+
+# Eval smoke — the classifier golden set. Loud-skips (exit 0) where the claude
+# CLI is absent/unauthed; a real run below the floor is a red gate, same as tests.
+python3 -m evals.run --suite smoke
 
 # TODO(needs-approval): mypy is not installed; adding it is a dependency
 # decision (guardrail 3) — propose before installing.
