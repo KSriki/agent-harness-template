@@ -33,14 +33,18 @@ design decision → `write-design-doc`. You're breaking it into buildable ticket
 
 ## Procedure
 
-1. **Explore for current state** (if not already). Use the project's **domain
+1. **Read the intent artifact.** If `intent/<slug>.intent.md` exists for this
+   work, it is the canonical statement of intent — the transcript supplements
+   it, not the reverse.
+2. **Explore for current state** (if not already). Use the project's **domain
    glossary** vocabulary (`domain-modeling` / `CONTEXT.md`); respect existing ADRs in
    the area you touch.
-2. **Sketch the test seams.** Prefer existing seams; use the **highest seam possible**;
+3. **Sketch the test seams.** Prefer existing seams; use the **highest seam possible**;
    propose new seams high; **fewer seams is better — the ideal is one.** Check the
    seams match the human's expectations. (Vocabulary from `codebase-design`.)
-3. **Write the spec from the template** (below), publish it to the tracker, and apply
-   the **`ready-for-agent`** label — no further triage.
+4. **Write the spec from the template** (below), save it as
+   `intent/<slug>.spec.md` beside its intent, publish it to the tracker, and
+   apply the **`ready-for-agent`** label — no further triage.
 
 ## Spec template (sections, in order)
 

@@ -57,6 +57,12 @@ hanging off it. Then:
 6. **Exit:** done when **the frontier is empty** — every branch visited, nothing
    left silently assumed. **Do not act until the user confirms** shared
    understanding is reached. The confirmation is the gate.
+7. **Persist the intent.** On confirmation, write the settled understanding to
+   `intent/<slug>.intent.md` in the originator's own words: problem, proposed
+   outcome, affected users/systems, constraints, decisions made, open questions.
+   This is the first link of the artifact chain — `write-a-prd` reads it, and a
+   fresh agent can resume from it without this transcript. Propose the commit;
+   don't commit unasked (conservative profile).
 
 > Prefer the old cadence? Say "ask one question at a time" — the rounds are a
 > default, not a law.
@@ -67,3 +73,4 @@ hanging off it. Then:
 - [ ] Every question carried a **recommendation**; rounds respected dependencies
 - [ ] Facts were **looked up (subagents, non-blocking)**, never asked
 - [ ] The human **explicitly confirmed** shared understanding — only then does work start
+- [ ] Confirmed understanding persisted as `intent/<slug>.intent.md` — an artifact, not just chat
