@@ -105,6 +105,16 @@ Apply the *minimal* mitigation, then **watch the signals return to baseline** �
 - Feed it back: a missing alert, a missing test, or a repeated correction becomes a
   new gate — that's the maintenance loop the harness runs on.
 
+### Autonomous maintenance — tiered response, intent out
+
+Detection stays deterministic (a script watching metric bands, mean ± σ) —
+never an LLM watching a dashboard. The agent's allowed response scales with
+the deviation: **~1σ → log only · ~2σ → diagnose read-only (logs/metrics/
+traces) · ≥3σ → propose a fix via PR or runbook — never apply directly.**
+Whatever it finds, the diagnosis is written as `intent/<slug>.intent.md` and
+enters the standard pipeline (spec → plan → build → review). The PR gate and
+a human stay in the path; rollback is pre-approved and rehearsed in staging.
+
 ## Failure modes
 
 | Symptom | Cause | Fix |

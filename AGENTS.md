@@ -86,6 +86,7 @@ tests/
   unit/         # fast, no I/O
   integration/  # real deps via docker compose
 evals/          # LLM/agent evals — see skills/eval-harness
+intent/         # artifact chain: <slug>.intent.md + <slug>.spec.md (grill-me / write-a-prd)
 docs/design/    # design docs (template in repo root docs)
 migrations/
 infra/          # terraform
