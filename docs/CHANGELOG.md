@@ -16,6 +16,22 @@ would it now be wrong?* If yes, major. If it would merely be missing something, 
 
 ---
 
+## 2026-09-03
+
+- `docs/evals.md` — NEW (MINOR — additive; ticket agent-harness-template-v9z).
+  Human-facing manual for the `evals/` runner: run anatomy (Mermaid), golden-set
+  contract, config reference, gate semantics incl. loud-skip and noise floor,
+  pass@k vs pass^k, extension points (scorers, judge, model seam), porting.
+  `evals/README.md` and the `docs/README.md` tier table now point to it.
+- `skills/grill-me`, `skills/write-a-prd`, `skills/observability`, `AGENTS.md`
+  layout — **intent.md artifact chain** adopted from Anthropic's AI-native SDLC
+  playbook (MINOR — additive; ticket agent-harness-template-4ya, PR #1, merged
+  earlier today — entry recorded late). grill-me persists confirmed
+  understanding as `intent/<slug>.intent.md`; write-a-prd reads it as canonical
+  and saves `intent/<slug>.spec.md` beside it; observability gains the
+  tiered-autonomy maintenance loop (1σ log / 2σ read-only diagnose / ≥3σ
+  propose-via-PR) whose diagnosis exits as an intent artifact.
+
 ## 2026-08-19
 
 - `skills/init-agent-harness` → **`skills/setup-harness`** (MAJOR — agent-breaking rename, no alias; ticket agent-harness-template-6zd, PRD `harness-prd-setup-harness.md` fresh-repo slice)

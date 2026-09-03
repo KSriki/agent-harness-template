@@ -1,7 +1,8 @@
 # Evals
 
 The test suite for non-deterministic components. See `skills/eval-harness/SKILL.md`
-for the full procedure.
+for the full procedure, and **`docs/evals.md` for the full human-facing manual**
+(architecture, gate semantics, metrics, extension points).
 
 ```
 golden/    # Frozen, versioned, APPEND-ONLY cases. Seed from REAL inputs/failures.
