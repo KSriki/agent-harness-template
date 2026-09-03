@@ -20,7 +20,9 @@ jobs:
           python-version: "3.12"
 
       # This repo is stdlib-only; the gate's tools are the only installs.
-      - run: pip install ruff pytest
+      # Pinned to the versions the local gate runs — unpinned ruff drifted
+      # ahead of local and failed CI on rules the local gate never saw.
+      - run: pip install ruff==0.9.2 pytest==9.1.1 pytest-cov==7.1.0
 
       - name: Run the gate (same script the local hooks run)
         run: ./.claude/gate.sh full
