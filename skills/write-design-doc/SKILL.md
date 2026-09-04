@@ -114,3 +114,7 @@ measurement. "Phase 1: build the backend" is not a milestone.
 - [ ] Mermaid diagram, sync/async edges distinguished
 - [ ] Security / observability / cost / scale / testing addressed
 - [ ] Milestones are individually checkable
+- [ ] Every described component carries at least one **concrete anchor**: a
+      contract example (signature / I-O pair / config / command), pseudo-code
+      for mechanism, or a `file:line` reference — implementations linked,
+      never pasted (pasted bodies rot; contracts and links don't)
