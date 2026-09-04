@@ -81,3 +81,6 @@ Your first idea is rarely the best (Ousterhout). For a non-trivial interface:
 - [ ] Seams placed only where **real** variation exists (two-adapter rule)
 - [ ] Dependencies classified; ports/mocks only at true boundaries
 - [ ] For non-trivial interfaces, **designed twice** and compared before committing
+- [ ] The chosen interface written down as a **contract sketch** — signatures,
+      an I-O pair, or pseudo-code; never implementation bodies (the sketch is
+      what reviewers and agents orient off)

@@ -18,6 +18,12 @@ would it now be wrong?* If yes, major. If it would merely be missing something, 
 
 ## 2026-09-03
 
+- `skills/write-design-doc`, `skills/codebase-design` — **concrete-anchor DoD
+  lines** (MINOR — additive; ticket agent-harness-template-39i). Design docs
+  must anchor every described component with a contract example, pseudo-code,
+  or a `file:line` reference (implementations linked, never pasted);
+  codebase-design must write the chosen interface down as a contract sketch.
+  `write-a-prd`'s no-snippet rule is deliberately unchanged.
 - `docs/evals.md` — NEW (MINOR — additive; ticket agent-harness-template-v9z).
   Human-facing manual for the `evals/` runner: run anatomy (Mermaid), golden-set
   contract, config reference, gate semantics incl. loud-skip and noise floor,
