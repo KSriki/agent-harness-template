@@ -19,5 +19,10 @@ python3 -m pytest orchestrator_engine/tests evals/tests -q \
 # CLI is absent/unauthed; a real run below the floor is a red gate, same as tests.
 python3 -m evals.run --suite smoke
 
+# Premise-gate evals — verdict discipline + source-provenance tiering for the
+# premise-reviewer (ticket 63j/fu1). Same loud-skip / red-below-floor semantics.
+python3 -m evals.run --suite premise-verdict
+python3 -m evals.run --suite source-provenance
+
 # TODO(needs-approval): mypy is not installed; adding it is a dependency
 # decision (guardrail 3) — propose before installing.

@@ -21,6 +21,20 @@
       "case_cap": 60,
       "pass_floor": 0.9,
       "prompt": "prompts/work-type-classification.txt"
+    },
+    "premise-verdict": {
+      "golden": "golden/premise-verdict.jsonl",
+      "scorer": "exact",
+      "case_cap": 14,
+      "pass_floor": 0.9,
+      "prompt": "prompts/premise-verdict.txt"
+    },
+    "source-provenance": {
+      "golden": "golden/source-provenance.jsonl",
+      "scorer": "exact",
+      "case_cap": 14,
+      "pass_floor": 0.9,
+      "prompt": "prompts/source-provenance.txt"
     }
   }
 }
