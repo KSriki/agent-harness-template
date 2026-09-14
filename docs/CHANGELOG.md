@@ -18,6 +18,15 @@ would it now be wrong?* If yes, major. If it would merely be missing something, 
 
 ## 2026-09-14
 
+- `evals/runners/model.py` — **model seam runs the CLI from a neutral cwd**
+  (PATCH for agents, bug fix for the runner; ticket agent-harness-template-yxr).
+  Headless `claude -p` inheriting the repo cwd fired the repo's SessionStart
+  hook (`bd prime` — dolt lock contention with the calling session) and the
+  machine-wide Stop-hook gate, which re-ran the evals and spawned claude
+  recursively (observed: 34 min for one haiku call vs 51 s from a neutral dir;
+  a live cascade of 28+ stray processes). Regression-tested in
+  `evals/tests/test_model_seam.py`.
+
 - `evals/` (premise-verdict + source-provenance suites), `.claude/gate.sh`,
   `docs/engineering-steering-doc.md` §4.5 — **premise-gate eval coverage**
   (MINOR — additive; ticket agent-harness-template-fu1, follow-up to 63j;
