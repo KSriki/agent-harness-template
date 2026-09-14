@@ -1,0 +1,255 @@
+{
+  "suite": "source-provenance",
+  "timestamp": "20260914T185600Z",
+  "model": "claude-haiku-4-5",
+  "trials": 1,
+  "scorer": "first-word",
+  "cases": [
+    {
+      "id": "sp-001",
+      "expected": "verified",
+      "tags": [
+        "tier:verified",
+        "difficulty:easy"
+      ],
+      "trials": [
+        {
+          "output": "verified",
+          "passed": true
+        }
+      ],
+      "passed_any": true,
+      "passed_all": true
+    },
+    {
+      "id": "sp-002",
+      "expected": "corroborated",
+      "tags": [
+        "tier:corroborated",
+        "difficulty:easy"
+      ],
+      "trials": [
+        {
+          "output": "corroborated",
+          "passed": true
+        }
+      ],
+      "passed_any": true,
+      "passed_all": true
+    },
+    {
+      "id": "sp-003",
+      "expected": "single-source",
+      "tags": [
+        "tier:circular",
+        "difficulty:medium"
+      ],
+      "trials": [
+        {
+          "output": "single-source",
+          "passed": true
+        }
+      ],
+      "passed_any": true,
+      "passed_all": true
+    },
+    {
+      "id": "sp-004",
+      "expected": "single-source",
+      "tags": [
+        "tier:common-upstream",
+        "difficulty:medium"
+      ],
+      "trials": [
+        {
+          "output": "single-source",
+          "passed": true
+        }
+      ],
+      "passed_any": true,
+      "passed_all": true
+    },
+    {
+      "id": "sp-005",
+      "expected": "unverified",
+      "tags": [
+        "tier:never-citable",
+        "difficulty:easy"
+      ],
+      "trials": [
+        {
+          "output": "unverified",
+          "passed": true
+        }
+      ],
+      "passed_any": true,
+      "passed_all": true
+    },
+    {
+      "id": "sp-006",
+      "expected": "unverified",
+      "tags": [
+        "tier:never-citable",
+        "difficulty:easy"
+      ],
+      "trials": [
+        {
+          "output": "unverified",
+          "passed": true
+        }
+      ],
+      "passed_any": true,
+      "passed_all": true
+    },
+    {
+      "id": "sp-007",
+      "expected": "single-source",
+      "tags": [
+        "tier:single-legit",
+        "difficulty:medium"
+      ],
+      "trials": [
+        {
+          "output": "single-source",
+          "passed": true
+        }
+      ],
+      "passed_any": true,
+      "passed_all": true
+    },
+    {
+      "id": "sp-008",
+      "expected": "verified",
+      "tags": [
+        "tier:verified",
+        "difficulty:easy"
+      ],
+      "trials": [
+        {
+          "output": "verified",
+          "passed": true
+        }
+      ],
+      "passed_any": true,
+      "passed_all": true
+    },
+    {
+      "id": "sp-009",
+      "expected": "unverified",
+      "tags": [
+        "tier:negative-space",
+        "difficulty:hard"
+      ],
+      "trials": [
+        {
+          "output": "unverified",
+          "passed": true
+        }
+      ],
+      "passed_any": true,
+      "passed_all": true
+    },
+    {
+      "id": "sp-010",
+      "expected": "unverified",
+      "tags": [
+        "tier:never-citable",
+        "difficulty:easy"
+      ],
+      "trials": [
+        {
+          "output": "unverified",
+          "passed": true
+        }
+      ],
+      "passed_any": true,
+      "passed_all": true
+    },
+    {
+      "id": "sp-011",
+      "expected": "verified",
+      "tags": [
+        "tier:verified",
+        "difficulty:easy"
+      ],
+      "trials": [
+        {
+          "output": "verified",
+          "passed": true
+        }
+      ],
+      "passed_any": true,
+      "passed_all": true
+    },
+    {
+      "id": "sp-012",
+      "expected": "verified",
+      "tags": [
+        "tier:own-statement",
+        "difficulty:easy"
+      ],
+      "trials": [
+        {
+          "output": "verified",
+          "passed": true
+        }
+      ],
+      "passed_any": true,
+      "passed_all": true
+    },
+    {
+      "id": "sp-013",
+      "expected": "verified",
+      "tags": [
+        "tier:primary-precedence",
+        "difficulty:medium"
+      ],
+      "trials": [
+        {
+          "output": "verified",
+          "passed": true
+        }
+      ],
+      "passed_any": true,
+      "passed_all": true
+    },
+    {
+      "id": "sp-014",
+      "expected": "corroborated",
+      "tags": [
+        "tier:corroborated",
+        "difficulty:hard"
+      ],
+      "trials": [
+        {
+          "output": "corroborated",
+          "passed": true
+        }
+      ],
+      "passed_any": true,
+      "passed_all": true
+    }
+  ],
+  "metrics": {
+    "pass_at_k": 1.0,
+    "pass_pow_k": 1.0,
+    "per_trial_accuracy": 1.0
+  },
+  "wall_time_s": 97.47,
+  "cost": {
+    "input_tokens_est": 6693,
+    "output_tokens_est": 33,
+    "usd_est": 0.006858,
+    "note": "estimate only: tokens ~= chars/4, priced by config rate table"
+  },
+  "baseline": {
+    "delta_pp": 14.28571428571429,
+    "within_noise": false,
+    "verdict": "delta +14.3pp vs baseline exceeds the 3.0pp noise floor: improvement"
+  },
+  "gate": {
+    "pass_floor": 0.9,
+    "below_floor": false,
+    "red": false
+  }
+}

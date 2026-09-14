@@ -11,7 +11,7 @@ from pathlib import Path
 
 REQUIRED_CASE_FIELDS = ("id", "input", "expected", "tags")
 REQUIRED_SUITE_FIELDS = ("golden", "scorer", "case_cap", "pass_floor", "prompt")
-KNOWN_SCORERS = ("exact", "regex")
+KNOWN_SCORERS = ("exact", "regex", "first-word")
 
 
 def load_golden(path: str | Path) -> list[dict]:

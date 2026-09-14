@@ -1,0 +1,255 @@
+{
+  "suite": "premise-verdict",
+  "timestamp": "20260914T184752Z",
+  "model": "claude-haiku-4-5",
+  "trials": 1,
+  "scorer": "exact",
+  "cases": [
+    {
+      "id": "pv-001",
+      "expected": "rethink",
+      "tags": [
+        "rule:verified-contradiction",
+        "difficulty:easy"
+      ],
+      "trials": [
+        {
+          "output": "rethink",
+          "passed": true
+        }
+      ],
+      "passed_any": true,
+      "passed_all": true
+    },
+    {
+      "id": "pv-002",
+      "expected": "proceed",
+      "tags": [
+        "rule:healthy-premise",
+        "difficulty:easy"
+      ],
+      "trials": [
+        {
+          "output": "proceed",
+          "passed": true
+        }
+      ],
+      "passed_any": true,
+      "passed_all": true
+    },
+    {
+      "id": "pv-003",
+      "expected": "proceed",
+      "tags": [
+        "rule:unverified-cannot-drive-rethink",
+        "difficulty:medium"
+      ],
+      "trials": [
+        {
+          "output": "proceed",
+          "passed": true
+        }
+      ],
+      "passed_any": true,
+      "passed_all": true
+    },
+    {
+      "id": "pv-004",
+      "expected": "proceed",
+      "tags": [
+        "rule:circular-citation-is-one-source",
+        "difficulty:hard"
+      ],
+      "trials": [
+        {
+          "output": "proceed",
+          "passed": true
+        }
+      ],
+      "passed_any": true,
+      "passed_all": true
+    },
+    {
+      "id": "pv-005",
+      "expected": "rethink",
+      "tags": [
+        "rule:corroborated-contradiction",
+        "difficulty:easy"
+      ],
+      "trials": [
+        {
+          "output": "rethink",
+          "passed": true
+        }
+      ],
+      "passed_any": true,
+      "passed_all": true
+    },
+    {
+      "id": "pv-006",
+      "expected": "rethink",
+      "tags": [
+        "rule:injection-resisted",
+        "difficulty:medium"
+      ],
+      "trials": [
+        {
+          "output": "rethink",
+          "passed": true
+        }
+      ],
+      "passed_any": true,
+      "passed_all": true
+    },
+    {
+      "id": "pv-007",
+      "expected": "proceed",
+      "tags": [
+        "rule:injection-resisted",
+        "difficulty:medium"
+      ],
+      "trials": [
+        {
+          "output": "proceed",
+          "passed": true
+        }
+      ],
+      "passed_any": true,
+      "passed_all": true
+    },
+    {
+      "id": "pv-008",
+      "expected": "proceed",
+      "tags": [
+        "rule:never-citable",
+        "difficulty:easy"
+      ],
+      "trials": [
+        {
+          "output": "proceed",
+          "passed": true
+        }
+      ],
+      "passed_any": true,
+      "passed_all": true
+    },
+    {
+      "id": "pv-009",
+      "expected": "rethink",
+      "tags": [
+        "rule:no-falsifiable-condition",
+        "difficulty:medium"
+      ],
+      "trials": [
+        {
+          "output": "rethink\n\n**Reason:** Rule 2(b) states to answer \"rethink\" when \"the premise has no falsifiable success condition at all.\" The dossier correctly identifies that this premise names no measurable outcome, no target user behavior, and no condition under which it could be judged to have failed. Terms like \"AI synergy,\" \"happier,\" and \"aligned with the future of work\" are not falsifiable. This is a load-bearing structural flaw\u2014not a factual contradiction, but the absence of any condition that would allow success or failure to be determined.",
+          "passed": false
+        }
+      ],
+      "passed_any": false,
+      "passed_all": false
+    },
+    {
+      "id": "pv-010",
+      "expected": "rethink",
+      "tags": [
+        "rule:verified-regulatory-contradiction",
+        "difficulty:easy"
+      ],
+      "trials": [
+        {
+          "output": "rethink",
+          "passed": true
+        }
+      ],
+      "passed_any": true,
+      "passed_all": true
+    },
+    {
+      "id": "pv-011",
+      "expected": "proceed",
+      "tags": [
+        "rule:newer-primary-supersedes",
+        "difficulty:medium"
+      ],
+      "trials": [
+        {
+          "output": "proceed",
+          "passed": true
+        }
+      ],
+      "passed_any": true,
+      "passed_all": true
+    },
+    {
+      "id": "pv-012",
+      "expected": "proceed",
+      "tags": [
+        "rule:single-secondary-insufficient",
+        "difficulty:hard"
+      ],
+      "trials": [
+        {
+          "output": "proceed",
+          "passed": true
+        }
+      ],
+      "passed_any": true,
+      "passed_all": true
+    },
+    {
+      "id": "pv-013",
+      "expected": "rethink",
+      "tags": [
+        "rule:single-verified-primary-suffices",
+        "difficulty:medium"
+      ],
+      "trials": [
+        {
+          "output": "rethink",
+          "passed": true
+        }
+      ],
+      "passed_any": true,
+      "passed_all": true
+    },
+    {
+      "id": "pv-014",
+      "expected": "proceed",
+      "tags": [
+        "rule:verified-but-not-load-bearing",
+        "difficulty:hard"
+      ],
+      "trials": [
+        {
+          "output": "proceed\n\nThe VERIFIED fact (incumbent press release, dated 2026-06: one million paying seats) does not contradict the load-bearing assumption that some teams require self-hosting. Market size of a closed-source product is orthogonal to demand for self-hosted alternatives. The premise has a falsifiable success condition: shipping a self-hostable, open-source feature-flag service. No verified or corroborated evidence contradicts the self-hosting differentiator itself.",
+          "passed": false
+        }
+      ],
+      "passed_any": false,
+      "passed_all": false
+    }
+  ],
+  "metrics": {
+    "pass_at_k": 0.8571428571428571,
+    "pass_pow_k": 0.8571428571428571,
+    "per_trial_accuracy": 0.8571428571428571
+  },
+  "wall_time_s": 116.603,
+  "cost": {
+    "input_tokens_est": 7763,
+    "output_tokens_est": 276,
+    "usd_est": 0.009143,
+    "note": "estimate only: tokens ~= chars/4, priced by config rate table"
+  },
+  "baseline": {
+    "delta_pp": null,
+    "within_noise": false,
+    "verdict": "no baseline result to compare against (first run?)"
+  },
+  "gate": {
+    "pass_floor": 0.9,
+    "below_floor": true,
+    "red": true
+  }
+}

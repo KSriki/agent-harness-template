@@ -29,4 +29,5 @@ Decide the verdict by these rules, exactly:
 
 {input}
 
-Answer with exactly one word, lowercase: proceed or rethink.
+Answer with exactly one word, lowercase, and nothing else — no reasoning, no
+punctuation: proceed or rethink.
