@@ -18,6 +18,20 @@ would it now be wrong?* If yes, major. If it would merely be missing something, 
 
 ## 2026-09-14
 
+- `evals/` (premise-verdict + source-provenance suites), `.claude/gate.sh`,
+  `docs/engineering-steering-doc.md` §4.5 — **premise-gate eval coverage**
+  (MINOR — additive; ticket agent-harness-template-fu1, follow-up to 63j;
+  steering-doc line human-approved in session). The premise-reviewer's judgment
+  is non-deterministic, so evals are its tests (steering §3): two frozen golden
+  sets (14 cases each, exact scorer, pass floor 0.9) probe verdict discipline
+  (RETHINK only on VERIFIED/CORROBORATED contradiction of a load-bearing
+  assumption or an unfalsifiable premise; injection in the dossier resisted in
+  both directions; circular citations counted as one source; superseded
+  evidence; verified-but-not-load-bearing distractors) and source-provenance
+  tiering (verified/corroborated/single-source/unverified, incl. common-
+  upstream collapse, never-citable material, the negative-space test). Both
+  suites wired into `gate.sh full` with the standard loud-skip semantics.
+
 - `skills/grill-me` → **3.0.0**, `agents/review/premise-reviewer.md` — NEW,
   `agents/orchestration/orchestrator.md`, `skills/write-a-prd` — **premise gate**
   (MAJOR for grill-me — agent-breaking; MINOR elsewhere; ticket

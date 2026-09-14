@@ -97,7 +97,9 @@ flowchart LR
     B -. debt .-> IA["improve-codebase-architecture"] -.-> B
 ```
 
-- **grill-me** before writing anything — confirmed shared understanding is the entry
+- **grill-me** before writing anything — Round 0 premise gate first (outside-view
+  verdict + kill criteria via `premise-reviewer`; an informed, recorded human
+  override is first-class), then confirmed shared understanding is the entry
   checkpoint. **wayfinder** when scope is fuzzy or too big for one session (and the
   re-entry point when a new idea/workaround surfaces mid-build — chart it, don't
   improvise it).
