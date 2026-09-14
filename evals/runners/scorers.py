@@ -25,7 +25,16 @@ def score_regex(output: str, expected: str) -> bool:
     return re.fullmatch(expected, output.strip()) is not None
 
 
-SCORERS = {"exact": score_exact, "regex": score_regex}
+def score_first_word(output: str, expected: str) -> bool:
+    """Single-label classification: compare the FIRST whitespace-delimited token,
+    case-insensitively. Robust to a model appending unrequested reasoning after
+    a correct verdict — a format wobble, not a judgment error, and single-label
+    suites should not go red for it. Empty output never passes."""
+    tokens = output.split()
+    return bool(tokens) and tokens[0].lower() == expected.strip().lower() != ""
+
+
+SCORERS = {"exact": score_exact, "regex": score_regex, "first-word": score_first_word}
 
 
 def get_scorer(name: str):

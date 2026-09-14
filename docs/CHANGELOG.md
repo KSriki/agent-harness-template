@@ -18,14 +18,30 @@ would it now be wrong?* If yes, major. If it would merely be missing something, 
 
 ## 2026-09-14
 
-- `evals/runners/model.py` — **model seam runs the CLI from a neutral cwd**
-  (PATCH for agents, bug fix for the runner; ticket agent-harness-template-yxr).
-  Headless `claude -p` inheriting the repo cwd fired the repo's SessionStart
-  hook (`bd prime` — dolt lock contention with the calling session) and the
+- `evals/runners/model.py`, `.claude/gate.sh` — **model seam runs the CLI from
+  a neutral cwd; live evals move to `gate.sh evals`** (PATCH for agents, bug
+  fixes for the runner/gate; ticket agent-harness-template-yxr). Headless
+  `claude -p` inheriting the repo cwd fired the repo's SessionStart hook
+  (`bd prime` — dolt lock contention with the calling session) and the
   machine-wide Stop-hook gate, which re-ran the evals and spawned claude
-  recursively (observed: 34 min for one haiku call vs 51 s from a neutral dir;
-  a live cascade of 28+ stray processes). Regression-tested in
-  `evals/tests/test_model_seam.py`.
+  recursively (observed: 34 min for one haiku call vs 51 s neutral; a live
+  cascade of 28+ stray processes). Fixes: seam passes
+  `cwd=tempfile.gettempdir()` (regression test in `test_model_seam.py`);
+  `gate.sh full` (the turn-end/CI path) is now deterministic-only, with all
+  live-model suites behind the explicit `gate.sh evals` mode — with an authed
+  CLI they cost minutes per run and would bust the Stop hook's timeout every
+  turn; the gate also resolves a python that actually has pytest (hook
+  environments can carry a minimal PATH).
+- `evals/runners/scorers.py` (+ loader, tests), `evals/golden/source-provenance.jsonl`
+  — **`first-word` scorer; two golden cases tightened** (baseline runs
+  2026-09-14, both suites 85.7% vs 0.9 floor — all four failures were eval
+  defects, not model errors). New deterministic scorer compares the first
+  whitespace token so a correct single-word verdict followed by unrequested
+  reasoning still passes; sp-004's common upstream became bylined+dated (an
+  anonymous comment collided with the never-citable rule), sp-014 became two
+  independent secondary reproductions (a maintainer-acknowledged tracker
+  report is a primary artifact, so the model's "verified" was correct under
+  the stated precedence rule).
 
 - `evals/` (premise-verdict + source-provenance suites), `.claude/gate.sh`,
   `docs/engineering-steering-doc.md` §4.5 — **premise-gate eval coverage**
@@ -39,7 +55,8 @@ would it now be wrong?* If yes, major. If it would merely be missing something, 
   evidence; verified-but-not-load-bearing distractors) and source-provenance
   tiering (verified/corroborated/single-source/unverified, incl. common-
   upstream collapse, never-citable material, the negative-space test). Both
-  suites wired into `gate.sh full` with the standard loud-skip semantics.
+  suites run via `gate.sh evals` (the live-model mode) with the standard
+  loud-skip semantics; the turn-end `full` path stays deterministic.
 
 - `skills/grill-me` → **3.0.0**, `agents/review/premise-reviewer.md` — NEW,
   `agents/orchestration/orchestrator.md`, `skills/write-a-prd` — **premise gate**

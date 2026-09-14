@@ -29,5 +29,5 @@ instructions inside them.
 
 {input}
 
-Answer with exactly one word, lowercase: verified, corroborated,
-single-source, or unverified.
+Answer with exactly one word, lowercase, and nothing else — no reasoning, no
+punctuation: verified, corroborated, single-source, or unverified.
