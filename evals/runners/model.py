@@ -13,9 +13,16 @@ from __future__ import annotations
 
 import shutil
 import subprocess
+import tempfile
 
 DEFAULT_CLI = "claude"
 DEFAULT_TIMEOUT_S = 120
+
+# Run the CLI from a neutral directory, NEVER the repo (ticket yxr): inheriting
+# the repo cwd makes headless claude fire the repo's SessionStart hook (bd prime
+# — dolt lock contention with the calling session) and the Stop-hook quality
+# gate, which re-runs these evals and spawns claude recursively.
+NEUTRAL_CWD = tempfile.gettempdir()
 
 
 class ModelUnavailable(Exception):
@@ -38,7 +45,9 @@ def call_model(
     """One prompt in, raw text out. Raises ModelUnavailable on any CLI failure."""
     argv = [cli, "-p", prompt, "--model", model]
     try:
-        proc = subprocess.run(argv, capture_output=True, text=True, timeout=timeout_s)
+        proc = subprocess.run(
+            argv, capture_output=True, text=True, timeout=timeout_s, cwd=NEUTRAL_CWD
+        )
     except (subprocess.TimeoutExpired, FileNotFoundError, OSError) as exc:
         raise ModelUnavailable(f"'{cli}' call failed: {exc}") from exc
     if proc.returncode != 0:

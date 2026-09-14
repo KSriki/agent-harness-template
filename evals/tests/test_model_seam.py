@@ -2,6 +2,7 @@
 real CLI — subprocess/which are patched at the boundary."""
 
 import subprocess
+import tempfile
 import unittest
 from unittest import mock
 
@@ -20,6 +21,17 @@ class TestCallModel(unittest.TestCase):
         self.assertIn("classify this", argv)
         self.assertIn("--model", argv)
         self.assertIn("claude-haiku-4-5", argv)
+
+    @mock.patch("evals.runners.model.subprocess.run")
+    def test_runs_from_neutral_cwd_so_repo_hooks_never_fire(self, run):
+        """Regression (ticket yxr): `claude -p` inheriting the repo cwd fires the
+        repo's SessionStart hook (bd prime — dolt lock contention with the
+        calling session) and the Stop-hook gate, which re-runs the evals:
+        recursive spawn. The seam must run the CLI from a neutral directory."""
+        run.return_value = mock.Mock(returncode=0, stdout="ok\n", stderr="")
+        call_model("x", model="m")
+        cwd = run.call_args.kwargs.get("cwd")
+        self.assertEqual(cwd, tempfile.gettempdir())
 
     @mock.patch("evals.runners.model.subprocess.run")
     def test_nonzero_exit_raises_unavailable_with_stderr(self, run):
