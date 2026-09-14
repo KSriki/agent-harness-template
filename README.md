@@ -32,7 +32,7 @@ The full you-say/what-fires table is in [`HARNESS.md`](./HARNESS.md).
 
 ```mermaid
 flowchart LR
-    G["grill-me<br/>(confirm understanding)"] --> P["write-a-prd"] --> T["prd-to-issues<br/>(tracer bullets + edges)"] --> B["build test-first<br/>(tdd · orchestrate-agents)"] --> S["ship<br/>(ci-cd)"]
+    G["grill-me<br/>(premise gate + confirm understanding)"] --> P["write-a-prd"] --> T["prd-to-issues<br/>(tracer bullets + edges)"] --> B["build test-first<br/>(tdd · orchestrate-agents)"] --> S["ship<br/>(ci-cd)"]
     B --> GATE["gate.sh: lint · types · tests · coverage<br/>hooks block 'done' on red · CI blocks merge"]
     GATE --> B
 ```

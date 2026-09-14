@@ -16,6 +16,33 @@ would it now be wrong?* If yes, major. If it would merely be missing something, 
 
 ---
 
+## 2026-09-14
+
+- `skills/grill-me` → **3.0.0**, `agents/review/premise-reviewer.md` — NEW,
+  `agents/orchestration/orchestrator.md`, `skills/write-a-prd` — **premise gate**
+  (MAJOR for grill-me — agent-breaking; MINOR elsewhere; ticket
+  agent-harness-template-63j). Trigger: user-named failure mode — premise-level
+  sycophancy: agents optimize *inside* a bad frame instead of challenging it,
+  and existing adversarial review only starts at code/design/ship. grill-me now
+  opens with **Round 0**: dispatch `premise-reviewer` (fresh context, premise
+  summary only) for outside-view *disconfirming* research under strict
+  source-provenance rules built against AI citogenesis (primary sources
+  establish / secondary only locate; one-hop independence tracing before
+  corroboration counts; never-citable list; negative-space test; tiered
+  confidence — RETHINK rests only on VERIFIED/CORROBORATED; model recall is a
+  lead, never a source). Output: PROCEED/RETHINK + **kill criteria**, persisted
+  in `intent/<slug>.intent.md`, carried verbatim into the spec by write-a-prd,
+  and armed through the build by the orchestrator (tripped criterion =
+  ESCALATION + `bd human`). **By design, RETHINK warns, never vetoes** — an
+  informed human override, recorded with its reasoning, is a first-class
+  outcome (contrarian bets build new things; the record separates a bet from a
+  blind spot). Rejected: devil's-advocate pass at every stage (guardrail
+  sprawl — premise gate at ingress, human gate at egress, reviewers at merge is
+  the band).
+  **Re-check:** any memorized grill-me flow — the interview now opens with
+  Round 0 (premise verdict + kill criteria) unless the skip is stated in one
+  line; jumping straight to the design tree is now wrong.
+
 ## 2026-09-03
 
 - `skills/write-design-doc`, `skills/codebase-design` — **concrete-anchor DoD

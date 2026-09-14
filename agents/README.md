@@ -138,6 +138,7 @@ harness**; an agent that skips permission checks is outside the guardrail model.
 | `research/debug-research.md` | External research (library bugs, API checks, lib evaluation) without dragging forum noise into main context |
 | `review/security-reviewer.md` | Adversarial BLOCK/ALLOW review: egress, injection, supply chain, insecure patterns |
 | `review/deploy-reviewer.md` | Adversarial BLOCK/ALLOW review of a **ship**: rollback, migration safety, blast radius, contract compat, data safety |
+| `review/premise-reviewer.md` | Adversarial PROCEED/RETHINK review of a **premise** ("should this exist?"): outside-view disconfirming research with provenance-tiered sources; proposes kill criteria; human can override with a recorded bet. Dispatched by `grill-me` Round 0 |
 | `research/trend-scout.md` | Periodic ecosystem/harness-practice survey → ranked **proposals** for `evolve-harness`. Read-untrusted-only, **propose-never-apply** |
 | `engineering/implementer.md` | Worktree-isolated worker: builds one owned slice in a parallel fan-out (`orchestrate-agents`), returns a branch + summary. **Never merges/deploys**. The DEFAULT for mixed/unclear slices |
 | `engineering/frontend-implementer.md` | `implementer` specialized for UI slices: React+TS idiom, local-first state, behavior-through-the-rendered-interface tests, a11y as correctness |
