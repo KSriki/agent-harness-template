@@ -27,6 +27,35 @@ after it's built. The goal is **confirmed shared understanding**, not a vibe che
 scoring outputs → `eval-harness`. You're recording the decision → `write-design-doc`.
 You're mapping a large initiative into tickets → `wayfinder`.
 
+## Round 0 — the premise round (before the tree opens)
+
+The design tree has a root every later question silently assumes: **"should this
+exist at all?"** Walking the tree without visiting the root is how a model helps
+you build a bad idea well. So, before Round 1:
+
+1. **Dispatch `premise-reviewer`** (non-blocking, like any fact subagent) with a
+   summary of the premise ONLY — never this transcript. Fresh context is the
+   point: a reviewer that read the enthusiasm is already anchored.
+2. **Present its verdict with the first round:** the strongest case against
+   (provenance-tiered, dated), the proposed kill criteria, and your
+   recommendation — same ❓/➡️ format as every other question. The user rules on
+   the premise like any other decision.
+3. **Kill criteria are mandatory output.** 2–4 falsifiable *"this was a bad idea
+   if…"* conditions go into the intent doc. If neither you, the reviewer, nor
+   the user can name one, say so out loud — that is a finding about the premise,
+   not a formality to skip.
+4. **On RETHINK — warn, then let the human bet.** Flag the tracked issue for a
+   human decision (`bd human <id>`), present the evidence as *"here's what the
+   outside view says — are you sure you want to continue?"*, and **pause until
+   the user explicitly rules**. Silence is not consent — but **an informed
+   override is a fully legitimate outcome**: contrarian bets are how new things
+   get built, and this round exists to make the bet *informed*, never to veto
+   it. An override is recorded in the intent doc (the evidence overridden, the
+   user's reasoning, kill criteria armed) — that record is what separates a bet
+   from a blind spot.
+5. **Skip condition (stated, never silent):** an internal-only, cheap-to-reverse
+   change needs no outside view — skip Round 0 and say so in one line.
+
 ## The interview: work the question frontier, in rounds
 
 Map the subject as a **design tree** — every decision branches into the decisions
@@ -59,7 +88,10 @@ hanging off it. Then:
    understanding is reached. The confirmation is the gate.
 7. **Persist the intent.** On confirmation, write the settled understanding to
    `intent/<slug>.intent.md` in the originator's own words: problem, proposed
-   outcome, affected users/systems, constraints, decisions made, open questions.
+   outcome, affected users/systems, constraints, decisions made, open questions —
+   plus, from Round 0: the **kill criteria** (falsifiable "this was a bad idea
+   if…" conditions), the premise verdict, and any **override record** (evidence
+   overridden + the user's reasoning).
    This is the first link of the artifact chain — `write-a-prd` reads it, and a
    fresh agent can resume from it without this transcript. Propose the commit;
    don't commit unasked (conservative profile).
@@ -69,6 +101,9 @@ hanging off it. Then:
 
 ## Definition of done
 
+- [ ] **Round 0 ran** (or its skip was stated in one line): premise verdict presented,
+      **kill criteria** captured; a RETHINK was ruled on by the human — override or
+      retreat, but never silence
 - [ ] The design tree walked to an **empty frontier** — no branch silently assumed
 - [ ] Every question carried a **recommendation**; rounds respected dependencies
 - [ ] Facts were **looked up (subagents, non-blocking)**, never asked

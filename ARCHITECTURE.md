@@ -97,7 +97,9 @@ repo/
 │   ├── review/                  #   adversarial, read-only, BLOCK/ALLOW
 │   │   ├── security-reviewer.md #   egress, injection, supply chain
 │   │   ├── design-reviewer.md   #   finds what's over-built
-│   │   └── deploy-reviewer.md   #   ship gate: rollback/migration/blast radius
+│   │   ├── deploy-reviewer.md   #   ship gate: rollback/migration/blast radius
+│   │   └── premise-reviewer.md  #   premise gate: outside view, kill criteria
+│   │                            #   (has network, unlike its siblings — verdict-only quarantine)
 │   └── research/                #   context firewalls for untrusted input
 │       ├── code-searcher.md     #   read-only, huge input → tiny output
 │       ├── debug-research.md    #   external research → verdicts

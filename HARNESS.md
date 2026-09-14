@@ -36,7 +36,7 @@ the universal classification — if they drift, that file wins):
 
 | You say | What fires |
 |---|---|
-| "grill me about 〈idea〉" | `grill-me` — frontier rounds of questions until understanding is confirmed |
+| "grill me about 〈idea〉" | `grill-me` — Round 0 premise gate (outside view + kill criteria, human can override), then frontier rounds of questions until understanding is confirmed |
 | "write the PRD" → "break it into tickets" | `write-a-prd` → `prd-to-issues` (Beads: `bd ready` = the frontier) |
 | "build 〈one ticket〉" | one worker, test-first (`tdd`) — most asks need exactly one agent |
 | "use the orchestrator: build 〈these tickets〉" | classify type → route → managed fleet (worktrees, ledger, gates) |
@@ -103,7 +103,7 @@ a cited § when a decision is expensive to reverse.)
 | `observability` | Instrument logs/metrics/traces; SLOs; **triage a live incident** |
 | `review-pr` | Preparing a PR, or reviewing one for correctness + blast radius |
 | `orchestrate-agents` | Run **parallel agents** in worktrees to ship a multi-part change; fan-out + merge-validate |
-| `grill-me` · `wayfinder` | Interrogate the plan; map fuzzy scope as decision tickets |
+| `grill-me` · `wayfinder` | Interrogate the premise (Round 0: `premise-reviewer`, kill criteria) then the plan; map fuzzy scope as decision tickets |
 | `write-a-prd` · `prd-to-issues` | Discussion → spec → tracer-bullet tickets with blocking edges |
 | `tdd` | Test-first build loop: red before green, one vertical slice at a time |
 | `codebase-design` · `domain-modeling` | Deep-module vocabulary; the glossary + light ADRs |
@@ -116,7 +116,7 @@ a cited § when a decision is expensive to reverse.)
 | `setup-harness` | Per-project first pass: context (AGENTS.md + CLAUDE.md + docs), gate + CI, tracker, config doc — no installer script |
 
 **Subagents** (own context window)
-`orchestrator` (the manager — spawns the fleet, backed by the deterministic `orchestrator_engine/`) · `code-searcher` · `test-writer` · `design-reviewer` · `debug-research` · `security-reviewer` · `deploy-reviewer` · `trend-scout` · `implementer` (+ `frontend-` / `backend-` variants) — organized in `agents/` by department: orchestration · engineering · qa · review · research
+`orchestrator` (the manager — spawns the fleet, backed by the deterministic `orchestrator_engine/`) · `code-searcher` · `test-writer` · `design-reviewer` · `debug-research` · `security-reviewer` · `deploy-reviewer` · `premise-reviewer` · `trend-scout` · `implementer` (+ `frontend-` / `backend-` variants) — organized in `agents/` by department: orchestration · engineering · qa · review · research
 
 **Docs** — steering doc (always-on) + architecture patterns (compressed 14% + full KB)
 

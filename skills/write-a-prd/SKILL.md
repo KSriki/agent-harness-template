@@ -35,7 +35,10 @@ design decision → `write-design-doc`. You're breaking it into buildable ticket
 
 1. **Read the intent artifact.** If `intent/<slug>.intent.md` exists for this
    work, it is the canonical statement of intent — the transcript supplements
-   it, not the reverse.
+   it, not the reverse. **Carry its kill criteria and any premise-override
+   record into the spec verbatim** — they are acceptance-level constraints the
+   build must keep checking, not commentary; a spec that drops them un-arms
+   the premise gate.
 2. **Explore for current state** (if not already). Use the project's **domain
    glossary** vocabulary (`domain-modeling` / `CONTEXT.md`); respect existing ADRs in
    the area you touch.

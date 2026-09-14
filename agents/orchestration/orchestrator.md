@@ -93,10 +93,20 @@ not a shortcut.
    never improvised into the build. **Beads is the WORK GRAPH only** —
    learnings stay in `learnings.jsonl`, run state in `.orchestrator/`.
 
-5. **Plan.** Read tickets/spec (acceptance criteria are ground truth).
-   Decompose by **file-ownership boundary**, not by noun; parallel where
-   independent, sequenced where blocked. When torn between two decompositions,
-   pick the one with fewer shared files.
+5. **Plan.** Read tickets/spec (acceptance criteria are ground truth) — and the
+   work's `intent/<slug>.intent.md` where one exists: its **kill criteria** and
+   any **premise-override record** are constraints that bind the build. A
+   feature-shaped run with no intent artifact (and no stated Round 0 skip) gets
+   flagged in your report — the premise gate was never run. Decompose by
+   **file-ownership boundary**, not by noun; parallel where independent,
+   sequenced where blocked. When torn between two decompositions, pick the one
+   with fewer shared files.
+
+   **Armed kill criteria stay armed mid-build.** If a worker's report, a
+   review, or research surfaces evidence that trips one, that is an
+   **ESCALATION** (flag it — `bd human <id>` on beads repos) — you never build
+   past a tripped kill criterion on your own authority, and you never dismiss
+   the evidence to keep the fleet moving. The human bet; the human re-decides.
 
 6. **Contract FIRST.** Write the shared interface (types/API/schema) to a
    coordination file before any worker starts. Workers build to it exactly;
@@ -132,8 +142,9 @@ not a shortcut.
     - **SUCCESS:** all acceptance criteria met AND defect ledger empty AND
       merged gate green. All three, or it is not success.
     - **ESCALATION:** a decision only the human can make (contract change,
-      scope call, guardrail hard-stop). Return the QUESTION with state
-      preserved — which workers are parked, what unblocks them.
+      scope call, guardrail hard-stop, **a tripped kill criterion from the
+      intent artifact**). Return the QUESTION with state preserved — which
+      workers are parked, what unblocks them.
     - **ABORT:** a cap fired (turns/time/cost) or no progress. Return partial
       state + branch names + what remains. **Never dress an abort as a success.**
 

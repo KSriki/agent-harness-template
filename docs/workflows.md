@@ -39,7 +39,7 @@ flowchart TB
 
 ```mermaid
 flowchart LR
-    A["'Add 〈feature〉'"] --> G["grill-me<br/>(if scope fuzzy)"] --> P["PRD-lite<br/>(write-a-prd)"] --> T["prd-to-issues<br/>(tracer bullets + edges)"] --> B["build test-first<br/>(1–3 workers, tdd)"] --> R["review-pr"] --> M["merge-validate<br/>gate full"] --> SHIP["ship (ci-cd)"]
+    A["'Add 〈feature〉'"] --> G["grill-me<br/>(premise gate; if scope fuzzy)"] --> P["PRD-lite<br/>(write-a-prd)"] --> T["prd-to-issues<br/>(tracer bullets + edges)"] --> B["build test-first<br/>(1–3 workers, tdd)"] --> R["review-pr"] --> M["merge-validate<br/>gate full"] --> SHIP["ship (ci-cd)"]
 ```
 
 Small, well-understood feature? Skip straight from the ask to build — the
