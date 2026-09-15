@@ -1,5 +1,22 @@
 # Context Changelog
 
+## 2026-09-15
+
+- `docs/beads.md` — NEW (MINOR — additive; ticket agent-harness-template-p8m).
+  Human manual for the Beads tracker, `docs/evals.md`-style: mental model +
+  sync architecture (Mermaid), the commands humans actually type, `bd human`
+  as the premise-gate escalation queue, the beads-vs-learnings boundary,
+  multi-session/worktree lock behavior including the 2026-09-14 bd-prime
+  contention incident (ticket yxr) and its troubleshooting. Indexed in
+  `docs/README.md`.
+- `SETUP.md` — **"Updating a machine" section** (MINOR — additive; ticket
+  agent-harness-template-udb). The update path was undocumented: because
+  `--link-global` symlinks and the gate hook resolves through them at runtime,
+  updating = `git pull` in the clone; a table states what pulls through
+  automatically (skills, agents, gate logic) vs. what needs deliberate action
+  (hook JSON re-install, machine CLAUDE.md hand-merge, per-project committed
+  copies by PR). Journey list at the top now points at it.
+
 Every promotion into `docs/` gets one entry — and so does any behavior-changing
 promotion to `skills/` or `agents/`. A PR that changes those without changing this
 file is a promotion without a record — gate on it.

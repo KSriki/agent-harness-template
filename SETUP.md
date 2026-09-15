@@ -4,6 +4,8 @@
 
 1. **New machine** → §0 "global toolkit": clone + `python3 init.py --link-global
    --install-hooks --global-claude` + restart. Done — every project sees the suite.
+   **Already installed and want the latest?** → §0 "Updating a machine": it's a
+   `git pull` in the clone, plus two commands only in specific cases.
 2. **New / existing project** → §0 install paths, then §1 wizard (or the
    `setup-harness` skill from inside the project) → fill Commands → §3
    security → §6 verify it actually loads.
@@ -58,6 +60,38 @@ cd ~/agent-harness && python3 init.py --link-global
   the project — it scaffolds `AGENTS.md` + `CLAUDE.md` + `docs/` from your global harness,
   no installer script needed. (The scripted `bash install.sh <project>` still works if you
   prefer.)
+
+### Updating a machine (the pull-through model)
+
+Because `--link-global` makes **directory symlinks** (`~/.claude/skills` and
+`~/.claude/agents` point *into your clone*), and the gate hooks resolve
+`gates/gate-dispatch.sh` **through the skills symlink at fire time**, updating
+an installed machine is:
+
+```bash
+cd ~/agent-harness && git checkout main && git pull
+```
+
+…and you're done for almost everything. What updates when:
+
+| Layer | Updates on `git pull`? | When you must act |
+|---|---|---|
+| Skills (`skills/`) | ✅ automatically (symlinked) | never |
+| Subagents (`agents/`) | ✅ automatically (symlinked) | never |
+| Gate logic (`gates/gate-dispatch.sh`) | ✅ automatically (resolved through the symlink at runtime) | never |
+| Hook **definitions** in `~/.claude/settings.json` | ❌ (merged copy) | re-run `python3 init.py --install-hooks` only when a release changes the hook JSON itself (the CHANGELOG will say so) |
+| Machine-wide `CLAUDE.md` baseline | ❌ (copied once, never overwritten — deliberately: it may carry your edits) | diff against the repo's template and merge by hand if you want the new baseline |
+| **Per-project** files (`AGENTS.md`, guardrails, `.claude/gate.sh`, CI workflow) | ❌ (committed copies in each project) | update per project, per PR — guardrails changing by reviewed diff in each repo is the design (guardrail 6), not a missing feature |
+
+Restart Claude Code (or start a new session) after pulling — running sessions
+loaded their skills at startup. Verify with `ls -l ~/.claude/skills` (should
+point into the clone) and by asking a fresh session to list a skill you know
+just changed.
+
+> ⚠️ The symlinks mean your clone **is** the live install: a broken working
+> tree in the clone (mid-rebase, checked-out branch other than main) is what
+> every project on the machine sees. Keep the clone's checkout parked on
+> `main`; do feature work in worktrees, exactly as this repo's own workflow does.
 
 ### Enforcement — hooks + CI (the layer that isn't prose)
 
