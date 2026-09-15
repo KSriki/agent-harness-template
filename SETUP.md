@@ -92,6 +92,14 @@ just changed.
 > tree in the clone (mid-rebase, checked-out branch other than main) is what
 > every project on the machine sees. Keep the clone's checkout parked on
 > `main`; do feature work in worktrees, exactly as this repo's own workflow does.
+>
+> **Developing the harness itself? Use two clones.** Point the symlinks at a
+> dedicated install clone (e.g. `~/agent-harness`, parked on `main`) and hack on
+> the harness in a separate dev clone. Then an experiment in the dev repo can
+> never go live machine-wide by accident — changes reach the install only via
+> merge + `git pull`, i.e. through review. Check which clone is live with
+> `readlink ~/.claude/skills`; re-point by removing the two symlinks and
+> re-running `python3 init.py --link-global` from the right clone.
 
 ### Enforcement — hooks + CI (the layer that isn't prose)
 
