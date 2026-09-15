@@ -34,6 +34,7 @@ different mechanisms.** Confusing them is the #1 way this setup silently fails.
 | `agents/work-types.md` | **On-demand** | Universal work classification — read by entry points (orchestrator step 2, main thread) at classify time |
 | `workflows.md` | **On-demand** | Diagrams of the common paths (spine, feature, bug, architecture, testing) — pictures over the canonical files |
 | `evals.md` | **On-demand** | Human manual for the eval runner (`evals/`) — agents route via the `eval-harness` skill |
+| `beads.md` | **On-demand** | Human manual for the Beads tracker — mental model, sync architecture, `bd human`, lock gotchas; agents get theirs from `bd prime` |
 | `architecture-patterns-FULL-KB.md` | **Reference-only** | Opened at a cited § — never read whole |
 | `agentic-frameworks-knowledge-base.md` | **Reference-only** | Opened at a cited § (steering cites "Agentic KB §x") — never read whole |
 | `CHANGELOG.md` | **Never loaded** | Human record of promotions |
