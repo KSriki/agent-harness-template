@@ -9,7 +9,8 @@
 | Layer | Lives | Enforces | Can be bypassed by |
 |---|---|---|---|
 | **1. Context** (steering §4.5, skills) | repo / `~/.claude` | process (red-before-green, the SDLC loop) | a rationalizing model |
-| **2. Hooks** (this dir) | `~/.claude/settings.json` → every project on the machine | outcomes at the agent layer: lint · typecheck · **tests · coverage** | `--no-verify`-style local edits, a human |
+| **2a. Guard** (`pre_tool_guard.py`) | `~/.claude/settings.json` → every project, **before** the tool runs | guardrails 3/4 as physics: no gate bypass, no destructive commands, a human on dep installs + gate-config edits | obfuscated shell (`$(printf …)`, `base64 \| sh`), a human |
+| **2b. Hooks** (this dir) | `~/.claude/settings.json` → every project on the machine | outcomes at the agent layer: lint · **secrets** · typecheck · **tests · coverage** | local edits by a human (2a stops the agent doing it) |
 | **3. CI + branch protection** | `.github/workflows/` + repo settings | the same gate, un-bypassably: **PRs do not merge on red** | nobody |
 
 ## How the hook layer works
@@ -37,8 +38,40 @@ Claude tries to stop ─▶ Stop hook ────────▶ gate-dispatch.
   becomes unbearable. The expensive proof — **tests + coverage threshold** — runs at
   turn end and in CI.
 
+## The PreToolUse guard (`pre_tool_guard.py`)
+
+Runs before every Bash / Edit / Write in **every** project (no opt-in — guardrails
+are cross-project). Stdlib Python, <50ms, parses shell with `shlex` and recurses
+into `bash -c` / `eval`.
+
+| Decision | What | Why |
+|---|---|---|
+| **deny** | `--no-verify`, `commit -n`, any `core.hooksPath` redirect | skipping the hooks that ARE the gate is faking done |
+| **deny** | force-push to `main`/`master`; `rm -r` of `/`, `~`, `$HOME`, `*`, `.`, `..` or the project root | irreversible; never an agent action |
+| **ask** | new-package installs: `npm/pnpm/yarn/bun add\|i <pkg>`, `pip install <pkg>`, `uv add`, `poetry/cargo add`, `go get/install`, `gem/brew install`, `npx`/`uvx`/`dlx` | guardrail 3 — installing executes code before review. Lockfile restores (`npm ci`, bare `npm install`, `uv sync`, `pip install -r`) pass |
+| **ask** | force-push to other branches, `git reset --hard`, `git clean -f`, remote ref delete, `rm -r` outside the project | destructive but sometimes legit — a human decides |
+| **ask** | edits to an **existing** gate/lint/typecheck/test/CI config or dependency manifest (`.claude/gate.sh`, `.github/workflows/*`, `ruff.toml`, `tsconfig*.json`, eslint/prettier, `pyproject.toml`, `package.json`, `requirements*.txt`, …) | loosening the gate to pass is the cheapest fake-done; a manifest edit is the other door to guardrail 3. Creating a new config is allowed (scaffolding) |
+
+**Fails open** on malformed input (a guard bug must not brick every session) and
+logs to stderr. **Kill switch:** launch Claude Code with `HARNESS_GUARD=off` — an
+inline `HARNESS_GUARD=off cmd` inside a Bash call does not reach the hook. This
+is a seatbelt against honest mistakes and rationalization, not a sandbox against
+an adversary — Layer 3 is still the wall.
+
+## Secret scan (`secret_scan.py`)
+
+`gate.sh fast` scans changed + untracked files; `full` (and CI) scans every tracked
+file. High-confidence patterns only (private keys, AWS/GitHub/Anthropic/OpenAI/
+Slack/Google/Stripe tokens, credentials in URLs) — a noisy scanner gets
+allowlisted into uselessness. A real test fixture opts out per line with
+`gate:allow-secret`. `setup-harness` vendors it to `.claude/secret_scan.py` so CI
+(which has no harness clone) runs the same file. gitleaks is stronger; adopting it
+is a dependency decision (guardrail 3).
+
 ## Files
 
+- `pre_tool_guard.py` — the global PreToolUse guard (above). Tests: `gates/tests/`.
+- `secret_scan.py` — the gate's secret check (above); copy to `<project>/.claude/`.
 - `gate-dispatch.sh` — the global hook target. Reads the hook JSON, delegates to the
   project's `.claude/gate.sh`. No project file → exits 0 silently.
 - `gate.sh.template` — copy to `<project>/.claude/gate.sh`, fill the 〈slots〉, `chmod +x`.

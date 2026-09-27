@@ -78,7 +78,7 @@ cd ~/agent-harness && git checkout main && git pull
 |---|---|---|
 | Skills (`skills/`) | ✅ automatically (symlinked) | never |
 | Subagents (`agents/`) | ✅ automatically (symlinked) | never |
-| Gate logic (`gates/gate-dispatch.sh`) | ✅ automatically (resolved through the symlink at runtime) | never |
+| Gate logic (`gates/gate-dispatch.sh`, `gates/pre_tool_guard.py`) | ✅ automatically (resolved through the symlink at runtime) | never |
 | Hook **definitions** in `~/.claude/settings.json` | ❌ (merged copy) | re-run `python3 init.py --install-hooks` only when a release changes the hook JSON itself (the CHANGELOG will say so) |
 | Machine-wide `CLAUDE.md` baseline | ❌ (copied once, never overwritten — deliberately: it may carry your edits) | diff against the repo's template and merge by hand if you want the new baseline |
 | **Per-project** files (`AGENTS.md`, guardrails, `.claude/gate.sh`, CI workflow) | ❌ (committed copies in each project) | update per project, per PR — guardrails changing by reviewed diff in each repo is the design (guardrail 6), not a missing feature |
@@ -106,9 +106,10 @@ just changed.
 Context guides; **gates enforce** (see `gates/README.md` for the full model):
 
 ```bash
-python3 init.py --install-hooks     # once per machine: PostToolUse (lint, fast) +
-                                    # Stop (full gate: lint·types·tests·coverage) hooks —
-                                    # they no-op until a project defines .claude/gate.sh
+python3 init.py --install-hooks     # once per machine: PreToolUse guard (every project) +
+                                    # PostToolUse (lint, fast) + Stop (full gate:
+                                    # lint·types·tests·coverage) — the gate hooks no-op
+                                    # until a project defines .claude/gate.sh
 python3 init.py --global-claude     # optional: tiny machine-wide CLAUDE.md baseline
 ```
 

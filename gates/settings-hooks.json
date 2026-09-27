@@ -3,7 +3,21 @@
   "//2": "No paths are baked in: the command resolves the harness at runtime via the",
   "//3": "~/.claude/skills symlink (created by `init.py --link-global`). New machine =",
   "//4": "clone anywhere + link once; hooks follow. No link / no dispatch → silent no-op.",
+  "//5": "PreToolUse guard (pre_tool_guard.py) acts in EVERY project, gate.sh or not:",
+  "//6": "deny = destructive/gate-bypass; ask = dependency installs + existing gate config.",
   "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash|Edit|Write|MultiEdit|NotebookEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "g=\"$(dirname \"$(readlink -f \"${CLAUDE_CONFIG_DIR:-$HOME/.claude}/skills\" 2>/dev/null)\")/gates/pre_tool_guard.py\"; [ -f \"$g\" ] && exec python3 \"$g\"; exit 0",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
     "PostToolUse": [
       {
         "matcher": "Edit|Write|NotebookEdit",

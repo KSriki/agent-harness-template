@@ -143,6 +143,7 @@ driven by the Commands table you just confirmed — copy each only if absent:
 # Layer 2 — the per-project gate the machine-wide hooks run (fast on edits, full on stop)
 mkdir -p .claude
 [ -f .claude/gate.sh ] || cp "$HARNESS/gates/gate.sh.template" .claude/gate.sh
+cp -n "$HARNESS/gates/secret_scan.py" .claude/secret_scan.py   # vendored: CI has no harness clone
 # fill EVERY 〈slot〉 from the confirmed Commands: lint · format · typecheck · tests+coverage.
 # No working tool for a slot → delete that line (an aspirational command is a red gate lie);
 # a tool that would need installing → propose it (guardrail 3), don't reference it.

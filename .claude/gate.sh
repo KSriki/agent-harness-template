@@ -10,6 +10,8 @@ MODE="${1:-full}"
 
 # ── FAST — after every edit. Cheap only. ─────────────────────────────────────
 ruff check .
+python3 gates/secret_scan.py
+python3 -m harness_lint .    # skills/agents/indexes wired correctly (stdlib, <1s)
 
 [ "$MODE" = "fast" ] && exit 0
 
@@ -25,8 +27,10 @@ done
 
 # ── FULL — turn end + CI. The whole deterministic proof. ─────────────────────
 ruff format --check .
-"$PY" -m pytest orchestrator_engine/tests evals/tests -q \
-    --cov=orchestrator_engine --cov=evals --cov-fail-under=80 --cov-report=term:skip-covered
+python3 gates/secret_scan.py --all
+"$PY" -m pytest orchestrator_engine/tests evals/tests harness_lint/tests gates/tests -q \
+    --cov=orchestrator_engine --cov=evals --cov=harness_lint --cov=gates \
+    --cov-fail-under=80 --cov-report=term:skip-covered
 
 [ "$MODE" = "full" ] && exit 0
 

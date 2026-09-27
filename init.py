@@ -477,13 +477,13 @@ def link_global(config_dir: str | None = None, *, dry_run: bool = False) -> int:
 
 def install_hooks(config_dir: str | None = None, *, dry_run: bool = False) -> int:
     """Merge the gate hooks (gates/settings-hooks.json) into the global Claude
-    settings. No path is baked in: the hook command resolves the harness at
+    settings: PreToolUse guard (pre_tool_guard.py) + PostToolUse fast + Stop full. No path is baked in: the hook command resolves the harness at
     runtime via the ~/.claude/skills symlink (created by --link-global), so the
     same settings.json works on any machine and survives moving this repo.
 
     The hooks fire in every project but act only where the project has opted in
     with .claude/gate.sh — global enforcement, per-project contract. Idempotent
-    (skips if a gate-dispatch hook is already present); backs up settings.json.
+    per hook (an existing machine gains only what it lacks); backs up settings.json.
     """
     src = Path(__file__).resolve().parent
     dispatch = src / "gates" / "gate-dispatch.sh"
@@ -497,6 +497,11 @@ def install_hooks(config_dir: str | None = None, *, dry_run: bool = False) -> in
     resolve = (
         'd="$(dirname "$(readlink -f "${CLAUDE_CONFIG_DIR:-$HOME/.claude}/skills"'
         ' 2>/dev/null)")/gates/gate-dispatch.sh"; [ -x "$d" ] && exec "$d" %s; exit 0'
+    )
+
+    guard = (
+        'g="$(dirname "$(readlink -f "${CLAUDE_CONFIG_DIR:-$HOME/.claude}/skills"'
+        ' 2>/dev/null)")/gates/pre_tool_guard.py"; [ -f "$g" ] && exec python3 "$g"; exit 0'
     )
 
     rule("Install gate hooks → global Claude settings")
@@ -526,32 +531,53 @@ def install_hooks(config_dir: str | None = None, *, dry_run: bool = False) -> in
             return 1
 
     hooks = data.setdefault("hooks", {})
-    already = any(
-        "gate-dispatch.sh" in h.get("command", "")
-        for entries in hooks.values()
-        for e in entries
-        for h in e.get("hooks", [])
-    )
-    if already:
+
+    def present(event: str, marker: str) -> bool:
+        return any(
+            marker in h.get("command", "")
+            for e in hooks.get(event, [])
+            for h in e.get("hooks", [])
+        )
+
+    wanted = [
+        (
+            "PreToolUse",
+            "pre_tool_guard.py",
+            {
+                "matcher": "Bash|Edit|Write|MultiEdit|NotebookEdit",
+                "hooks": [{"type": "command", "command": guard, "timeout": 10}],
+            },
+        ),
+        (
+            "PostToolUse",
+            "gate-dispatch.sh",
+            {
+                "matcher": "Edit|Write|NotebookEdit",
+                "hooks": [
+                    {"type": "command", "command": resolve % "fast", "timeout": 120}
+                ],
+            },
+        ),
+        (
+            "Stop",
+            "gate-dispatch.sh",
+            {
+                "hooks": [
+                    {"type": "command", "command": resolve % "full", "timeout": 600}
+                ]
+            },
+        ),
+    ]
+    missing = [(ev, entry) for ev, marker, entry in wanted if not present(ev, marker)]
+    if not missing:
         print(f"  {green('✓')} gate hooks already installed — nothing to do")
         return 0
-
-    hooks.setdefault("PostToolUse", []).append(
-        {
-            "matcher": "Edit|Write|NotebookEdit",
-            "hooks": [{"type": "command", "command": resolve % "fast", "timeout": 120}],
-        }
-    )
-    hooks.setdefault("Stop", []).append(
-        {"hooks": [{"type": "command", "command": resolve % "full", "timeout": 600}]}
-    )
+    for event, entry in missing:
+        hooks.setdefault(event, []).append(entry)
+    added = " · ".join(ev for ev, _ in missing)
 
     if dry_run:
-        print(
-            yellow(
-                "  --dry-run: would add PostToolUse(fast) + Stop(full) hooks. Nothing written."
-            )
-        )
+        print(yellow(f"  --dry-run: would add {added} hook(s). Nothing written."))
         return 0
 
     target.mkdir(parents=True, exist_ok=True)
@@ -559,7 +585,7 @@ def install_hooks(config_dir: str | None = None, *, dry_run: bool = False) -> in
         shutil.copy2(settings, settings.with_suffix(".json.bak"))
         print(dim(f"  backup → {settings.name}.bak"))
     settings.write_text(json.dumps(data, indent=2) + "\n")
-    print(f"  {green('✓')} hooks installed (PostToolUse fast · Stop full)")
+    print(f"  {green('✓')} hooks installed ({added})")
     print(
         dim(
             "  They no-op until a project defines .claude/gate.sh — see gates/gate.sh.template."

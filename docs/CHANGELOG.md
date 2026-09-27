@@ -1,5 +1,32 @@
 # Context Changelog
 
+## 2026-09-26
+
+- **Enforcement hooks** (MINOR — additive; **re-run `python3 init.py
+  --install-hooks`** on every machine: the hook JSON changed). Trigger: a
+  side-by-side audit against Everything Claude Code found guardrails 3/4 and the
+  gate's integrity were prose-only — no PreToolUse hook existed. Ideas taken from
+  ECC's `block-no-verify` / `config-protection` / gateguard hooks; **no code
+  vendored**, rewritten stdlib-only.
+  - `gates/pre_tool_guard.py` — NEW machine-wide PreToolUse guard: denies
+    `--no-verify` / `core.hooksPath` / force-push to main / root-home-project
+    `rm -r`; asks on new-package installs, other destructive git, and edits to
+    existing gate/CI/lint/dependency-manifest files.
+  - `gates/secret_scan.py` — NEW stdlib secret scan; `gate.sh.template` runs it
+    in `fast` (changed files) and `full` (all tracked). `setup-harness` vendors it
+    to `.claude/secret_scan.py`. **Existing projects:** copy it in and add the two
+    template lines by PR.
+  - `init.py --install-hooks` — idempotent **per hook** (was all-or-nothing on
+    `gate-dispatch.sh`, which would have skipped the guard on every existing
+    machine). Tests added (`gates/tests/test_install_hooks.py`).
+  - `harness_lint/` — NEW validator in this repo's gate: skill/agent frontmatter,
+    `skills:` preloads, `models.py` DEFAULTS vs frontmatter, AGENTS.md skills
+    table, broken pointers. First run found and this change fixes:
+    `premise-reviewer` missing from DEFAULTS (it silently ran on `inherit`);
+    `evolve-harness` citing a nonexistent `deep-research` skill; a dead link to
+    `agentic-frameworks-knowledge-base.md` (external — now marked as such in
+    `docs/README.md`).
+
 ## 2026-09-15
 
 - `docs/beads.md` — NEW (MINOR — additive; ticket agent-harness-template-p8m).
