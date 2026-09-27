@@ -1778,7 +1778,7 @@ GoF is the foundational catalog but not the last word. Worth knowing the major e
 | 26 | [BeyondCorp](https://research.google/pubs/beyondcorp-a-new-approach-to-enterprise-security/) — Google, 2014 | Paper series | The canonical Zero Trust treatment. The model most modern enterprise security descends from. |
 | 27 | [OWASP Top 10](https://owasp.org/www-project-top-ten/) | Standard / list | The canonical application-security vulnerability list. Read it if you haven't. |
 | 28 | [Domain Modeling Made Functional](https://pragprog.com/titles/swdddf/domain-modeling-made-functional/) — Scott Wlaschin, 2018 | Book | The FP rebuild of DDD in F#. Worth reading even if you stay in OO; cited in §0.8.5. |
-| 29 | [agentic-frameworks-knowledge-base.md](agentic-frameworks-knowledge-base.md) | Sibling doc | Cross-referenced throughout — agent stacks sit on top of the patterns in this doc. |
+| 29 | `agentic-frameworks-knowledge-base.md` (external — lives in the Claude project, not this repo) | Sibling doc | Cross-referenced throughout — agent stacks sit on top of the patterns in this doc. |
 
 ---
 

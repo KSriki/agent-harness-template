@@ -111,10 +111,15 @@ repo/
 │   └── results/                 #   committed, so you can SEE the decay
 │
 ├── gates/                       # DETERMINISTIC enforcement — outside the model
+│   ├── pre_tool_guard.py        #   machine-wide PreToolUse: deny gate-bypass/destructive; ask on deps + gate config
 │   ├── gate-dispatch.sh         #   machine-wide hook → runs project's .claude/gate.sh
+│   ├── secret_scan.py           #   stdlib secret scan; vendored into projects as .claude/secret_scan.py
 │   ├── gate.sh.template         #   per-project gate: lint · types · TESTS · COVERAGE
 │   ├── github-actions-gate.yml  #   CI runs the same gate; branch protection = physics
 │   └── global-CLAUDE.md         #   optional tiny machine-wide baseline
+│
+├── harness_lint/                # validates the agent layer is WIRED: frontmatter · preloads ·
+│                                #   models.py registry · AGENTS.md skills table · pointers
 │
 └── orchestrator_engine/         # DETERMINISTIC orchestration scaffolding (python, stdlib)
     ├── state.py                 #   the registry: .orchestrator/state.json + product-docs/

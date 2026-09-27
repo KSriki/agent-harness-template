@@ -20,6 +20,7 @@ DEFAULTS = {
     "security-reviewer": "opus",
     "design-reviewer": "opus",
     "deploy-reviewer": "opus",
+    "premise-reviewer": "opus",
     "debug-research": "opus",
     "trend-scout": "opus",
 }

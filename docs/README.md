@@ -36,7 +36,7 @@ different mechanisms.** Confusing them is the #1 way this setup silently fails.
 | `evals.md` | **On-demand** | Human manual for the eval runner (`evals/`) — agents route via the `eval-harness` skill |
 | `beads.md` | **On-demand** | Human manual for the Beads tracker — mental model, sync architecture, `bd human`, lock gotchas; agents get theirs from `bd prime` |
 | `architecture-patterns-FULL-KB.md` | **Reference-only** | Opened at a cited § — never read whole |
-| `agentic-frameworks-knowledge-base.md` | **Reference-only** | Opened at a cited § (steering cites "Agentic KB §x") — never read whole |
+| `agentic-frameworks-knowledge-base.md` | **Reference-only · NOT in this repo** | Lives in the Claude project; steering cites "Agentic KB §x" — if it isn't attached, say so rather than guessing its content |
 | `CHANGELOG.md` | **Never loaded** | Human record of promotions |
 | `design/*.md` | **On-demand** | The filled-in design docs for *this* system |
 
