@@ -18,6 +18,15 @@
     the testing env (`kubernetes-ops`, `helm-charts`); helmfile secret inputs are
     a slot (`vals` / `--state-values-set`) filled in the env.
   - `work-types.md` → 1.2.0, `workflows.md` → 1.2.0.
+  - **Upstream sync (mattpocock/skills 1.3.1, checked 2026-10-16):** `grill-me`
+    takes the `---` round separator and the "yes accepts the recommendation" rule;
+    the glossary file convention is renamed `CONTEXT.md` → `GLOSSARY.md`
+    (`GLOSSARY-MAP.md` for multi-context repos) in `tdd`, `setup-harness`, and the
+    harness-config template. `writing-for-agents` (maintainer-only) left at its
+    v1.2 adaptation.
+  - `harness_lint`: `audience: maintainer` frontmatter exempts a skill from the
+    AGENTS.md table; the three maintainer skills carry it and are no longer listed
+    (AGENTS.md is the copy that goes into the enterprise env).
 
 ## 2026-10-16 — branch `harness/enterprise-ai-platform`
 

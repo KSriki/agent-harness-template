@@ -78,7 +78,7 @@ review_after: 2026-11-18
 
 > GUIDANCE: rules the code cannot reveal — compliance, domain invariants, money
 > handling, tenancy. NEVER fabricated: every line traces to a human answer.
-> Domain *vocabulary* goes to `CONTEXT.md`; decisions go to `docs/adr/` (`adr`), not here.
+> Domain *vocabulary* goes to `GLOSSARY.md`; decisions go to `docs/adr/` (`adr`), not here.
 
 - 〈e.g. "All money is integer cents — no floats, ever."〉
 - 〈e.g. "PII never leaves the EU region; exports go through the redaction service."〉

@@ -130,9 +130,9 @@ first, propose, confirm with the human, then write (never assume):
   can take it) · `ready-for-human` · `wontfix`. If the tracker already has an
   equivalent vocabulary, record the mapping instead of creating duplicates —
   both go in the config doc's Tracker section (step 6).
-- **Domain docs.** Default single-context: a root `CONTEXT.md` (glossary, optional)
+- **Domain docs.** Default single-context: a root `GLOSSARY.md` (glossary, optional)
   + numbered ADRs under `docs/adr/` (the `adr` skill owns the format). Offer
-  multi-context (`CONTEXT-MAP.md` + per-context files) only on monorepo signals
+  multi-context (`GLOSSARY-MAP.md` + per-context files) only on monorepo signals
   (workspaces, `packages/*`).
 
 ### 5. Install the enforcement gate and PROVE it green (Layers 2 + 3)

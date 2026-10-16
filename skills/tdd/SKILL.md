@@ -24,7 +24,7 @@ This is the *discipline*; `run-tests` is the *gate* you run afterward.
 tests for code that already exists → `run-tests`. You're scoring model outputs →
 out of scope on this branch.
 
-Read `CONTEXT.md` first (if present) so test names/vocabulary match the domain.
+Read `GLOSSARY.md` first (if present) so test names/vocabulary match the domain.
 
 ## What a good test is
 
