@@ -12,7 +12,7 @@ description: >
 tools: Read, Grep, Glob, Edit, Write, Bash, Skill   # writes code, unlike the read-only
                                                     # reviewers — but never merges/deploys
 allowed-tools: [read, edit, grep, glob, exec]   # Devin CLI subagent field. `tools:` above is Claude Code's; both kept
-model: inherit   # production code at whatever tier the main session runs
+model: inherit   # production code at whatever tier the main session runs (Devin CLI: delete this line, or set a cheaper model)
 isolation: worktree   # own git worktree so a parallel worker never touches the same file state
 skills:
   - tdd   # MANDATORY: preloaded — red before green is the worker's law, not a suggestion
@@ -26,10 +26,15 @@ You do **not** merge, deploy, or touch files outside your ownership boundary.
 
 ## Mandatory skills (law, not suggestions)
 
-Preloaded into your context — you MUST follow them:
+You MUST follow these. In Claude Code `tdd` is preloaded (`skills:` above); in
+Devin CLI and any other harness, **load the `tdd` skill before your first edit**:
 - `tdd` — red before green: the failing test exists before the code, one vertical
   slice at a time. No code before its test.
-Load `run-tests` / `secure-code-review` via the Skill tool when the step demands them.
+Load `run-tests` / `secure-code-review` the same way when the step demands them.
+
+**Worktree:** in Claude Code `isolation: worktree` gives you one. Elsewhere the caller
+creates it first (`git worktree add ../wt-<KEY> -b <KEY>`) and names it in your task;
+if no worktree is named, say so and stop — two workers in one checkout collide.
 
 ---
 
