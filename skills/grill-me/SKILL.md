@@ -14,9 +14,11 @@ description: >
 
 # Grill me: interrogate the plan before you build
 
-> Adapted from `mattpocock/skills` (MIT), v1.2 — the frontier-rounds rework.
-> v1.2 replaced one-question-at-a-time (our previous version) with batched rounds:
-> same depth, a third of the turns.
+> Adapted from `mattpocock/skills` (MIT). Frontier rounds from v1.2; round
+> format and the "yes accepts the recommendation" rule from v1.3.1's `grilling`
+> (checked 2026-10-16). Upstream now splits a user-invoked `grill-me` shim from a
+> model-invoked `grilling` core; this harness keeps one skill and adds Round 0
+> (offline premise check) and intent persistence, which upstream does not have.
 
 ## When to use this
 
@@ -70,13 +72,23 @@ hanging off it. Then:
    recommended answer, then wait for ALL answers before the next round. A question
    that depends on another question still open *this* round belongs to a *later*
    round.
-3. **Per-question format** (scannable, answer-in-bulk friendly):
+3. **Per-question format** (scannable, answer-in-bulk friendly; a rule between
+   questions so they never run together):
 
    ```
    ❓ **Q1 — <question title>**: <question body; may include choices>
 
    ➡️ <your recommended answer, and why in a phrase>
+
+   ---
+
+   ❓ **Q2 — <question title>**: …
+
+   ➡️ …
    ```
+
+   **Word each question so that "yes" accepts your recommended answer.** The
+   user should be able to reply "yes to all but Q3" and have that mean something.
 
 4. **Each answered round reshapes the tree.** Settled decisions push the frontier
    outward; recompute it and ask the next round. Early rounds may be a single
