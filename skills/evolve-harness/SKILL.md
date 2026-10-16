@@ -1,5 +1,6 @@
 ---
 name: evolve-harness
+audience: maintainer   # not shipped into the enterprise env; harness_lint exempts it from the AGENTS.md table
 description: >
   Use to turn a repeated correction, a recurring failure, or a researched new
   practice/trend into a durable change to the AGENT LAYER — a new or edited skill,

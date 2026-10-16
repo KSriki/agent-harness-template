@@ -188,6 +188,8 @@ def check_skills_index(root: Path) -> list[str]:
         name = path.parent.name
         if fm.get("disable-model-invocation") == "true":
             continue  # user-only skills don't route; they needn't be in the model's table
+        if fm.get("audience") == "maintainer":
+            continue  # maintainer-only skills are not shipped to the agent's env; not indexed
         if name not in indexed:
             findings.append(
                 f"AGENTS.md: skill '{name}' missing from the 'Skills available' table"

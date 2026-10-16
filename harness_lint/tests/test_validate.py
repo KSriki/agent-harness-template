@@ -128,9 +128,18 @@ def test_skills_index(harness):
     agents_md.write_text(
         agents_md.read_text().replace("| `tdd` | t |", "| `tdd` | t |\n| `gone` | g |")
     )
+    (harness / "skills/maint").mkdir()
+    (harness / "skills/maint/SKILL.md").write_text(
+        SKILL.format(name="maint").replace(
+            "name: maint", "name: maint\naudience: maintainer"
+        )
+    )
     found = "\n".join(v.check_skills_index(harness))
     assert "skill 'new-one' missing" in found
     assert "lists 'gone' but skills/gone/ does not exist" in found
+    assert (
+        "maint" not in found
+    )  # maintainer-only skills are not shipped, so not indexed
 
 
 def test_links(harness):

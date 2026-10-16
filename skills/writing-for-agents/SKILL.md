@@ -1,5 +1,6 @@
 ---
 name: writing-for-agents
+audience: maintainer   # not shipped into the enterprise env; harness_lint exempts it from the AGENTS.md table
 description: >
   Use when creating or editing anything an AGENT reads — skills, AGENTS.md,
   CLAUDE.md, subagent definitions, steering rules, or docs reached by pointer.

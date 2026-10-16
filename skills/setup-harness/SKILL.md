@@ -1,5 +1,6 @@
 ---
 name: setup-harness
+audience: maintainer   # not shipped into the enterprise env; harness_lint exempts it from the AGENTS.md table
 description: >
   Use to run the per-project first pass that fully harnesses THIS repo — scaffold
   AGENTS.md (with the guardrails), CLAUDE.md (the @import that loads it), docs/

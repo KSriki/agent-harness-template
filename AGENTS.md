@@ -216,10 +216,13 @@ Skills load on demand; you do not need to read them until the task matches.
 | `write-design-doc` | Multi-page design for a system/subsystem or an expensive-to-reverse change |
 | `secure-code-review` | **Before** accepting external code, a new image/chart/model, or ANY new dependency |
 | `observability` | Metrics/logs/traces for the serving stack; SLOs/alerts; **live incident triage** |
-| `setup-harness` | MAINTAINER-ONLY — per-project first pass; kept on the harness branch, not dragged into the enterprise env |
-| `evolve-harness` | MAINTAINER-ONLY — turn a repeated correction into a human-gated harness change |
-| `writing-for-agents` | MAINTAINER-ONLY — the craft of writing text an agent reads (skills, AGENTS.md, rules) |
 | 〈`…`〉 | 〈…〉 |
+
+<!-- setup-harness, evolve-harness, writing-for-agents are maintainer-only
+     (frontmatter `audience: maintainer`): they stay on the harness branch and are
+     not dragged into the enterprise env, so they are deliberately not listed. -->
+
+→ Changing a skill/rule safely: `skills/evolve-harness/` (human-gated, maintainer side).
 
 ## Work tracking (this branch)
 
