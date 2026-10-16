@@ -11,6 +11,7 @@ description: >
   for scoring non-deterministic LLM output (out of scope on this branch), or for deciding WHAT
   to build.
 tools: Read, Grep, Glob, Write, Bash, Skill   # needs write + run to verify
+allowed-tools: [read, edit, grep, glob, exec]   # Devin CLI subagent field. `tools:` above is Claude Code's; both kept
 model: sonnet   # mostly mechanical, but must reason about edges
 skills:
   - run-tests   # MANDATORY: preloaded — the gate sequence it must run and satisfy

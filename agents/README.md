@@ -141,3 +141,24 @@ harness**; an agent that skips permission checks is outside the guardrail model.
 > can name what fails without it. An unused subagent is a maintenance cost with
 > no payoff — and a poorly-scoped one silently returns confident, lossy summaries,
 > which is worse than no subagent at all.
+
+## Running these in Devin CLI
+
+Devin CLI has custom subagents with almost this exact shape (`docs.devin.ai/cli/subagents`,
+checked 2026-10-16). Copy a file to `agents/<name>.md` at the **repo root, flat** (Devin
+does not look in `agents/review/`), or to `~/.config/devin/agents/<name>.md` for every
+repo. Field mapping:
+
+| This harness | Devin CLI | Note |
+|---|---|---|
+| `name`, `description` | same | description is the routing key in both |
+| `model: opus / sonnet / haiku / inherit` | `model:` short names resolve to the latest in the family | `inherit` is Claude Code's; drop the line in Devin to get the parent's model |
+| `tools: Read, Grep, Glob` | `allowed-tools: [read, grep, glob]` | both present in these files; Devin ignores `tools:`, Claude Code ignores `allowed-tools:` |
+| `skills: [tdd]` (preload) | no equivalent | the implementer's prompt already says to follow `tdd`; Devin loads it as a skill on match |
+| `isolation: worktree` | no equivalent | create the worktree yourself before spawning, or let the worker branch |
+| — | `max-nesting: N` | only if a subagent must spawn subagents; the reviewers never should |
+
+Invoke by name ("review this release with the deploy-reviewer subagent") or let the
+description route it. Cloud Devin (web sessions) has **no** subagents; its parallelism
+is Dynamic Workflows, which spawn child sessions that push branches — the fleet model
+this branch removed, and one that conflicts with the no-`origin` rule.

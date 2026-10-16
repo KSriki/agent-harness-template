@@ -24,6 +24,10 @@
     (`GLOSSARY-MAP.md` for multi-context repos) in `tdd`, `setup-harness`, and the
     harness-config template. `writing-for-agents` (maintainer-only) left at its
     v1.2 adaptation.
+  - **Devin CLI subagents:** every agent file carries `allowed-tools:` beside
+    `tools:` so the same file is a Devin CLI subagent profile when copied to
+    `agents/<name>.md`; mapping table in `agents/README.md`. Shipped skills made
+    harness-neutral (gate path is a slot; reviewers referenced as checklists).
   - `harness_lint`: `audience: maintainer` frontmatter exempts a skill from the
     AGENTS.md table; the three maintainer skills carry it and are no longer listed
     (AGENTS.md is the copy that goes into the enterprise env).

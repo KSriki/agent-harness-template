@@ -11,6 +11,7 @@ description: >
   decide architecture (`write-design-doc` / `adr` in the main thread).
 tools: Read, Grep, Glob, Edit, Write, Bash, Skill   # writes code, unlike the read-only
                                                     # reviewers — but never merges/deploys
+allowed-tools: [read, edit, grep, glob, exec]   # Devin CLI subagent field. `tools:` above is Claude Code's; both kept
 model: inherit   # production code at whatever tier the main session runs
 isolation: worktree   # own git worktree so a parallel worker never touches the same file state
 skills:

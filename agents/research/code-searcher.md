@@ -6,6 +6,7 @@ description: >
   short answer. Invoke instead of grepping in the main thread when the surface
   is large. Returns locations and a synthesis, not file dumps.
 tools: Read, Grep, Glob   # READ-ONLY BY DESIGN — never grant write
+allowed-tools: [read, grep, glob]   # Devin CLI subagent field (read-only). `tools:` above is Claude Code's; both kept
 model: haiku   # mechanical retrieval, not judgment — pay the cheap rate
 ---
 

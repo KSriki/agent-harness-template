@@ -11,6 +11,7 @@ tools: Read, Grep, Glob   # READ-ONLY, DELIBERATELY. It reviews; it never writes
                           # never installs, never executes. No network: a security
                           # reviewer that can fetch is a security reviewer that can
                           # be injected and can exfiltrate.
+allowed-tools: [read, grep, glob]   # Devin CLI subagent field (read-only). `tools:` above is Claude Code's; both kept
 model: opus   # adversarial judgment
 ---
 

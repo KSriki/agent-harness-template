@@ -6,6 +6,7 @@ description: >
   adds a component, changes a boundary, or is expensive to reverse. Reviews
   judgment, not style — a linter handles style.
 tools: Read, Grep, Glob   # read-only: this is a critique, not an edit
+allowed-tools: [read, grep, glob]   # Devin CLI subagent field (read-only). `tools:` above is Claude Code's; both kept
 model: opus   # judgment work — pay for it
 ---
 

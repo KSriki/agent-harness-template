@@ -10,6 +10,7 @@ description: >
 tools: Read, Grep, Glob   # READ-ONLY, DELIBERATELY. It reviews; it never deploys,
                           # migrates, edits, or executes. It judges reversibility;
                           # it does not perform the irreversible thing.
+allowed-tools: [read, grep, glob]   # Devin CLI subagent field (read-only). `tools:` above is Claude Code's; both kept
 model: opus   # judgment about blast radius, not mechanical retrieval
 ---
 
