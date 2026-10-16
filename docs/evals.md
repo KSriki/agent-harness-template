@@ -6,8 +6,8 @@ test does. This doc covers the runner that ships in `evals/`: what it is, how a
 run works, how to read a result, and how to extend or port it.
 
 Companion references: [`evals/README.md`](../evals/README.md) is the in-tree
-cheat-sheet; [`skills/eval-harness/SKILL.md`](../skills/eval-harness/SKILL.md)
-is the agent-facing procedure for *building* evals. This doc is the human-facing
+cheat-sheet; the `eval-harness` skill (maintainer tooling — not shipped on the
+enterprise branch) was the agent-facing procedure for *building* evals. This doc is the human-facing
 manual for the runner as implemented.
 
 ## Design stance

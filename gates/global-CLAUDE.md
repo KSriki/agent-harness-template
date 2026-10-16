@@ -1,7 +1,7 @@
 # Machine-wide baseline (loads in EVERY project — deliberately tiny)
 
-- Non-trivial work follows the SDLC loop: `grill-me` → `write-a-prd` →
-  `prd-to-issues` → build test-first (`tdd`) → ship. Trivial, reversible changes go
+- Non-trivial work follows the SDLC loop: `grill-me` → `ticket-docs` →
+  build test-first (`tdd`) → ship. Trivial, reversible changes go
   straight to build — don't over-process.
 - **Done = the gate passes** (lint · typecheck · tests · coverage). Where
   `.claude/gate.sh` exists it runs automatically via hooks — passing it is the only

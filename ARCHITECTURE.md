@@ -50,7 +50,7 @@ repo/
 │
 ├── docs/                        # the directional docs — SEE docs/README.md
 │   ├── engineering-steering-doc.md   # ALWAYS-ON (imported by AGENTS.md)
-│   ├── architecture-patterns.md      # on-demand: COMPRESSED pattern reference
+│   ├── architecture-patterns.md      # reference-only: cited by the design-doc template; no skill routes here
 │   ├── design-doc-template.md        # on-demand: via write-design-doc
 │   ├── adr/                          # this repo's ADRs (0001 = why this branch is cut this way)
 │   └── design/                       # filled-in design docs for this system
@@ -62,22 +62,13 @@ repo/
 │   ├── write-design-doc/        #   right-sizing + rejected alternatives (multi-page designs)
 │   ├── adr/                     #   ← ONE decision, one page, docs/adr/NNNN — first-class here
 │   ├── architecture-diagrams/   #   ← diagrams that MATCH the repo's existing format (Mermaid/PlantUML/C4)
-│   ├── architecture-patterns/   #   ← routes to the pattern reference
-│   ├── eval-harness/            #   the loop: evals, judges, HITL — gates model/quantisation changes
 │   ├── secure-code-review/      #   ← egress, injection, supply chain
-│   ├── ci-cd/                   #   ← GitLab CI: MR pipelines, protected envs, helm deploy, rollback (YAML only — no GitLab settings)
 │   ├── observability/           #   ← instrument + live incident triage
 │   ├── review-pr/               #   ← small commits + write MR.md for the human to paste; never opens the MR
 │   ├── grill-me/                #   ← interrogate the plan first (SDLC entry; offline premise round)
-│   ├── write-a-prd/             #   ← discussion → spec, ready-for-agent
-│   ├── prd-to-issues/           #   ← spec → tracer-bullet ticket docs + blocking edges
 │   ├── ticket-docs/             #   ← tickets/<KEY>.md mirror of the Jira ticket: AC, changes log, copy-paste ready
-│   ├── handoff/                 #   ← compact session → resumable doc
 │   ├── helm-charts/             #   ← author · validate · version · publish charts (OCI); helmfile
 │   ├── kubernetes-ops/          #   ← manifests, probes, RBAC, GPU scheduling, NetworkPolicy, triage
-│   ├── azure-platform/          #   ← Azure for newcomers: hierarchy, identity, AKS, ACR, Key Vault, private networking
-│   ├── air-gapped-delivery/     #   ← images/charts/models/wheels INTO the no-egress estate, by digest
-│   ├── ai-serving-stack/        #   ← vLLM sizing + LiteLLM gateway + kagent + chat UIs
 │   ├── writing-for-agents/      #   ← the craft of agent-facing docs (pointers, pruning)
 │   ├── evolve-harness/          #   ← grow the harness itself (human-gated)
 │   └── setup-harness/           #   ← per-project first pass: context + gate + CI + tracker + config doc
@@ -188,9 +179,9 @@ has made it look irrelevant.** Conditional security is not security.
 - `skills/secure-code-review/` → the full checklist + hard-stop protocol
 - `agents/review/security-reviewer.md` → adversarial BLOCK/ALLOW pass. **Read-only, no
   network** — a reviewer that can fetch is a reviewer that can be injected.
-- `skills/air-gapped-delivery/` §7 → provenance for everything that enters the
-  estate (digest, SBOM, checksum), because on this branch *that* is the path by
-  which untrusted third-party bits arrive.
+- `skills/secure-code-review/` supply-chain section → provenance for everything
+  that enters the estate (digest, SBOM), because here *that* is the path by which
+  untrusted third-party bits arrive.
 - `skills/evolve-harness/` → the human gate on changing the harness itself, so a
   "learned" practice can never rewrite your own rules (guardrail #6).
 

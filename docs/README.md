@@ -28,12 +28,13 @@ different mechanisms.** Confusing them is the #1 way this setup silently fails.
 | File | Tier | Loads |
 |---|---|---|
 | `engineering-steering-doc.md` | **ALWAYS-ON** | Every turn. Imported by `AGENTS.md`. |
-| `architecture-patterns.md` | **On-demand** | Via the `architecture-patterns` skill |
+| `architecture-patterns.md` | **Reference-only** | No skill routes here on this branch; the design-doc template still cites it |
 | `design-doc-template.md` | **On-demand** | Via the `write-design-doc` skill |
 | `agents/work-types.md` | **On-demand** | Universal work classification — read by the main thread at classify time |
 | `workflows.md` | **On-demand** | Diagrams of the common paths (feature, bug, architecture, testing) — pictures over the canonical files |
 | `adr/` | **On-demand** | This repo's own ADRs (via the `adr` skill) — `0001` records why this branch is shaped the way it is |
-| `evals.md` | **On-demand** | Human manual for the eval runner (`evals/`) — agents route via the `eval-harness` skill |
+| `templates/serving-stack-skill.md` | **Human-only** | Grill-me question set + skeleton for the env-local serving-stack skill; product specifics never enter this repo |
+| `evals.md` | **On-demand** | Human manual for the eval runner (`evals/`) — maintainer tooling; no shipped skill routes here |
 | `beads.md` | **On-demand** | Human manual for the Beads tracker — mental model, sync architecture, `bd human`, lock gotchas; agents get theirs from `bd prime` |
 | `architecture-patterns-FULL-KB.md` | **Reference-only** | Opened at a cited § — never read whole |
 | `agentic-frameworks-knowledge-base.md` | **Reference-only · NOT in this repo** | Lives in the Claude project; steering cites "Agentic KB §x" — if it isn't attached, say so rather than guessing its content |
@@ -118,7 +119,7 @@ discipline quietly stops being followed in month three. Worth a gate.
 
 - [ ] Full docs uploaded to **Claude Project knowledge** (for your own chat use)
 - [ ] `engineering-steering-doc.md` copied **here**, imported by `AGENTS.md`
-- [ ] `architecture-patterns.md` (compressed) **here**, routed by its skill
+- [ ] `architecture-patterns.md` (compressed) **here** as reference, cited by the design-doc template
 - [ ] `design-doc-template.md` **here**, routed by `write-design-doc`
 - [ ] Full KB **on disk too** if the agent should be able to open it at a cited §
       — otherwise the skill's "open the full KB" instruction is a dead end

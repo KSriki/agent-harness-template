@@ -8,7 +8,7 @@ description: >
   the doc and recording rejected alternatives.
   Do NOT use for a bug fix or a change that is cheap to reverse — just do it. Not
   for a one-page numbered ADR recording a single decision — `adr` (a design doc
-  may spawn several ADRs). Not for product requirements — `write-a-prd`. This is
+  may spawn several ADRs). Not for the ticket's acceptance criteria — `ticket-docs`. This is
   the once-per-project (or major-change) technical design record.
 ---
 

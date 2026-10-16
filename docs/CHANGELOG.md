@@ -1,5 +1,24 @@
 # Context Changelog
 
+## 2026-10-16 (second cut) — branch `harness/enterprise-ai-platform`
+
+- **grill-me pass over the first cut** (`intent/enterprise-skill-cut.intent.md`;
+  ADR-0001 rewritten). Shipped set is now 12 skills + 3 maintainer-only.
+  - **Removed:** `ci-cd`, `air-gapped-delivery`, `ai-serving-stack`,
+    `azure-platform`, `prd-to-issues` (splitting folded into `ticket-docs` §5),
+    `write-a-prd`, `eval-harness`, `architecture-patterns` (skill only; docs stay
+    as reference), `handoff`.
+  - **Scrubbed** cloud-provider and AI-product names from AGENTS.md, the steering
+    doc (→ 1.2.0), `kubernetes-ops`, `helm-charts`, `architecture-diagrams`,
+    `adr`, `review-pr`, and the index docs. Generic tooling names stay.
+  - **New:** `docs/templates/serving-stack-skill.md` — grill-me question set +
+    skeleton to build the env-local serving-stack skill. `intent/` dir started.
+  - **Boundaries hardened:** nothing reaches `origin` without the human approving
+    that action (AGENTS.md, `review-pr`); apply only to the testing namespace from
+    the testing env (`kubernetes-ops`, `helm-charts`); helmfile secret inputs are
+    a slot (`vals` / `--state-values-set`) filled in the env.
+  - `work-types.md` → 1.2.0, `workflows.md` → 1.2.0.
+
 ## 2026-10-16 — branch `harness/enterprise-ai-platform`
 
 - **Enterprise AI-platform cut** (MAJOR for this branch — skills removed/added;

@@ -106,9 +106,9 @@ filled in as they're learned.
 
 ### 4. Configure the SDLC layer — tracker, labels, domain docs
 
-The pipeline skills (`write-a-prd`, `prd-to-issues`) publish to an
-issue tracker and read a domain glossary. Configure them now — explore first,
-propose, confirm with the human, then write (never assume):
+The ticket skill (`ticket-docs`) mirrors the tracker as files under `tickets/`
+and reads a domain glossary if one exists. Configure the mapping now — explore
+first, propose, confirm with the human, then write (never assume):
 
 - **Issue tracker.** Detect from `git remote -v`: 〈GitHub → `gh` CLI · GitLab →
   `glab` CLI · **agent-heavy/solo → Beads (`bd`)** · fallback → local markdown under
@@ -171,8 +171,8 @@ does not do the carpentry:
 If the machine-wide hooks aren't installed yet, tell the human once:
 `python3 init.py --install-hooks` (from the harness clone). Without them the gate
 still runs in CI — hooks just add it at the agent layer too. If the project has
-non-deterministic components, uncomment the eval smoke line in `gate.sh`
-(`eval-harness`): an eval regression reds the gate, same as a failing test.
+non-deterministic components the team itself evaluates, uncomment the eval smoke
+line in `gate.sh`: an eval regression reds the gate, same as a failing test.
 
 ### 6. Record the decisions — write `docs/agents/harness-config.md`
 

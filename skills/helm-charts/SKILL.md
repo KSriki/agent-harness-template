@@ -1,39 +1,44 @@
 ---
 name: helm-charts
 description: >
-  Use when creating, changing, reviewing, versioning, or publishing a Helm chart:
-  Chart.yaml, values.yaml and values.schema.json, templates and _helpers.tpl,
-  subchart dependencies, umbrella charts, hooks, CRDs, OCI chart registries.
-  Triggers on "helm lint", "helm template", "helm unittest", "kubeconform", "bump
-  the chart version", "add a values flag", "the chart renders wrong", "publish the
-  chart", "helm diff", "helm rollback", "Chart.lock".
+  Use when creating, changing, reviewing, or versioning a Helm chart or a helmfile
+  release: Chart.yaml, values.yaml and values.schema.json, templates and
+  _helpers.tpl, subchart dependencies, umbrella charts, hooks, CRDs, helmfile.yaml
+  environments and the secret values it needs. Triggers on "helm lint", "helm
+  template", "helm unittest", "kubeconform", "helmfile diff/template/apply", "bump
+  the chart version", "add a values flag", "the chart renders wrong", "Chart.lock",
+  "helm rollback".
   Do NOT use for debugging a running workload or raw manifest semantics (probes,
-  RBAC, GPU scheduling) — `kubernetes-ops`; for the pipeline that runs these
-  commands — `ci-cd`; for mirroring charts/images into a no-egress registry —
-  `air-gapped-delivery`.
+  RBAC, GPU scheduling) — `kubernetes-ops`; for the Jira-facing plan of the change
+  — `ticket-docs`; for the MR text — `review-pr`.
 ---
 
-# Helm charts — author, validate, version, publish
+# Helm charts — author, validate, version; helmfile as the deploy manifest
 
 ## When to use this
 
-You are editing files under a chart directory, or deciding how a chart should be
-shaped. The chart is the deployable unit here: a change nobody can `helm template`
-and diff is a change nobody can review.
+You are editing files under a chart directory or `helmfile.yaml`, or deciding how
+a chart should be shaped. The chart is the deployable unit here: a change nobody
+can `helm template` and diff is a change nobody can review.
+
+**Boundary:** validation and rendering happen on the dev machine. Applying happens
+only in the testing environment against the testing namespace, after the human
+pulls the branch there. The agent never applies from the dev machine, never to
+production, never pushes charts to the registry unless your repo's flow says so
+(§7 slot).
 
 **Not this skill if:** the chart renders fine but pods misbehave → `kubernetes-ops`.
-You're wiring the validation jobs → `ci-cd`.
 
 ## Prerequisites
 
 ```bash
 helm version --short                                   # 3.x
 helm plugin list                                       # want: unittest, diff
-command -v kubeconform || echo "kubeconform missing — propose it (guardrail 3)"
+command -v helmfile kubeconform vals 2>/dev/null || echo "missing tool — propose it (guardrail 3)"
 ```
 
 Plugins and binaries are dependencies: **propose, don't install** (guardrail 3). In
-the no-egress environment they come from the internal mirror (`air-gapped-delivery`).
+the no-egress environment they come from the internal mirror.
 
 ## §1 — Anatomy and the rules that keep a chart reviewable
 
@@ -58,7 +63,7 @@ Rules:
   charts are the #1 cause of "the registry has a different chart with the same tag".
 - **`appVersion` is informational** — the image tag comes from values, not from it.
 - **No secret values in `values.yaml`** — accept `existingSecret: <name>` and let the
-  secret arrive via the Key Vault CSI driver or External Secrets Operator
+  secret arrive via the secrets-store CSI driver or External Secrets Operator
   (`kubernetes-ops` §4). A chart that templates a password is a leak with a diff.
 - **Images are `registry/repository:tag` or `@sha256:` from values, with a
   `global.imageRegistry` override** so the no-egress environment can repoint every
@@ -72,26 +77,26 @@ Rules:
 ```bash
 cd charts/<name>
 helm dependency build                                  # honours Chart.lock; fails if drift
-helm lint . -f values.yaml -f values-prod.yaml --strict
-helm template rel . -f values-prod.yaml > /tmp/rendered.yaml
+helm lint . -f values.yaml -f values-test.yaml --strict
+helm template rel . -f values-test.yaml > /tmp/rendered.yaml
 kubeconform -strict -summary -kubernetes-version <cluster-version> \
   -schema-location default \
-  -schema-location '<internal-crd-schema-dir-or-url>/{{.Group}}/{{.ResourceKind}}_{{.ResourceAPIVersion}}.json' \
+  -schema-location '<internal-crd-schema-dir>/{{.Group}}/{{.ResourceKind}}_{{.ResourceAPIVersion}}.json' \
   /tmp/rendered.yaml
-helm unittest .                                        # tests/*_test.yaml
-helm diff upgrade rel . -f values-prod.yaml -n <ns>    # against the live release (needs cluster)
-helm upgrade --install rel . -f values-prod.yaml -n <ns> --dry-run=server   # admission + API validation
+helm unittest .                                        # tests/*_test.yaml — write the failing case FIRST (tdd)
+# in the testing environment only:
+helm diff upgrade rel . -f values-test.yaml -n <testing-ns>
+helm upgrade --install rel . -f values-test.yaml -n <testing-ns> --dry-run=server   # admission + API validation
 ```
 
 What each catches: `lint` → syntax and missing required values; `template` +
 `kubeconform` → wrong apiVersion/fields for the target cluster version (set it!);
 `unittest` → your logic (flags, conditionals, helpers); `diff` → the actual change
-reviewers must see; `--dry-run=server` → admission policies (Azure Policy / Gatekeeper
-in the enterprise cluster) that reject what passes offline. **Paste the `helm diff`
-into the MR.**
+reviewers must see; `--dry-run=server` → admission policies in the enterprise
+cluster that reject what passes offline. **Paste the diff into `tickets/<KEY>.mr.md`.**
 
 For CRDs that kubeconform does not know, point `-schema-location` at an internal
-copy of the CRD schema catalog (air-gapped) rather than skipping with `-ignore-missing-schemas`;
+copy of the CRD schema catalog rather than skipping with `-ignore-missing-schemas`;
 ignoring is the last resort and gets a comment saying why.
 
 ## §3 — Templates: idioms that avoid 80% of render bugs
@@ -163,7 +168,7 @@ tolerations: {{- toYaml . | nindent 8 }}
 Document every key in `values.yaml` with a comment line above it. Prefer flat,
 boring keys over clever nesting. Per-environment files hold only deltas.
 
-## §4b — helmfile: many releases, one declared state
+## §5 — helmfile: many releases, one declared state
 
 When the repo has a `helmfile.yaml`, it — not ad-hoc `helm upgrade` — is how
 releases reach a cluster. Treat it as the deployment manifest:
@@ -177,37 +182,47 @@ environments:
 repositories:
   - name: internal
     oci: true
-    url: <acr>.azurecr.io/helm            # mirrored charts only
+    url: <internal-registry>/helm         # mirrored charts only
 releases:
-  - name: litellm
-    namespace: ai
-    chart: internal/litellm
+  - name: gateway
+    namespace: <ns>
+    chart: internal/gateway
     version: 1.4.2                        # PINNED
-    values: [charts/litellm/values-{{ .Environment.Name }}.yaml]
-  - name: vllm-model-a
-    namespace: ai
-    chart: ./charts/vllm                  # local chart
-    values: [releases/vllm-model-a/values-{{ .Environment.Name }}.yaml]
-    needs: [ai/litellm]                   # ordering only; not a runtime dependency
+    values: [charts/gateway/values-{{ .Environment.Name }}.yaml]
+  - name: model-a
+    namespace: <ns>
+    chart: ./charts/model-server          # local chart, used once per model
+    values: [releases/model-a/values-{{ .Environment.Name }}.yaml]
+    needs: [<ns>/gateway]                 # ordering only; not a runtime dependency
 ```
 
 ```bash
 helmfile -e test lint
-helmfile -e test template | kubeconform -strict -summary -kubernetes-version <ver> -schema-location /schemas/...
-helmfile -e test diff                     # the review artifact — paste into the MR file
-helmfile -e test apply                    # CI job, or the human; --skip-deps when charts are vendored
-helmfile -e prod -l name=litellm diff     # one release at a time for prod
+helmfile -e test template | kubeconform -strict -summary -kubernetes-version <ver> -schema-location <internal-schemas>
+helmfile -e test diff                     # in the testing env — the review artifact, pasted into the MR file
+helmfile -e test apply                    # in the testing env, testing namespace, when the human says so
+helmfile -e prod -l name=gateway diff     # prod: the platform team's step; you may be asked to read the diff
 ```
 
+**Secret inputs (your repo's flow — fill this slot in your environment):** this
+team passes secret values at render time via `vals` references and/or
+`--state-values-set <key>=<value>`. Rules regardless of mechanism:
+- the value comes from the **shell environment** the human already set, never typed
+  into a command line that lands in history, never in a file, never in a log or a
+  commit; reference it as `"$VAR"` and let the shell substitute;
+- `helmfile template` output that contains a resolved secret is **not** pasted into
+  the MR file or the ticket doc — diff the rendered manifests with the secret
+  redacted, or diff only the non-secret resources;
+- `〈exact invocation this repo uses — e.g. helmfile -e test --state-values-set 〈key〉="$〈VAR〉" template〉`.
+
+Also:
 - Pin every `version:`; a floating release is an unreviewed deploy.
 - Per-environment differences live in `envs/*.yaml` and `values-<env>.yaml`,
   never in `helmfile.yaml` conditionals that nobody can diff.
-- `helmfile diff` needs the `helm-diff` plugin and cluster access; in the no-egress
-  estate it runs on the internal runner, not the laptop (`ci-cd`).
-- Secrets: `helm-secrets`/SOPS is a dependency decision (guardrail 3); the default
-  here is still `existingSecret` + Key Vault sync (`kubernetes-ops` §4).
+- `helmfile diff` needs the `helm-diff` plugin and cluster access; it runs in the
+  testing environment, not on the laptop.
 
-## §5 — Dependencies and umbrella charts
+## §6 — Dependencies, umbrella charts, hooks, CRDs
 
 ```yaml
 # Chart.yaml
@@ -224,62 +239,58 @@ git add Chart.lock          # the lock is the review artifact; charts/*.tgz is u
 ```
 
 - **Umbrella chart** (one release, many subcharts) when the components deploy and
-  roll back as a unit (LiteLLM + its Postgres + Redis). **Separate releases** when
-  lifecycles differ (each vLLM model server is its own release so one model can be
-  rolled back alone). Record the choice as an ADR (`adr`).
+  roll back as a unit (the gateway with its database and cache). **Separate
+  releases** when lifecycles differ (each model server is its own release so one
+  model can be rolled back alone). Record the choice as an ADR (`adr`).
 - Subchart values are namespaced under the subchart name; `global:` is the only
   shared block. A value set at the wrong level silently does nothing — `helm
   template` and grep for it.
-
-## §6 — Hooks, CRDs, and the upgrade traps
-
 - **`crds/` are installed on `install` only.** `helm upgrade` never updates them.
-  Ship CRDs in their own chart (e.g. `<thing>-crds`) and upgrade that first, or apply
-  them with `kubectl apply --server-side` in the pipeline before the release.
+  Ship CRDs in their own chart (e.g. `<thing>-crds`) and upgrade that first, or
+  apply them with `kubectl apply --server-side` before the release (platform team
+  if cluster-scoped).
 - Hooks (`helm.sh/hook: pre-upgrade`) run Jobs outside the release's resource set;
   give them `helm.sh/hook-delete-policy: before-hook-creation,hook-succeeded` or they
   pile up and block the next run.
 - `helm upgrade --install --atomic --timeout 10m --wait` → failed upgrades roll
   back automatically. Model servers take minutes to load weights: the timeout must
-  exceed the startup probe window (`ai-serving-stack` §3) or every deploy "fails".
+  exceed the startup probe window (`kubernetes-ops` §2) or every deploy "fails".
 - Immutable fields (selector labels, PVC size on some storage classes, Job spec)
   make `upgrade` error with *field is immutable*. The fix is a new resource name,
   not `--force` (which deletes and recreates — downtime and data risk).
 
-## §7 — Versioning and publishing (OCI)
+## §7 — Versioning, rollback, publishing
 
-```bash
-# version bumped in Chart.yaml first (semver: MAJOR = values contract break)
-helm package charts/<name> -d dist/
-helm registry login <internal-registry> -u "$HELM_USER" --password-stdin <<< "$HELM_TOKEN"
-helm push dist/<name>-<version>.tgz oci://<internal-registry>/helm
-helm show chart oci://<internal-registry>/helm/<name> --version <version>   # prove it landed
-```
-
-- Same chart version must never be pushed twice with different content; CI should
-  fail if the tag already exists.
-- Consumers pin `--version`. A floating latest chart is an unreviewed deploy.
+- `Chart.yaml` `version` is SemVer: MAJOR = values contract break, MINOR = new
+  optional key or resource, PATCH = fix with no values change. Consumers pin it.
 - Rollback is `helm rollback <release> <revision>` after `helm history <release>`;
-  it reverts manifests, **not** data or CRDs.
+  it reverts manifests, **not** data or CRDs. In the testing namespace you may run
+  it; elsewhere you write the command into the MR file for the human.
+- **Publishing (slot — your repo's flow):** charts reach the internal registry by
+  〈the pipeline on merge | a human running `helm package` + `helm push oci://…`〉.
+  The agent does not push charts unless that slot says it does; the same chart
+  version is never pushed twice with different content.
 
 ## Failure modes
 
 | Symptom | Cause | Fix |
 |---|---|---|
 | `nil pointer evaluating interface {}.x` | Accessing a missing nested value | `with`/`default`, or `required`; add the key to the schema |
-| `field is immutable` on upgrade | Selector labels / Job spec changed | New resource name; never `--force` in prod |
-| Rendered fine, cluster rejected it | Admission policy (Azure Policy / Gatekeeper) | `--dry-run=server` in the pipeline; fix the manifest, don't exempt |
+| `field is immutable` on upgrade | Selector labels / Job spec changed | New resource name; never `--force` outside the testing namespace |
+| Rendered fine, cluster rejected it | Admission policy in the enterprise cluster | `--dry-run=server` in the testing env; fix the manifest, don't ask for an exemption |
 | Subchart ignores my value | Set at top level instead of under `<subchart>:` | Move it; `helm template` and grep |
 | Pods didn't restart after config change | No checksum annotation | Add `checksum/config` (§3) |
 | `--atomic` rolls back every model deploy | Timeout shorter than weight-load time | Raise `--timeout`; align with startup probe |
 | CRD change had no effect | CRDs live in `crds/` | Separate CRD chart or server-side apply first (§6) |
-| Chart pulls `docker.io` in the no-egress cluster | No `global.imageRegistry` override | Add the override; mirror the image (`air-gapped-delivery`) |
+| Chart pulls a public registry in the no-egress cluster | No `global.imageRegistry` override | Add the override; ask the platform team to mirror the image |
+| Secret appeared in a diff / MR file | Rendered with the secret resolved | Redact or diff non-secret resources only (§5); rotate if it was committed |
 
 ## Definition of done
 
 - [ ] `Chart.yaml` `version` bumped; `Chart.lock` committed if dependencies changed
 - [ ] `helm lint --strict` + `helm template | kubeconform` clean for the target cluster version
-- [ ] `helm unittest` covers the new flag/conditional
-- [ ] `helm diff` (or rendered diff) pasted in the MR; reviewer saw the actual change
-- [ ] No secret in values; images overridable via `global.imageRegistry`
+- [ ] `helm unittest` covers the new flag/conditional — written before the template change
+- [ ] Diff (redacted if needed) pasted in `tickets/<KEY>.mr.md`; reviewer saw the actual change
+- [ ] No secret in values, diffs, or logs; images overridable via `global.imageRegistry`
+- [ ] Nothing applied outside the testing namespace; cluster-side needs written as requests
 - [ ] Structural decision (umbrella vs separate, secrets mechanism) recorded via `adr` if new

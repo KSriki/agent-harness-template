@@ -9,7 +9,7 @@ description: >
   an MR that changes infrastructure shape without a decision record.
   Do NOT use for a multi-page design of a new system or subsystem — that is
   `write-design-doc` (which may spawn several ADRs); not for CHOOSING the pattern —
-  `architecture-patterns`; not for product requirements — `write-a-prd`.
+  `write-design-doc`; not for the ticket's acceptance criteria — `ticket-docs`.
 metadata:
   origin: adapted from ECC `architecture-decision-records` (MIT, affaan-m/ECC) — reshaped to this harness's style
 ---
@@ -20,11 +20,11 @@ metadata:
 
 A decision with consequences has just been made (or is about to be) and nothing
 durable records it: which Helm chart layout, which secrets operator, which GPU SKU,
-why LiteLLM sits in front of every model, why the cluster is private. The ADR is
+why one gateway sits in front of every model, why the cluster is private. The ADR is
 the two-minute read a future engineer (or agent) needs before touching that area.
 
-**Not this skill if:** the decision is still open and expensive → `architecture-patterns`
-to choose, `write-design-doc` if it needs a real design. It is a cheap-to-reverse
+**Not this skill if:** the decision is still open and expensive → `write-design-doc`
+to work it through (the ladder in steering §0 is the first check). It is a cheap-to-reverse
 knob (a timeout, a label) → no ADR, just change it.
 
 ## Prerequisites
@@ -54,7 +54,7 @@ File name: `docs/adr/NNNN-short-kebab-title.md`. Keep Context under ten lines;
 if it needs more, the decision wants a design doc, not an ADR.
 
 ```markdown
-# ADR-NNNN: <Decision as a statement — "Route all model traffic through LiteLLM">
+# ADR-NNNN: <Decision as a statement — "Route all model traffic through the gateway">
 
 - **Date:** YYYY-MM-DD
 - **Status:** proposed | accepted | deprecated | superseded by ADR-NNNN
@@ -68,8 +68,8 @@ requirement, team skill), what triggered deciding now. 3–8 sentences.>
 
 ## Decision
 
-<One to three sentences, present tense: "We run one vLLM Deployment per model;
-LiteLLM is the only endpoint clients may call.">
+<One to three sentences, present tense: "We run one model-server Deployment per model;
+the gateway is the only endpoint clients may call.">
 
 ## Alternatives considered
 
@@ -97,7 +97,7 @@ decision. On approval write the file and append to the index:
 ```markdown
 | ADR | Title | Status | Date |
 |-----|-------|--------|------|
-| [0001](0001-private-aks-no-egress.md) | Private AKS cluster, no internet egress | accepted | 2026-10-11 |
+| [0001](0001-private-cluster-no-egress.md) | Private cluster, no internet egress | accepted | 2026-10-11 |
 ```
 
 Keep the index sorted by number. Status in the index must match the file.
@@ -130,11 +130,11 @@ Answer from Context + Decision. If no ADR covers it, say so and offer to record 
 | Yes | No |
 |---|---|
 | Umbrella chart vs one chart per service | A values default |
-| Secrets: Key Vault CSI vs External Secrets Operator | A secret's name |
+| Secrets: CSI vault driver vs External Secrets Operator | A secret's name |
 | Private cluster + user-defined routing for egress | A single firewall rule |
 | GPU SKU / node pool strategy for model serving | One Deployment's replica count |
-| LiteLLM as the mandatory gateway; vLLM per model | A model's `--max-model-len` |
-| GitLab environments and promotion model | A job's cache key |
+| One mandatory gateway; one model server per model | A model's context-length flag |
+| How a branch reaches the testing namespace | A job's cache key |
 | Quantization policy (what precision ships to prod) | One model's dtype flag |
 
 ## Failure modes

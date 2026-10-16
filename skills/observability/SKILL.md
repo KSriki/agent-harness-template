@@ -7,7 +7,7 @@ description: >
   "what do I even look at", "add logging/metrics/tracing", "OpenTelemetry",
   "define an SLO", "this alert is too noisy", "write the postmortem", "correlation id".
   Do NOT use for pre-merge test gates (`run-tests`) or for the CI pipeline and
-  deploy mechanics themselves (`ci-cd`).
+  deploy mechanics themselves (the platform team's pipeline).
 ---
 
 # Observability: instrument before, triage during
@@ -19,8 +19,8 @@ healthy, and if not, where does it hurt?" **During** an incident: find and stop
 the bleeding, then learn from it.
 
 **Not this skill if:** you're proving a change correct pre-merge → `run-tests`.
-You're wiring the deploy/rollback → `ci-cd` (though incident response *uses*
-`ci-cd` §6 to actually roll back).
+You're wiring the deploy/rollback → that is the platform team's pipeline (incident
+response still *uses* `helm rollback` — `helm-charts` §7).
 
 ---
 
@@ -74,9 +74,10 @@ never averages** — an average hides the tail that's actually hurting users.
 
 ### 1. Stabilize (minutes, reversible-first)
 
-- **Did a deploy just go out? Roll it back first, ask questions after** (`ci-cd`
-  §6). Rollback is the fastest mitigation and it's reversible — reach for it before
-  a clever forward fix.
+- **Did a deploy just go out? Roll it back first, ask questions after**
+  (`helm rollback` — `helm-charts` §7; in prod that is the platform team's hands,
+  so page them with the release and revision). Rollback is the fastest mitigation
+  and it's reversible — reach for it before a clever forward fix.
 - Can you **flip a feature flag** to disable the broken path? Do that.
 - Declare the incident, assign one **incident commander**, start a timeline log.
 

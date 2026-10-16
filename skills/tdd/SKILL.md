@@ -8,7 +8,7 @@ description: >
   mocking, and the loop rules.
   Do NOT use for the full local quality-gate sequence or test-AFTER existing code
   (that's `run-tests` — tests assert, the gate runs) or for scoring non-deterministic
-  LLM output (`eval-harness`).
+  LLM output (out of scope on this branch).
 ---
 
 # TDD: red before green
@@ -22,7 +22,7 @@ This is the *discipline*; `run-tests` is the *gate* you run afterward.
 
 **Not this skill if:** you're running the full lint/type/coverage gate, or writing
 tests for code that already exists → `run-tests`. You're scoring model outputs →
-`eval-harness`.
+out of scope on this branch.
 
 Read `CONTEXT.md` first (if present) so test names/vocabulary match the domain.
 

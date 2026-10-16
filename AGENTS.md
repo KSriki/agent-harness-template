@@ -13,18 +13,20 @@
   ─────────────────────────────────────────────────────────────────────────────
 
   THIS BRANCH (harness/enterprise-ai-platform) is pre-filled for an enterprise
-  AI-platform team: GitLab · AKS · Helm/helmfile · podman · Azure · no-internet
-  servers · Jira. Slots marked 〈…〉 are still per-project — fill them in the
-  target repo (setup-harness does it). Why it is cut this way: docs/adr/0001.
+  platform team: GitLab · Kubernetes · Helm/helmfile · podman · servers with no
+  internet · Jira. Product and vendor names are deliberately absent — they live in
+  your environment's local copies. Slots marked 〈…〉 are per-project. Why it is
+  cut this way: docs/adr/0001.
 -->
 
 ## What this is
 
-〈One or two sentences. e.g. "Helm charts, pipelines, and runbooks for the AI
- serving platform: LiteLLM gateway, vLLM model servers, kagent agents, chat UI —
- on private AKS, deployed by GitLab CI, consumed by internal teams."〉
+〈One or two sentences. e.g. "Helm charts, runbooks, and tooling for the AI
+ serving platform: an inference gateway in front of model servers, agent
+ runtimes, a chat UI — on a private Kubernetes cluster the platform team
+ operates, consumed by internal teams."〉
 
-**Stack:** Kubernetes (AKS) · Helm 3 + helmfile · GitLab CI (self-hosted runners) · podman · Azure (ACR, Key Vault, Private Link) · Terraform `azurerm` · Python 3.12 / uv for tooling · Bash
+**Stack:** Kubernetes · Helm 3 + helmfile · GitLab (MRs; CI owned elsewhere) · podman · Python 3.12 / uv for tooling · Bash
 **Architecture rung:** 〈a few services (gateway · N model servers · agents · UI), one cluster per env〉 — decisions in `docs/adr/`.
 
 ## Standing instructions
@@ -34,33 +36,38 @@
 <!--
   TIERING — this is deliberate, do not "helpfully" add the others here:
     ALWAYS-ON (imported above): docs/engineering-steering-doc.md — HOW I WORK.
-    ON-DEMAND (load via skills): docs/architecture-patterns.md, docs/design-doc-template.md,
-      the FULL patterns KB (opened at a cited § only when the decision is expensive).
+    ON-DEMAND (load via skills): docs/design-doc-template.md, docs/adr/.
   If your tool has no @-import: "Read docs/engineering-steering-doc.md before your
   first code change."
 -->
 
 The steering doc governs *how* you work — it is **always on**.
-Architecture references load **on demand** via skills (see the skills table).
 The rules below are what's *specific to this repo* and cannot be inferred.
 
 ## Environment facts (true here, every turn)
 
 - **No internet.** No web search, no package index, no public registry, no
-  Hub. Everything you need is on disk or in the internal registry/mirror. Say
-  "I can't verify that offline" rather than guessing current versions or docs.
+  model hub. Everything you need is on disk or in the internal registry/mirror.
+  Say "I can't verify that offline" rather than guessing versions or docs.
 - **Credentials come from the shell.** `git`, `podman`/`docker`, `helm`/`helmfile`,
-  `kubectl`, `az` use whatever the environment already has. Never log in to
-  anything new, never print or copy a credential, never read one out of a file to
-  use it elsewhere.
-- **Shared GitLab — read-only to you.** You may `git commit` on the ticket branch
-  and `git push` it **only when asked**. You never run `glab`, call the GitLab API,
-  open/approve/merge an MR, or change any project setting. You write
-  `tickets/<KEY>.mr.md`; the human opens the MR (`review-pr`).
+  `kubectl` use whatever the environment already has. Never log in to anything
+  new, never print or copy a credential, never read one out of a file to use it
+  elsewhere; secret render inputs are `"$VAR"` from the shell (`helm-charts` §5).
+- **Nothing reaches `origin` without the human approving that specific action.**
+  Shared repo. You commit on the ticket branch locally. No `git push`, no remote
+  branch or tag, no `fetch`/`pull` unless asked for that step. You never run
+  `glab`, call the GitLab API, open/approve/merge an MR, or change a project
+  setting. You write `tickets/<KEY>.mr.md`; the human pushes and opens the MR.
+- **The platform team owns the cluster.** You render and validate on the dev
+  machine; you apply **only** to the testing namespace, from the testing
+  environment, after the human pulls the branch there. Cluster, node-pool,
+  registry, and mirror changes are requests written into the ticket doc.
 - **Jira is written by the human.** You maintain `tickets/<KEY>.md` and a Jira
   paste block (`ticket-docs`). A Jira token in the environment is not permission;
   only an in-session credential plus an explicit ask is, and even then you show
   the payload first.
+- **Releases are not your concern.** Humans cut them. You do work, commits, and
+  the branch you were given.
 
 ## Commands
 
@@ -69,15 +76,14 @@ The rules below are what's *specific to this repo* and cannot be inferred.
 | Task | Command |
 |---|---|
 | Chart lint | 〈`helm lint charts/<name> --strict -f charts/<name>/values-test.yaml`〉 |
-| Render + schema check | 〈`helm template rel charts/<name> -f charts/<name>/values-test.yaml \| kubeconform -strict -summary -kubernetes-version <ver> -schema-location /schemas/...`〉 |
+| Render + schema check | 〈`helm template rel charts/<name> -f charts/<name>/values-test.yaml \| kubeconform -strict -summary -kubernetes-version <ver> -schema-location <internal-schemas>`〉 |
 | Chart unit tests | 〈`helm unittest charts/<name>`〉 |
-| Release diff (test env) | 〈`helmfile -e test -l name=<release> diff`〉 |
+| Render all releases (test) | 〈`helmfile -e test template` — secret inputs per `helm-charts` §5〉 |
+| Release diff (testing env only) | 〈`helmfile -e test -l name=<release> diff`〉 |
 | Python tooling tests | 〈`uv run pytest`〉 |
 | Lint / format (python, bash) | 〈`uv run ruff check --fix . && uv run ruff format . && shellcheck scripts/*.sh`〉 |
 | Build an image locally | 〈`podman build -t <internal-registry>/team/<img>:dev .`〉 |
-| Smoke the gateway | 〈`scripts/smoke.sh https://litellm.test.internal`〉 |
-| Run evals (model change) | 〈`uv run python -m evals.run --suite smoke`〉 |
-| The gate (= done) | `./.claude/gate.sh fast` (edits) · `./.claude/gate.sh full` (before MR) |
+| The gate (= done) | `./.claude/gate.sh fast` (edits) · `./.claude/gate.sh full` (before the MR file) |
 
 **Before you claim work is done, these must pass:** 〈chart lint + kubeconform + unittest · python tests · lint · gate full〉
 
@@ -86,18 +92,14 @@ The rules below are what's *specific to this repo* and cannot be inferred.
 ```
 〈charts/<name>/            # one chart per deployable; Chart.yaml · values.yaml · values.schema.json · values-<env>.yaml · templates/ · tests/
 helmfile.yaml envs/        # releases per environment — the deploy manifest
-releases/<release>/        # per-release values for charts used more than once (one vLLM chart, N models)
-.gitlab-ci.yml ci/         # pipeline + included templates (agent edits YAML; humans own Settings)
+releases/<release>/        # per-release values for charts used more than once (one model-server chart, N models)
 scripts/                   # bash/python glue — shellcheck-clean, under ~100 lines each
-delivery/                  # manifest.yaml of mirrored images/charts/models with digests; SBOMs; checksums
-infra/                     # terraform (azurerm): AKS, ACR, Key Vault, VNet, private endpoints
 docs/adr/                  # ADR-NNNN decision records + README index
 docs/diagrams/             # diagram SOURCE (.mmd/.puml) — rendered output is derived
 docs/design/               # multi-page design docs
 tickets/                   # <KEY>.md ticket docs · <KEY>.mr.md MR text · README.md index
-intent/                    # <slug>.intent.md + <slug>.spec.md (grill-me / write-a-prd)
-evals/                     # golden sets + results for model/quantisation changes
-skills/ agents/            # the harness — loaded on demand
+intent/                    # <slug>.intent.md (grill-me output → ticket-docs input)
+skills/                    # the harness — loaded on demand
 docs/engineering-steering-doc.md   # ALWAYS-ON〉
 ```
 
@@ -166,15 +168,13 @@ for an explicit decision. Silence is not consent. Never rationalize past it.**
 - Images are referenced **by digest from the internal registry**; `:latest` and
   public registries never appear in a chart or helmfile.
 - Every chart change bumps `Chart.yaml` `version`; every values key is in
-  `values.schema.json`; no secret value in any values file (`existingSecret`).
-- Only LiteLLM talks to a vLLM Service; everything else uses the gateway with a
-  virtual key. A second path is an ADR, not a convenience.
-- A new egress destination, image, chart, model, or wheel enters via
-  `delivery/manifest.yaml` with a digest/checksum — and is a hard stop until the
-  human approves it.
+  `values.schema.json`; no secret value in any values file, diff, or MR file.
+- Only the gateway talks to a model server; everything else uses the gateway with
+  a per-team key. A second path is an ADR, not a convenience.
+- A new egress destination, image, chart, or model is a hard stop until the human
+  approves it — and the mirroring is the platform team's to do.
 - A settled decision becomes `docs/adr/NNNN-*.md` in the same MR as the change.
   A changed flow updates its diagram in the same MR.
-- Prod deploys are manual jobs run by humans; the agent never triggers them.
 - 〈…〉
 
 ## Gotchas
@@ -184,11 +184,11 @@ for an explicit decision. Silence is not consent. Never rationalize past it.**
 - `helm upgrade --atomic` rolls back a *healthy* model server if `--timeout` is
   shorter than the weight-load time; align it with the startup probe window.
 - GPU Deployments with `maxSurge: 1` hang forever when there is no spare GPU — use
-  `Recreate` or keep a spare node (`kubernetes-ops` §6).
+  `Recreate` or ask for a spare node (`kubernetes-ops` §6).
 - `x509: certificate signed by unknown authority` is the corporate CA bundle
   missing from the container, never a reason to pass `--insecure`.
-- A Hugging Face model id (instead of a local path) makes vLLM try the internet
-  even with the weights present; pass `--model /models/...` and `HF_HUB_OFFLINE=1`.
+- A model-hub id (instead of a local path) makes a model server try the internet
+  even with the weights present; pass the local path and the offline env flags.
 - 〈…〉
 
 ## Definition of done
@@ -196,7 +196,7 @@ for an explicit decision. Silence is not consent. Never rationalize past it.**
 Code + **tests written and passing** · chart lint + kubeconform + unittest clean ·
 lint clean · coverage not regressed · ADR/diagram updated if a decision or flow
 changed · ticket doc AC evidenced · commits small and self-contained · `tickets/<KEY>.mr.md`
-written. **Nothing merges on red** — and nothing merges by the agent.
+written. **Nothing merges on red** — and nothing is pushed or merged by the agent.
 
 ## Skills available
 
@@ -206,28 +206,19 @@ Skills load on demand; you do not need to read them until the task matches.
 |---|---|
 | `tdd` | Build test-FIRST: red before green — for charts, the failing `helm unittest` / `kubeconform` case comes before the template change |
 | `run-tests` | Running, debugging, or adding tests + quality gates; a gate fails |
-| `helm-charts` | Authoring, validating, versioning, publishing charts; helmfile releases |
-| `kubernetes-ops` | Manifests, probes, resources, RBAC, GPU scheduling, NetworkPolicy, kubectl triage |
-| `azure-platform` | Anything in Azure itself: identity/RBAC, AKS node pools, ACR, Key Vault, private networking, `az` |
-| `air-gapped-delivery` | Getting an image / chart / model / wheel INTO the no-egress estate; CA trust; telemetry off |
-| `ai-serving-stack` | vLLM sizing + config, LiteLLM gateway (keys, budgets, routing), kagent, chat UIs |
-| `ci-cd` | `.gitlab-ci.yml` jobs, environments, promotion, release, rollback — YAML only, never Settings |
-| `review-pr` | Small commits from the ticket plan; write `tickets/<KEY>.mr.md`; review a branch into a notes file |
-| `ticket-docs` | Create/update `tickets/<KEY>.md`; acceptance-criteria changes; the Jira paste block |
-| `prd-to-issues` | Spec → tracer-bullet ticket docs with blocking edges, in dependency order |
-| `grill-me` | Stress-test a plan — offline premise round, then frontier rounds until understanding is confirmed |
-| `write-a-prd` | Synthesize the discussion into a spec, `intent/<slug>.spec.md` |
+| `helm-charts` | Authoring, validating, versioning charts; helmfile releases and their secret inputs |
+| `kubernetes-ops` | Manifests, probes, resources, RBAC, GPU scheduling, NetworkPolicy, kubectl triage in the testing namespace |
+| `review-pr` | Small commits from the ticket plan; write `tickets/<KEY>.mr.md`; review a branch into a notes file — never touches `origin` |
+| `ticket-docs` | Create/update `tickets/<KEY>.md`; acceptance-criteria changes; split a ticket (steps → commits, story → epic); the Jira paste block |
+| `grill-me` | Stress-test a fuzzy idea — offline premise round, then frontier rounds until understanding is confirmed; output feeds `ticket-docs` |
 | `adr` | Record ONE decision as `docs/adr/NNNN-*.md`; look up why something is the way it is |
 | `architecture-diagrams` | Draw/update a diagram that matches the repo's existing diagram format |
 | `write-design-doc` | Multi-page design for a system/subsystem or an expensive-to-reverse change |
-| `architecture-patterns` | Choosing a pattern; sync-vs-async; caching; scaling; "is this over-engineered" |
 | `secure-code-review` | **Before** accepting external code, a new image/chart/model, or ANY new dependency |
 | `observability` | Metrics/logs/traces for the serving stack; SLOs/alerts; **live incident triage** |
-| `eval-harness` | Golden sets + judges for model, quantisation, or prompt changes through the gateway |
-| `handoff` | Compact the session into a doc a fresh agent can resume from |
-| `writing-for-agents` | Creating/editing anything an AGENT reads: skills, AGENTS.md, agent files |
-| `evolve-harness` | Turning a repeated correction into a **human-gated** harness change |
-| `setup-harness` | Per-project first pass: scaffold context, gate + CI, tickets dir, config doc |
+| `setup-harness` | MAINTAINER-ONLY — per-project first pass; kept on the harness branch, not dragged into the enterprise env |
+| `evolve-harness` | MAINTAINER-ONLY — turn a repeated correction into a human-gated harness change |
+| `writing-for-agents` | MAINTAINER-ONLY — the craft of writing text an agent reads (skills, AGENTS.md, rules) |
 | 〈`…`〉 | 〈…〉 |
 
 ## Work tracking (this branch)

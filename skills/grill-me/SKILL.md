@@ -8,8 +8,8 @@ description: >
   thinking", "poke holes in this", "what am I missing before I build",
   "interview me about this".
   Do NOT use to gather facts you could look up yourself (look them up — don't ask),
-  to score model outputs (`eval-harness`), to write the design record
-  (`write-design-doc` / `adr`), or to cut the tickets (`prd-to-issues`).
+  to write the design record (`write-design-doc` / `adr`), or to split the ticket
+  into steps (`ticket-docs`).
 ---
 
 # Grill me: interrogate the plan before you build
@@ -24,8 +24,8 @@ Before committing to a plan or design, when being wrong is cheaper to fix now th
 after it's built. The goal is **confirmed shared understanding**, not a vibe check.
 
 **Not this skill if:** you need a discoverable fact — read it, don't ask. You're
-scoring outputs → `eval-harness`. You're recording the decision → `write-design-doc`.
-You're cutting tickets from a settled plan → `prd-to-issues`.
+recording the decision → `write-design-doc` / `adr`. Splitting a settled plan into
+steps or child tickets → `ticket-docs`.
 
 ## Round 0 — the premise round (before the tree opens)
 
@@ -83,7 +83,7 @@ hanging off it. Then:
    critical question; endgame rounds sweep up the easy ones in one pass.
 5. **Facts vs decisions.** Finding *facts* is your job, never the user's — a
    frontier question that needs an environment fact gets a **subagent dispatched
-   non-blocking** (`code-searcher`; `helm template` / `kubectl explain` / `az` reads
+   non-blocking** (`code-searcher`; `helm template` / `kubectl explain` reads
    for platform facts): a running exploration is an
    unsettled prerequisite, so only its downstream questions wait — ask the rest of
    the frontier now. The *decisions* are the user's: put each to them and wait.
@@ -96,7 +96,7 @@ hanging off it. Then:
    plus, from Round 0: the **kill criteria** (falsifiable "this was a bad idea
    if…" conditions), the premise verdict, and any **override record** (evidence
    overridden + the user's reasoning).
-   This is the first link of the artifact chain — `write-a-prd` reads it, and a
+   This is the first link of the artifact chain — `ticket-docs` reads it, and a
    fresh agent can resume from it without this transcript. Propose the commit;
    don't commit unasked (conservative profile).
 

@@ -1,7 +1,8 @@
 # Evals
 
-The test suite for non-deterministic components. See `skills/eval-harness/SKILL.md`
-for the full procedure, and **`docs/evals.md` for the full human-facing manual**
+The test suite for non-deterministic components — maintainer tooling; the
+`eval-harness` skill that drives it is not shipped on the enterprise branch. See
+**`docs/evals.md` for the full human-facing manual**
 (architecture, gate semantics, metrics, extension points).
 
 ```

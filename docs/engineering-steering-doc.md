@@ -1,11 +1,11 @@
 ---
 doc: engineering-steering-doc
-version: 1.1.0
+version: 1.2.0
 updated: 2026-10-16
 status: active
 source: claude-project:AI Architecture/engineering-steering-doc.md
 source_version: 1.0.0
-derivation: adapted         # enterprise-ai-platform branch: §4.5 (no fleet), §5 (GitLab/AKS/no-egress), §7 (Helm/Bicep). Everything else verbatim. See docs/adr/0001.
+derivation: adapted         # enterprise-ai-platform branch: §4.5 (no fleet), §5 (GitLab/Kubernetes/no-egress), §7 (Helm/Bash). Everything else verbatim. See docs/adr/0001.
 load: always
 review_after: 2026-11-17
 ---
@@ -84,7 +84,7 @@ If you catch me over-building, say so directly — "the modular monolith covers 
 Two altitudes. This is the workflow the agent follows — treat the stage boundaries
 as checkpoints, not bureaucracy.
 
-**Once per project (bootstrap):** `write-design-doc` + `architecture-patterns` set
+**Once per project (bootstrap):** `write-design-doc` + the ladder (§0) set
 the system-level shape; each settled decision becomes an `adr`. Revisit only on a
 major re-architecture.
 
@@ -92,9 +92,8 @@ major re-architecture.
 
 ```mermaid
 flowchart LR
-    G["grill-me"] --> P["write-a-prd"] --> T["prd-to-issues"] --> B["build tickets<br/>tdd · helm-charts · kubernetes-ops<br/>review-pr · secure-code-review"] --> S["ship<br/>ci-cd · deploy-reviewer"]
+    G["grill-me"] --> T["ticket-docs<br/>(plan: steps = commits)"] --> B["build tickets<br/>tdd · helm-charts · kubernetes-ops<br/>review-pr · secure-code-review"] --> S["ship<br/>deploy-reviewer · human applies"]
     B -. decision surfaces .-> A["adr"] -.-> B
-    S -. new image / chart / model .-> AG["air-gapped-delivery"]
 ```
 
 - **grill-me** before writing anything — Round 0 premise check first (offline:
@@ -102,8 +101,8 @@ flowchart LR
   override is first-class), then confirmed shared understanding is the entry
   checkpoint. A new idea or workaround that surfaces mid-build gets its own
   grill/ADR — don't improvise it into the build.
-- **write-a-prd → prd-to-issues**: synthesis, then tracer-bullet tickets with
-  blocking edges, labeled `ready-for-agent`.
+- **ticket-docs**: the Jira ticket mirrored locally; its plan is the commit list;
+  a story that grows into an epic is split into child ticket docs with blocking edges.
 - **Build test-first** (`tdd`: red before green) — for charts that means
   `helm unittest` / `kubeconform` before the template change; one `implementer`
   per ticket, in parallel only when tickets own disjoint files.
@@ -117,7 +116,7 @@ flowchart LR
 
 - **Separate test / QA / prod environments.** Design with this separation assumed.
 - **Terraform for IaC**; **Docker for fast, reproducible service startup.** Fast local/dev spin-up is a cost-control feature — treat startup speed and teardown as first-class.
-- **The estate is GitLab · AKS · Helm, and prod has no internet egress.** Every artifact (image, chart, model, wheel) enters through an internal registry by digest with a committed manifest (`air-gapped-delivery`); a new outbound destination is a guardrail-2 hard stop. "Works in dev" is not evidence unless dev has the same default-deny. Azure specifics → `azure-platform`; I'm new to Azure, so name the Azure concept and its AWS/GCP equivalent the first time it appears.
+- **The estate is GitLab · Kubernetes · Helm/helmfile, and the deployed spaces have no internet egress.** Every artifact (image, chart, model) enters through the internal registry by digest. The platform team owns the cluster and the mirror; the agent never applies to a cluster from the dev machine — changes go to the testing namespace via the testing environment first. A new outbound destination is a guardrail-2 hard stop. "Works in dev" is not evidence unless dev has the same default-deny.
 - **Cost management is a design input, not an afterthought.** When a design implies spend (managed services, external APIs, always-on compute, LLM tokens), flag the cost shape and the cheaper alternative. Prefer scale-to-zero / elastic where the workload is spiky.
 - **Budget management for external services** — if a design calls external/paid APIs (including LLM providers), call out rate limits, token/cost budgets, and where a cheaper local/self-hosted path exists.
 
@@ -139,7 +138,7 @@ Use these unless a project says otherwise. If you'd recommend departing, say why
 - **Go** — server code and fast text processing. Play to its strengths: structs, efficient file ingest/streaming, concurrency. Reach for Go when throughput/latency on text or I/O matters.
 - **Helm + Kubernetes YAML** — the deployable unit. Charts are code: `helm lint`, `kubeconform`, `helm unittest`, a `values.schema.json`, and a version bump on every change (`helm-charts`). No secrets in values; images by digest from the internal registry.
 - **Bash** for glue inside pipelines and images — `set -euo pipefail`, shellcheck-clean, under ~100 lines or it becomes Python.
-- **IaC: Terraform `azurerm`** (Bicep acceptable where the team already has it). Portal is read-only.
+- **IaC: Terraform** where the team owns infrastructure; here the platform team owns it — the agent reads, never applies.
 - **TypeScript / JavaScript** — where a UI or Node tool exists; TS by default, types are not optional. Frontend work is rare here; if it appears, React + TypeScript, state as local as possible.
 - **ML/AI** — computer vision experience; actively building **agents / subagents / SLM workers**, LLM-as-judge, human-in-the-loop, pub/sub. When designing agentic systems, keep as much logic as possible *deterministic* (in code) and reserve model-authored control flow for where it's genuinely needed — and make the decision path observable, not just I/O (KB §0.9.5).
 

@@ -1,6 +1,6 @@
 ---
 doc: work-types
-version: 1.1.0
+version: 1.2.0
 updated: 2026-10-16
 status: active
 source: the former orchestrator routing table (extracted to single source; the orchestrator agent was removed on the enterprise-ai-platform branch — see docs/adr/0001)
@@ -33,8 +33,8 @@ review_after: 2026-11-18
 
 | The ask looks like | Type | Pipeline | Default dispatch | Done means |
 |---|---|---|---|---|
-| "Build 〈idea〉" | **D — New product** | full loop: grill → PRD → issues → build → ship | one `implementer` per ticket, in dependency order | all acceptance criteria + merged gate green + human gates passed |
-| "Add 〈feature〉" | **A — Feature** | PRD-lite → issues → build → ship | 1–3 workers, by real boundaries | tickets closed, merged gate green |
+| "Build 〈idea〉" | **D — New product** | full loop: grill → ticket docs (split) → build → ship | one `implementer` per ticket, in dependency order | all acceptance criteria + merged gate green + human gates passed |
+| "Add 〈feature〉" | **A — Feature** | grill (if fuzzy) → ticket doc → build → ship | 1–3 workers, by real boundaries | tickets closed, merged gate green |
 | "Fix 〈bug〉" | **B — Bug fix** | triage → failing test → fix → gate → ship | **ONE worker** | red test now green, gate green |
 | "P1 / prod down" | **B — Hotfix** | fix now → gate → ship; paperwork after | main thread or ONE worker, immediately | prod restored; retro ticket filed |
 | "Continue 〈product〉" | **Resume** | read state, work the ticket frontier | whatever the frontier admits | frontier advanced honestly |
@@ -42,15 +42,15 @@ review_after: 2026-11-18
 | "Plan the sprint" | **Sprint planning** | compose next sprint from the work graph: 60% features · 20% bugs · 15% debt · 5% maintenance | no dispatch — planning only | sprint manifest written |
 | "Review 〈diff / design / release〉" | **Judge** | no pipeline — a VERDICT | the matching read-only reviewer: `security-reviewer` / `design-reviewer` / `deploy-reviewer` | verdict delivered with reasons |
 | "Research 〈question / library〉" | **Research** | offline: installed source, mirrored chart, `--help`, `kubectl explain`, `helm show` — else ask the human for the doc | main thread (no network here) | version-checked verdict, local sources named, unknowns marked |
-| "Score / eval 〈outputs〉" | **Evaluation** | `eval-harness` procedure | LLM-as-judge — judge model ≠ producer model | scores + rubric recorded |
+| "Score / eval 〈outputs〉" | **Evaluation** | out of scope on this branch — the team uses models, it does not evaluate them; say so | main thread | the human decides where evaluation lives |
 | "Where is / how does 〈X〉 reach 〈Y〉" | **Locate / trace** | answer only | `code-searcher` | the answer, with locations |
-| "Should we 〈split / pattern / storage / auth / GPU SKU / gateway〉…" | **Architecture decision** | `architecture-patterns` → draft via `write-design-doc` (rejected alternatives recorded); ladder check (steering §0) if it adds a component | **PREPARE, then ESCALATE** — options + tradeoffs + a recommendation; `design-reviewer` judges the draft | the HUMAN decided; decision recorded via `adr` (or design doc) |
+| "Should we 〈split / pattern / storage / auth / GPU SKU / gateway〉…" | **Architecture decision** | ladder check (steering §0) + existing ADRs → draft via `write-design-doc` (rejected alternatives recorded); ladder check (steering §0) if it adds a component | **PREPARE, then ESCALATE** — options + tradeoffs + a recommendation; `design-reviewer` judges the draft | the HUMAN decided; decision recorded via `adr` (or design doc) |
 
 ## Type notes (only what a row can't hold)
 
 - **Architecture grounding:** the named skills route to the repo's references —
-  `docs/architecture-patterns.md` (→ FULL-KB at the cited § for expensive
-  decisions) and `docs/design-doc-template.md` — and `design-reviewer` judges
+  `docs/design-doc-template.md` (which cites the pattern KB at § level for
+  expensive decisions) and the existing ADRs — and `design-reviewer` judges
   against the same files. **The references outrank model priors**; that is what
   makes N agents give ONE answer to the same design question. Expensive-to-reverse
   ⇒ the human decides, never the agent.
@@ -64,6 +64,8 @@ review_after: 2026-11-18
   the human mirror of this file; if they drift, THIS file wins.
 
 Changelog:
+- 2026-10-16 — 1.2.0: second cut — evaluation out of scope; architecture row
+  uses the ladder + ADRs; pipeline columns name ticket docs, not PRDs.
 - 2026-10-16 — 1.1.0: enterprise-ai-platform branch — dispatch column no longer
   names a fleet/orchestrator; debt row describes platform debt; architecture row
   points at `adr`; `graphify` / `new-service` references removed with those skills.

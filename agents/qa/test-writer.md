@@ -8,7 +8,7 @@ description: >
   Delegate when writing the tests needs a lot of reading but yields a bounded diff.
   Do NOT use for building NEW code test-first — that's the `tdd` loop inside the
   implementer workers (red before green is the builder's job, not a follow-up) —
-  for scoring non-deterministic LLM output (`eval-harness`), or for deciding WHAT
+  for scoring non-deterministic LLM output (out of scope on this branch), or for deciding WHAT
   to build.
 tools: Read, Grep, Glob, Write, Bash, Skill   # needs write + run to verify
 model: sonnet   # mostly mechanical, but must reason about edges
@@ -35,7 +35,7 @@ order, honest coverage, flaky = fix or delete) is how your work is judged done.
    - Crosses a boundary (DB/queue/API/S3) → **integration** against the real dep
    - Contract with another service → **contract test**
    - Non-deterministic output (LLM/agent/model) → **stop and report**: that
-     component needs `eval-harness` scoring, not a faked `assertEqual`.
+     component needs eval-style scoring, not a faked `assertEqual`.
 3. Cover **behavior and edges through the public interface**: happy path, error
    path, empty input, boundary, duplicate/concurrent case. That's where bugs live.
 4. **Run them.** Fix until green. 5. Run the gates: lint, typecheck, coverage.
@@ -74,4 +74,4 @@ rather than mocking around it; that finding is worth more than the tests.
 **Test-quality findings:** <existing tests that are tautological / coupled /
   padding, with file:line. Omit if none or not auditing.>
 **Not covered:** <what you deliberately left, and why — including anything that
-  belongs to `eval-harness` instead>
+  belongs to an eval harness instead>

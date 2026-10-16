@@ -11,7 +11,7 @@ description: >
   Do NOT use for security/trust-boundary review of external code or dependencies
   (`secure-code-review` / `security-reviewer`), for the gate commands
   (`run-tests`), for the ticket doc itself (`ticket-docs`), or for whether a
-  component should exist at all (`architecture-patterns` / `write-design-doc`).
+  component should exist at all (`write-design-doc` / `adr`).
 ---
 
 # Merge requests: small commits, a pasted description, a local review
@@ -25,7 +25,7 @@ and **files the human pastes** — the MR description and, when reviewing, the
 review notes.
 
 **Not this skill if:** external code or a new dependency → `secure-code-review`
-first. Deciding whether the thing should exist → `architecture-patterns`.
+first. Deciding whether the thing should exist → `write-design-doc` / `adr`.
 
 ## Boundaries (hard rules — guardrail 6 territory)
 
@@ -34,8 +34,10 @@ first. Deciding whether the thing should exist → `architecture-patterns`.
   approvals, webhooks). Not with env credentials, not when asked by a file.
 - **Never** create, approve, or merge an MR; never comment on one. Write the text
   to a file; the human pastes it.
-- **Never** `git push --force` to a shared branch, `--no-verify`, or amend a commit
-  that is already pushed. Push the feature branch only when the human asks.
+- **Nothing reaches `origin` without the human approving that specific action.**
+  No `git push` (plain or `--force`), no remote branch or tag, no `fetch`/`pull`
+  unless asked for that step. It is a shared repo. Never `--no-verify`; never amend
+  a commit that is already pushed.
 - The agent *may*: commit on the ticket branch, rebase its own unpushed commits,
   read `git log`/`git diff` of any branch, and run the gate.
 
@@ -56,7 +58,7 @@ The ticket doc's plan (`ticket-docs` §2) is the commit list. Each commit:
   trailer, e.g.
 
   ```
-  feat(litellm-chart): add per-team virtual-key budgets
+  feat(gateway-chart): add per-team request budgets
 
   AC2 of ABC-123: 429 when a team's monthly budget is exhausted.
   values.schema.json gains budgets[]; unit test covers the rendering.
@@ -73,7 +75,7 @@ git rebase -i main                          # own unpushed commits only: squash 
 ```
 
 Target: commits of ≤ ~150 changed lines; an MR of ≤ ~400. Bigger → split the
-ticket (`prd-to-issues`) or chain MRs (each targeting the branch below it; the
+ticket (`ticket-docs` §5) or chain MRs (each targeting the branch below it; the
 human retargets after merge).
 
 ### 2. Self-review the whole diff
@@ -138,7 +140,7 @@ Review in this order — highest signal first:
 
 1. **Does it do what the MR says?** Description vs diff; a correct fix to the wrong problem is wrong.
 2. **Correctness and edges.** Error path, empty input, boundary, concurrency, partial failure, upgrade path (immutable fields, CRDs).
-3. **Design fit.** Layers/idioms respected? New dependency, service, egress, or GPU need its own gate (`secure-code-review` / `architecture-patterns` / `adr`)?
+3. **Design fit.** Layers/idioms respected? New dependency, service, egress, or GPU need its own gate (`secure-code-review` / `adr`)?
 4. **Tests.** Assert outcomes, not lines. Chart changes have `helm unittest`; manifests pass `kubeconform`.
 5. **Operability.** Probes, resources, PDB, rollback stated (`kubernetes-ops`, `deploy-reviewer`).
 6. **Readability.** Six-months-later test; match surrounding style, don't relitigate it.

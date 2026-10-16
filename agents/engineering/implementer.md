@@ -8,7 +8,7 @@ description: >
   the gate and never merges or deploys. Spawn one per ticket; run several only when
   tickets touch disjoint files. Do NOT use to write tests for code that already
   exists (`test-writer`), to review (`deploy-reviewer` / `security-reviewer`), or to
-  decide architecture (`architecture-patterns` / `adr` in the main thread).
+  decide architecture (`write-design-doc` / `adr` in the main thread).
 tools: Read, Grep, Glob, Edit, Write, Bash, Skill   # writes code, unlike the read-only
                                                     # reviewers — but never merges/deploys
 model: inherit   # production code at whatever tier the main session runs

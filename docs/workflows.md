@@ -1,6 +1,6 @@
 ---
 doc: workflows
-version: 1.1.0
+version: 1.2.0
 updated: 2026-10-16
 status: active
 source: docs/agents/work-types.md (taxonomy) + the skills each path names
@@ -24,15 +24,14 @@ flowchart LR
     T["ticket"] --> D{"decision<br/>in it?"}
     D -- yes --> ADR["adr<br/>(human confirms)"] --> B
     D -- no --> B["build test-first<br/>(tdd · helm-charts · kubernetes-ops)"]
-    B --> V["helm lint · kubeconform ·<br/>helm unittest · gate full"] --> MR["review-pr (MR)<br/>+ security-reviewer if external code"] --> DR["deploy-reviewer<br/>BLOCK / ALLOW"] --> CI["ci-cd: test env auto →<br/>smoke → prod manual"]
-    CI -. anything new enters the estate .-> AG["air-gapped-delivery<br/>(manifest + digests)"]
+    B --> V["helm lint · kubeconform ·<br/>helm unittest · gate full"] --> MR["review-pr (MR)<br/>+ security-reviewer if external code"] --> DR["deploy-reviewer<br/>BLOCK / ALLOW"] --> H["human: pull branch into the<br/>testing env · helmfile apply · verify"]
 ```
 
 ## Add a feature (Type A)
 
 ```mermaid
 flowchart LR
-    A["'Add 〈feature〉'"] --> G["grill-me<br/>(premise gate; if scope fuzzy)"] --> P["PRD-lite<br/>(write-a-prd)"] --> T["prd-to-issues<br/>(tracer bullets + edges)"] --> B["build test-first<br/>(1–3 workers, tdd)"] --> R["review-pr"] --> M["merge-validate<br/>gate full"] --> SHIP["ship (ci-cd)"]
+    A["'Add 〈feature〉'"] --> G["grill-me<br/>(premise gate; if scope fuzzy)"] --> T["ticket-docs<br/>(plan: steps = commits)"] --> B["build test-first<br/>(1–3 workers, tdd)"] --> R["review-pr"] --> M["merge-validate<br/>gate full"] --> SHIP["ship (human applies)"]
 ```
 
 Small, well-understood feature? Skip straight from the ask to build — the
@@ -54,7 +53,7 @@ a red test is a guess that compiles.
 
 ```mermaid
 flowchart LR
-    Q["'Should we 〈split / pattern /<br/>storage / auth〉…'"] --> AP["architecture-patterns<br/>(+ FULL-KB at cited §)"] --> OPT["options + tradeoffs +<br/>recommendation<br/>(write-design-doc draft)"] --> RUNG["ladder check (steering §0)<br/>if it adds a component"] --> DR["design-reviewer judges<br/>the draft"] --> H{{"HUMAN decides"}}
+    Q["'Should we 〈split / pattern /<br/>storage / auth〉…'"] --> AP["ladder check (steering §0)<br/>+ existing ADRs"] --> OPT["options + tradeoffs +<br/>recommendation<br/>(write-design-doc draft)"] --> RUNG["ladder check (steering §0)<br/>if it adds a component"] --> DR["design-reviewer judges<br/>the draft"] --> H{{"HUMAN decides"}}
     H --> REC["record: adr<br/>(design doc if multi-page)"] --> BUILD["then build tickets"]
 ```
 
@@ -79,6 +78,8 @@ edit hook, stop hook, CI. Coverage is a floor set at honest reality and raised
 by tickets, never gamed.
 
 Changelog:
+- 2026-10-16 — 1.2.0: second cut — ci-cd / prd-to-issues / architecture-patterns
+  boxes replaced by ticket-docs, the ladder, and the human's testing-env apply.
 - 2026-10-16 — 1.1.0: enterprise-ai-platform branch — orchestrator spine removed
   with the agent; added the platform-change path (adr → build → validate → MR →
   deploy-reviewer → ci-cd); architecture path records via `adr`.

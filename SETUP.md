@@ -190,16 +190,13 @@ skills/
   run-tests/            ← keep if you have tests (you do)
   secure-code-review/   ← KEEP. See §3.
   evolve-harness/       ← KEEP. How the harness grows safely (human-gated); pairs with guardrail #6
-  architecture-patterns/ write-design-doc/ adr/ architecture-diagrams/   ← choose · design · record · draw (house format)
-  eval-harness/         ← keep: model/quantisation changes are behaviour changes, eval-gated
-  ci-cd/                ← GitLab-native: MR pipelines, protected envs, helm deploy jobs, rollback
-  observability/        ← delete if something else owns prod monitoring + on-call
-  review-pr/            ← merge requests (MRs) — keep
-  setup-harness/        ← keep; the per-project first pass: context + gate + CI + tracker + config doc
-  grill-me/ write-a-prd/ prd-to-issues/ ticket-docs/ tdd/ handoff/   ← the SDLC loop (steering §4.5); tickets are files, Jira is pasted by you
-  helm-charts/ kubernetes-ops/ azure-platform/     ← the platform: charts · workloads · the cloud under them
-  air-gapped-delivery/ ai-serving-stack/           ← getting bits into the no-egress estate · vLLM/LiteLLM/kagent
-  writing-for-agents/   ← agent-doc craft (editing skills, AGENTS.md)
+  write-design-doc/ adr/ architecture-diagrams/   ← design · record · draw (house format)
+  observability/        ← keep: the team owns monitoring for the serving stack
+  review-pr/            ← small commits + tickets/<KEY>.mr.md you paste; the agent never opens the MR
+  setup-harness/        ← MAINTAINER-ONLY: not dragged into the enterprise env
+  grill-me/ ticket-docs/ tdd/   ← the loop: grill → ticket doc (plan = commits) → red/green
+  helm-charts/ kubernetes-ops/  ← the platform: charts · workloads (the platform team owns the cluster)
+  evolve-harness/ writing-for-agents/   ← MAINTAINER-ONLY: harness upkeep + agent-doc craft
 
 agents/
   code-searcher/ test-writer/ design-reviewer/
@@ -210,7 +207,7 @@ agents/
 ```
 
 This branch (`harness/enterprise-ai-platform`) is already pruned for an
-enterprise AI-platform team — GitLab · AKS · Helm · no-egress servers. The
+enterprise AI-platform team — GitLab · Kubernetes · Helm · no-egress servers. The
 why-what-was-cut record is `docs/adr/0001-enterprise-ai-platform-focus.md`.
 
 ---

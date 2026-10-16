@@ -142,7 +142,7 @@ mistake, and the first one an attacker talks you out of.
 ## Keeping up without a network
 
 The agent cannot survey the ecosystem here. "Keeping up" is a human job: when you
-bring in a new vLLM / LiteLLM / kagent / Helm practice from outside, paste it with
+bring in a new model-serving / gateway / Helm practice from outside, paste it with
 its source and date, and run it through STEP 1–4 like any other trigger. **Adopt on
 a human, with provenance** — never from memory of what the model "knows is current".
 

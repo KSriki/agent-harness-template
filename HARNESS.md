@@ -37,15 +37,12 @@ the universal classification — if they drift, that file wins):
 | You say | What fires |
 |---|---|
 | "grill me about 〈idea〉" | `grill-me` — Round 0 premise check (offline: ADRs + what you know, kill criteria, you can override), then frontier rounds of questions until understanding is confirmed |
-| "write the PRD" → "break it into tickets" | `write-a-prd` → `prd-to-issues` → `tickets/NN-*.md` docs you create in Jira |
-| "build 〈ticket〉" | one worker, test-first (`tdd`) — `helm-charts` / `kubernetes-ops` / `ci-cd` as the ticket needs |
+| "split this ticket" / "this story is really an epic" | `ticket-docs` — steps = commits in the plan, or child ticket docs with blocking edges for you to create in Jira |
+| "build 〈ticket〉" | one worker, test-first (`tdd`) — `helm-charts` / `kubernetes-ops` as the ticket needs |
 | "commit this" / "write the MR" | `review-pr` — small commits from the ticket plan; `tickets/<KEY>.mr.md` for you to paste (the agent never opens the MR) |
 | "the acceptance criteria changed" | `ticket-docs` — dated change in `tickets/<KEY>.md` + a Jira paste block |
 | "ADR this" / "why is it like this" | `adr` — one page in `docs/adr/`; `architecture-diagrams` for the picture, in the house format |
 | "review this 〈diff / design / release〉" | the matching read-only reviewer, verdict only (`deploy-reviewer` on every Helm release) |
-| "get 〈image / chart / model〉 into prod" | `air-gapped-delivery` — mirror by digest, manifest, offline flags |
-| "size / deploy 〈model〉", "LiteLLM 401" | `ai-serving-stack` |
-| "what is the Azure equivalent of…" | `azure-platform` |
 | "how does 〈X〉 reach 〈Y〉" | `code-searcher` |
 | "you keep getting 〈X〉 wrong" | `evolve-harness` — turn the correction into a rule (you approve it) |
 
@@ -76,7 +73,7 @@ skill:
 |---|---|---|---|
 | **Always** | `AGENTS.md`, `docs/engineering-steering-doc.md` | Every turn | Facts + behavior needed always |
 | **On match** | `skills/*/SKILL.md` | When the description matches | Procedures needed *sometimes* |
-| **On demand** | `docs/architecture-patterns.md`, the full KB | When a skill points at it | Depth, rarely needed |
+| **On demand** | `docs/design-doc-template.md`, `docs/adr/` | When a skill points at it | Depth, rarely needed |
 | **Delegated** | `agents/*.md` | On invocation — **own context window** | Work whose *tokens* shouldn't touch main |
 
 ```
@@ -104,22 +101,13 @@ a cited § when a decision is expensive to reverse.)
 | `run-tests` | Running/writing tests; a CI gate fails |
 | `helm-charts` | Chart authoring, validation ladder, versioning, OCI publish, helmfile |
 | `kubernetes-ops` | Manifests, probes, resources, RBAC, GPU scheduling, NetworkPolicy, kubectl triage |
-| `azure-platform` | Azure for newcomers: hierarchy, identity, AKS, ACR, Key Vault, private networking |
-| `air-gapped-delivery` | Images / charts / models / wheels INTO the no-egress estate, by digest, with a manifest |
-| `ai-serving-stack` | vLLM sizing + config, LiteLLM gateway, kagent, chat UIs |
-| `ci-cd` | GitLab CI jobs, environments, promotion, release, rollback — YAML only, never Settings |
 | `review-pr` | Small commits from the ticket plan; `tickets/<KEY>.mr.md`; local review notes — never opens an MR |
 | `ticket-docs` | `tickets/<KEY>.md` mirror of the Jira ticket; AC changes; the Jira paste block |
-| `prd-to-issues` | Spec → tracer-bullet ticket docs with blocking edges |
 | `grill-me` | Interrogate the premise (offline Round 0, kill criteria) then the plan, in frontier rounds |
-| `write-a-prd` | Discussion → spec |
 | `adr` · `architecture-diagrams` | One decision, one page in `docs/adr/`; the diagram in the house format |
 | `write-design-doc` | A multi-page design for an expensive-to-reverse change |
-| `architecture-patterns` | Choosing a pattern; sync-vs-async; caching; scaling |
 | `secure-code-review` | **Before** accepting external code, a new image/chart/model, or ANY new dependency |
 | `observability` | Instrument logs/metrics/traces; SLOs; **triage a live incident** |
-| `eval-harness` | Golden sets + judges for model / quantisation / prompt changes |
-| `handoff` | Compact a session for a fresh agent to resume |
 | `writing-for-agents` | The craft of agent-facing docs: pointers, hierarchy, completion criteria, pruning |
 | `evolve-harness` | Grow the harness itself — new skill/rule from a repeated correction, **human-gated** |
 | `setup-harness` | Per-project first pass: context (AGENTS.md + CLAUDE.md + docs), gate + CI, tickets dir, config doc |
@@ -158,7 +146,7 @@ harness itself — the human gate in `skills/evolve-harness/` (guardrail #6).
 
 `docs/engineering-steering-doc.md` encodes **one specific engineer's** standards
 (Python/uv, Helm, Terraform, rebase, Mermaid, KISS-over-cleverness) — on this branch
-already adapted to the GitLab · AKS · no-egress estate (v1.1.0). **Rewrite it** for
+already adapted to the GitLab · Kubernetes · no-egress estate (v1.1.0). **Rewrite it** for
 your team, or your agent will optimize for someone else's preferences.
 
 ## Maintenance

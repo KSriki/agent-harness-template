@@ -32,7 +32,7 @@ The full you-say/what-fires table is in [`HARNESS.md`](./HARNESS.md).
 
 ```mermaid
 flowchart LR
-    G["grill-me<br/>(offline premise check + confirm understanding)"] --> P["write-a-prd"] --> T["prd-to-issues<br/>(ticket docs + edges)"] --> B["build test-first<br/>(tdd · helm-charts · kubernetes-ops)"] --> R["review-pr<br/>(small commits · MR.md you paste)"] --> S["ship<br/>(ci-cd · deploy-reviewer)"]
+    G["grill-me<br/>(offline premise check + confirm understanding)"] --> T["ticket-docs<br/>(plan: steps = commits)"] --> B["build test-first<br/>(tdd · helm-charts · kubernetes-ops)"] --> R["review-pr<br/>(small commits · MR.md you paste)"] --> S["ship<br/>(deploy-reviewer · human applies)"]
     B --> GATE["gate.sh: lint · types · tests · coverage<br/>hooks block 'done' on red · CI blocks merge"]
     GATE --> B
 ```
@@ -46,23 +46,23 @@ Every ask is **classified first** against the universal work-type table
 ([`docs/agents/work-types.md`](./docs/agents/work-types.md)) — feature, bug,
 hotfix, debt, architecture decision, judge, research… — and the type sets the
 pipeline depth. Diagrams of the common paths, including the platform-change path
-(adr → build → validate → MR → deploy-reviewer → ci-cd):
+(adr → build → validate → MR → deploy-reviewer → human applies):
 [`docs/workflows.md`](./docs/workflows.md).
 
 ## This branch: enterprise AI platform
 
 `harness/enterprise-ai-platform` is the template cut down and re-aimed for an
-enterprise platform team — **GitLab CI · AKS · Helm/helmfile · podman · Azure ·
-servers with no internet · Jira** — deploying an AI serving stack (LiteLLM
-gateway, vLLM model servers, kagent agents, chat UIs). It assumes the agent
+enterprise platform team — **GitLab · Kubernetes · Helm/helmfile · podman ·
+servers with no internet · Jira** — deploying an AI serving stack (a gateway in
+front of model servers, agent runtimes, chat UIs; the product specifics stay in
+your environment via `docs/templates/serving-stack-skill.md`). It assumes the agent
 environment itself has **no internet**, takes **credentials from the shell**, and
 must **never administer GitLab or open MRs** or **write to Jira**: it writes
 `tickets/<KEY>.mr.md` and `tickets/<KEY>.md` for a human to paste.
 
-Added: `adr` · `architecture-diagrams` · `helm-charts` · `kubernetes-ops` ·
-`azure-platform` · `air-gapped-delivery` · `ai-serving-stack` · `ticket-docs`.
-Removed: the multi-agent fleet, the network-dependent research agents, and the
-app-code module-design skills. The full why/what:
+Added: `adr` · `architecture-diagrams` · `helm-charts` · `kubernetes-ops` · `ticket-docs`.
+Removed: the multi-agent fleet, the research agents, release/CI machinery, the
+app-code module-design skills, and anything that named a specific product. The full why/what:
 [`docs/adr/0001-enterprise-ai-platform-focus.md`](./docs/adr/0001-enterprise-ai-platform-focus.md).
 
 ## What's inside
@@ -71,7 +71,7 @@ app-code module-design skills. The full why/what:
 |---|---|
 | `AGENTS.md` | Per-repo always-on context: 🔒 guardrails, environment facts, commands, rules (pre-filled for the platform stack; 〈slots〉 per project) |
 | `docs/engineering-steering-doc.md` | The constitution: how the agent works, every turn, every repo |
-| `skills/` | 24 on-demand procedures (SDLC loop, Helm/K8s/Azure/delivery/serving, ADRs, reviews, tickets) — loaded only when matched |
+| `skills/` | 12 shipped + 3 maintainer-only procedures (tickets, Helm/K8s, ADRs + diagrams, reviews, tests) — loaded only when matched |
 | `agents/` | Subagent definitions: one implementer, a test-writer, three reviewers, a code-searcher |
 | `docs/adr/` | This repo's decision records — start with 0001 |
 | `gates/` | The enforcement layer: hook dispatch, gate template, CI workflow |
