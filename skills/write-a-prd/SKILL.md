@@ -40,11 +40,11 @@ design decision → `write-design-doc`. You're breaking it into buildable ticket
    build must keep checking, not commentary; a spec that drops them un-arms
    the premise gate.
 2. **Explore for current state** (if not already). Use the project's **domain
-   glossary** vocabulary (`domain-modeling` / `CONTEXT.md`); respect existing ADRs in
-   the area you touch.
+   glossary** vocabulary (`CONTEXT.md`, if the repo has one); respect existing ADRs in
+   the area you touch (`docs/adr/` — see the `adr` skill).
 3. **Sketch the test seams.** Prefer existing seams; use the **highest seam possible**;
    propose new seams high; **fewer seams is better — the ideal is one.** Check the
-   seams match the human's expectations. (Vocabulary from `codebase-design`.)
+   seams match the human's expectations.
 4. **Write the spec from the template** (below), save it as
    `intent/<slug>.spec.md` beside its intent, publish it to the tracker, and
    apply the **`ready-for-agent`** label — no further triage.

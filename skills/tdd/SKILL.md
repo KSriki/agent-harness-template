@@ -29,8 +29,7 @@ Read `CONTEXT.md` first (if present) so test names/vocabulary match the domain.
 ## What a good test is
 
 Verifies behavior through the **public interface**, not implementation details; reads
-like a specification; **survives refactors**; one logical assertion. (Interface
-vocabulary from `codebase-design`.)
+like a specification; **survives refactors**; one logical assertion.
 
 ## Seams — where tests go
 

@@ -7,7 +7,7 @@
 # Copies the reusable agent layer into <target-dir> and wires .claude/ so Claude
 # Code natively discovers the skills + subagents. It deliberately does NOT fill in
 # your project context — that's `python3 init.py` (or by hand), and it's exactly
-# what the SDLC skills (write-design-doc, new-service, …) are for. Install the
+# what the SDLC skills (write-design-doc, adr, helm-charts, …) are for. Install the
 # suite; set up the project as a separate, deliberate step.
 #
 # Safe by design:
@@ -103,5 +103,5 @@ Then verify it's live in Claude Code (a fresh session in this dir):
   • "What skills and subagents do you have?" → should list the suite
 
 From here, use the skills in real time — e.g. write-design-doc to spec a change,
-new-service for the rung check, orchestrate-agents to fan out. See SETUP.md.
+adr to record decisions, helm-charts / kubernetes-ops to ship. See SETUP.md.
 EOF

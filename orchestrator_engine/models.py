@@ -11,18 +11,12 @@ import json
 from pathlib import Path
 
 DEFAULTS = {
-    "orchestrator": "opus",
     "code-searcher": "haiku",
     "test-writer": "sonnet",
     "implementer": "inherit",
-    "frontend-implementer": "inherit",
-    "backend-implementer": "inherit",
     "security-reviewer": "opus",
     "design-reviewer": "opus",
     "deploy-reviewer": "opus",
-    "premise-reviewer": "opus",
-    "debug-research": "opus",
-    "trend-scout": "opus",
 }
 
 VALID = {"haiku", "sonnet", "opus", "fable", "inherit"}

@@ -9,10 +9,10 @@ description: >
   structure", "is this over-engineered", CQRS/event-sourcing/saga/outbox/CDN/
   circuit-breaker questions, and any conversation about scaling or coupling.
   Do NOT use for writing the design doc itself — that's `write-design-doc`; not
-  for scaffolding a new component — `new-service`; not for designing one MODULE's
-  interface/seams — `codebase-design`; and not for auditing an existing codebase
-  for refactors — `improve-codebase-architecture`. This skill is SYSTEM-level
-  pattern choice for a decision in front of you.
+  for recording a settled decision as a numbered ADR — `adr`; not for Kubernetes
+  workload shape (probes, resources, RBAC) — `kubernetes-ops`; and not for how to
+  serve a model (vLLM/LiteLLM sizing) — `ai-serving-stack`. This skill is
+  SYSTEM-level pattern choice for a decision in front of you.
 ---
 
 # Architecture pattern selection
@@ -23,7 +23,7 @@ You're choosing *how* to build something and the choice has consequences. This
 skill routes you to the right pattern and the right depth of reading.
 
 **Not this skill if:** you're *writing the doc* → `write-design-doc`. You're
-*scaffolding a component* → `new-service` (which has the rung gate).
+*recording* a decision already made → `adr`.
 
 ## The two-tier reference
 
@@ -91,7 +91,7 @@ Then record what you *didn't* pick and why → that's the part that gets reviewe
 
 | Question | Go to |
 |---|---|
-| Split this into a service? | §0.7 ladder + `new-service` gate. Default: **no.** |
+| Split this into a service / its own Helm release? | §0.7 ladder — name the failure at the rung below. Default: **no.** |
 | Sync or async? | §4. *What happens when the callee is down?* Non-critical breaking critical → **async.** |
 | Publishing an event after a DB write? | **§3.7 Outbox. Mandatory.** Otherwise it's a dual-write bug. |
 | Async — anything else I must do? | **Idempotent consumers** (at-least-once) + eventual consistency is user-visible. |

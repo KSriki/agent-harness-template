@@ -9,7 +9,7 @@ description: >
   "interview me about this".
   Do NOT use to gather facts you could look up yourself (look them up — don't ask),
   to score model outputs (`eval-harness`), to write the design record
-  (`write-design-doc`), or to decompose a big initiative into tickets (`wayfinder`).
+  (`write-design-doc` / `adr`), or to cut the tickets (`prd-to-issues`).
 ---
 
 # Grill me: interrogate the plan before you build
@@ -25,7 +25,7 @@ after it's built. The goal is **confirmed shared understanding**, not a vibe che
 
 **Not this skill if:** you need a discoverable fact — read it, don't ask. You're
 scoring outputs → `eval-harness`. You're recording the decision → `write-design-doc`.
-You're mapping a large initiative into tickets → `wayfinder`.
+You're cutting tickets from a settled plan → `prd-to-issues`.
 
 ## Round 0 — the premise round (before the tree opens)
 
@@ -33,26 +33,29 @@ The design tree has a root every later question silently assumes: **"should this
 exist at all?"** Walking the tree without visiting the root is how a model helps
 you build a bad idea well. So, before Round 1:
 
-1. **Dispatch `premise-reviewer`** (non-blocking, like any fact subagent) with a
-   summary of the premise ONLY — never this transcript. Fresh context is the
-   point: a reviewer that read the enthusiasm is already anchored.
-2. **Present its verdict with the first round:** the strongest case against
-   (provenance-tiered, dated), the proposed kill criteria, and your
+1. **Build the case against — offline.** This environment has no internet, so the
+   outside view comes from what is on disk and in the room: existing ADRs
+   (`docs/adr/`) and design docs that touched this area, the platform's own
+   incident/retro notes, the steering doc's ladder (§0), and the user's knowledge
+   of what the organisation tried before. Ask the user for the prior art they know
+   of as part of Round 0 — that is a fact-finding question, not a decision.
+2. **Present the verdict with the first round:** the strongest case against (with
+   its source — "ADR-0007 rejected this in June", "nothing on disk argues
+   against it"), the proposed kill criteria, and your PROCEED / RETHINK
    recommendation — same ❓/➡️ format as every other question. The user rules on
    the premise like any other decision.
 3. **Kill criteria are mandatory output.** 2–4 falsifiable *"this was a bad idea
-   if…"* conditions go into the intent doc. If neither you, the reviewer, nor
-   the user can name one, say so out loud — that is a finding about the premise,
-   not a formality to skip.
-4. **On RETHINK — warn, then let the human bet.** Flag the tracked issue for a
-   human decision (`bd human <id>`), present the evidence as *"here's what the
-   outside view says — are you sure you want to continue?"*, and **pause until
-   the user explicitly rules**. Silence is not consent — but **an informed
-   override is a fully legitimate outcome**: contrarian bets are how new things
-   get built, and this round exists to make the bet *informed*, never to veto
-   it. An override is recorded in the intent doc (the evidence overridden, the
-   user's reasoning, kill criteria armed) — that record is what separates a bet
-   from a blind spot.
+   if…"* conditions go into the intent doc. If neither you nor the user can name
+   one, say so out loud — that is a finding about the premise, not a formality
+   to skip.
+4. **On RETHINK — warn, then let the human bet.** Present the evidence as
+   *"here's what the record says — are you sure you want to continue?"* and
+   **pause until the user explicitly rules**. Silence is not consent — but **an
+   informed override is a fully legitimate outcome**: contrarian bets are how new
+   things get built, and this round exists to make the bet *informed*, never to
+   veto it. An override is recorded in the intent doc (the evidence overridden,
+   the user's reasoning, kill criteria armed) and, if it changes architecture, as
+   an `adr` — that record is what separates a bet from a blind spot.
 5. **Skip condition (stated, never silent):** an internal-only, cheap-to-reverse
    change needs no outside view — skip Round 0 and say so in one line.
 
@@ -80,7 +83,8 @@ hanging off it. Then:
    critical question; endgame rounds sweep up the easy ones in one pass.
 5. **Facts vs decisions.** Finding *facts* is your job, never the user's — a
    frontier question that needs an environment fact gets a **subagent dispatched
-   non-blocking** (`code-searcher` / `debug-research`): a running exploration is an
+   non-blocking** (`code-searcher`; `helm template` / `kubectl explain` / `az` reads
+   for platform facts): a running exploration is an
    unsettled prerequisite, so only its downstream questions wait — ask the rest of
    the frontier now. The *decisions* are the user's: put each to them and wait.
 6. **Exit:** done when **the frontier is empty** — every branch visited, nothing

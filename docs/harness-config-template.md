@@ -22,7 +22,7 @@ review_after: 2026-11-18
 > from it and self-heal when missing.
 >
 > **This is a LIVING doc.** Every section ends with a `Changelog:` line — append,
-> never rewrite. Consumers (orchestrator, planning skills) treat a **stale
+> never rewrite. Consumers (planning skills, reviewers) treat a **stale
 > section like a missing one**: each section's *Reality check* names what to
 > diff against; drift → propose an amendment (update mode), never silently adopt.
 
@@ -71,14 +71,14 @@ review_after: 2026-11-18
 
 - **Isolation:** 〈git worktrees (default) | Docker/devcontainer: 〈image/config〉〉
 - **Parallel dispatch:** 〈allowed | single-threaded only〉 · ownership boundaries per 〈component registry | AGENTS.md Layout〉
-- *Reality check:* the mechanism above is what `orchestrate-agents` runs in this repo.
+- *Reality check:* on this branch there is no fleet — one agent, one ticket, one worktree.
 - Changelog: 〈YYYY-MM-DD — initial (setup-harness)〉
 
 ## Business rules
 
 > GUIDANCE: rules the code cannot reveal — compliance, domain invariants, money
 > handling, tenancy. NEVER fabricated: every line traces to a human answer.
-> Domain *vocabulary* goes to `CONTEXT.md` (domain-modeling), not here.
+> Domain *vocabulary* goes to `CONTEXT.md`; decisions go to `docs/adr/` (`adr`), not here.
 
 - 〈e.g. "All money is integer cents — no floats, ever."〉
 - 〈e.g. "PII never leaves the EU region; exports go through the redaction service."〉
@@ -97,7 +97,7 @@ review_after: 2026-11-18
 
 ---
 
-> **For consumers (orchestrator, planning skills):** no file, or any section
+> **For consumers (planning skills, reviewers):** no file, or any section
 > missing/stale by its Reality check → run that `setup-harness` step
 > (propose→confirm→record), then continue. Config is read at dispatch-wave
 > boundaries: confirmed amendments reach the next wave; mid-flight workers keep

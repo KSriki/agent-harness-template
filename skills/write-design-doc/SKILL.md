@@ -4,12 +4,12 @@ description: >
   Use when starting a non-trivial change that needs design before code: a new
   system or subsystem, a schema or storage-engine change, a service boundary,
   an auth model, a sync-vs-async decision, or any choice that is expensive to
-  reverse. Also use when asked for an ADR, RFC, or "design doc". Covers
-  right-sizing the doc and recording rejected alternatives.
+  reverse. Also use when asked for an RFC or "design doc". Covers right-sizing
+  the doc and recording rejected alternatives.
   Do NOT use for a bug fix or a change that is cheap to reverse — just do it. Not
-  for glossary upkeep or a lightweight ADR — `domain-modeling`. Not for product
-  requirements — `write-a-prd`. This is the once-per-project (or major-change)
-  technical design record.
+  for a one-page numbered ADR recording a single decision — `adr` (a design doc
+  may spawn several ADRs). Not for product requirements — `write-a-prd`. This is
+  the once-per-project (or major-change) technical design record.
 ---
 
 # Writing the design doc

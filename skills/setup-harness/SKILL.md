@@ -106,7 +106,7 @@ filled in as they're learned.
 
 ### 4. Configure the SDLC layer — tracker, labels, domain docs
 
-The pipeline skills (`write-a-prd`, `prd-to-issues`, `wayfinder`) publish to an
+The pipeline skills (`write-a-prd`, `prd-to-issues`) publish to an
 issue tracker and read a domain glossary. Configure them now — explore first,
 propose, confirm with the human, then write (never assume):
 
@@ -123,14 +123,14 @@ propose, confirm with the human, then write (never assume):
     Blocking edges are data (`bd dep add`), the frontier is computed
     (`bd ready`), claims are atomic (`--claim`). Prefer it over `.scratch/`
     markdown. Do NOT run `bd setup claude` or install its plugin — this
-    harness's skills own the procedure (same rule as `graphify install`).
+    harness's skills own the procedure.
 - **Triage labels.** Default vocabulary (each label string = its name):
   `needs-triage` · `needs-info` · **`ready-for-agent`** (fully specified, an agent
   can take it) · `ready-for-human` · `wontfix`. If the tracker already has an
   equivalent vocabulary, record the mapping instead of creating duplicates —
   both go in the config doc's Tracker section (step 6).
-- **Domain docs.** Default single-context: a root `CONTEXT.md` (glossary — created
-  lazily by `domain-modeling`) + ADRs under 〈`docs/design/` or `docs/adr/`〉. Offer
+- **Domain docs.** Default single-context: a root `CONTEXT.md` (glossary, optional)
+  + numbered ADRs under `docs/adr/` (the `adr` skill owns the format). Offer
   multi-context (`CONTEXT-MAP.md` + per-context files) only on monorepo signals
   (workspaces, `packages/*`).
 
@@ -176,8 +176,8 @@ non-deterministic components, uncomment the eval smoke line in `gate.sh`
 
 ### 6. Record the decisions — write `docs/agents/harness-config.md`
 
-The living per-repo decision record — every consumer (orchestrator, planning
-skills) reads it instead of re-asking. **If it already exists, do not clobber
+The living per-repo decision record — every consumer (planning skills,
+reviewers) reads it instead of re-asking. **If it already exists, do not clobber
 or rewrite it** — amendments are update mode, a later pass, not this one.
 
 ```bash
@@ -221,7 +221,7 @@ Harnessed. Where your changes go from here:
   what "done" means            → .claude/gate.sh  (CI runs the same file)
   decisions record             → docs/agents/harness-config.md (living — amend, never rewrite)
   skill / agent changes        → evolve-harness (human-gated)
-  anything else                → ask `harness-help` — it routes to the exact file + section
+  anything else                → HARNESS.md (concepts) · ARCHITECTURE.md (what lives where)
 Reminder: enable branch protection on main requiring the `gate` check.
 ```
 
