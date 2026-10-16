@@ -152,7 +152,7 @@ java -jar tools/plantuml.jar -tsvg docs/diagrams/<name>.puml
   One vocabulary, so grep finds the thing the picture shows.
 - Put the diagram **in or beside** the document it explains; link both ways.
 - An MR that changes a flow the diagram shows **updates the diagram in the same
-  MR** — `deploy-reviewer` and `review-pr` ask.
+  MR** — the `deploy-reviewer` checklist and `review-pr` ask.
 - Tools (mermaid-cli, plantuml) are dependencies: propose, don't install
   (guardrail 3); in the estate they come from the internal mirror.
 

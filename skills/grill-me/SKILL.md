@@ -94,9 +94,10 @@ hanging off it. Then:
    outward; recompute it and ask the next round. Early rounds may be a single
    critical question; endgame rounds sweep up the easy ones in one pass.
 5. **Facts vs decisions.** Finding *facts* is your job, never the user's — a
-   frontier question that needs an environment fact gets a **subagent dispatched
-   non-blocking** (`code-searcher`; `helm template` / `kubectl explain` reads
-   for platform facts): a running exploration is an
+   frontier question that needs an environment fact gets **looked up, not asked**
+   (grep/read the repo; `helm template` / `kubectl explain` for platform facts; a
+   subagent if the tool has them, otherwise do it yourself before asking the round):
+   a running exploration is an
    unsettled prerequisite, so only its downstream questions wait — ask the rest of
    the frontier now. The *decisions* are the user's: put each to them and wait.
 6. **Exit:** done when **the frontier is empty** — every branch visited, nothing
@@ -122,6 +123,6 @@ hanging off it. Then:
       retreat, but never silence
 - [ ] The design tree walked to an **empty frontier** — no branch silently assumed
 - [ ] Every question carried a **recommendation**; rounds respected dependencies
-- [ ] Facts were **looked up (subagents, non-blocking)**, never asked
+- [ ] Facts were **looked up** (repo, tools, or a subagent), never asked
 - [ ] The human **explicitly confirmed** shared understanding — only then does work start
 - [ ] Confirmed understanding persisted as `intent/<slug>.intent.md` — an artifact, not just chat

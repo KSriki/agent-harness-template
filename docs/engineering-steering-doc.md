@@ -104,7 +104,7 @@ flowchart LR
 - **ticket-docs**: the Jira ticket mirrored locally; its plan is the commit list;
   a story that grows into an epic is split into child ticket docs with blocking edges.
 - **Build test-first** (`tdd`: red before green) — for charts that means
-  `helm unittest` / `kubeconform` before the template change; one `implementer`
+  `helm unittest` / `kubeconform` before the template change; one worker
   per ticket, in parallel only when tickets own disjoint files.
 - **Right-size it (the escape valve):** the pipeline is for non-trivial work. A
   trivial, reversible change goes straight to build — you don't write a PRD to fix a

@@ -83,7 +83,7 @@ The rules below are what's *specific to this repo* and cannot be inferred.
 | Python tooling tests | 〈`uv run pytest`〉 |
 | Lint / format (python, bash) | 〈`uv run ruff check --fix . && uv run ruff format . && shellcheck scripts/*.sh`〉 |
 | Build an image locally | 〈`podman build -t <internal-registry>/team/<img>:dev .`〉 |
-| The gate (= done) | `./.claude/gate.sh fast` (edits) · `./.claude/gate.sh full` (before the MR file) |
+| The gate (= done) | 〈`scripts/gate.sh fast` (edits) · `scripts/gate.sh full` (before the MR file) — ONE script that chains the checks above; name it whatever the repo already uses〉 |
 
 **Before you claim work is done, these must pass:** 〈chart lint + kubeconform + unittest · python tests · lint · gate full〉
 
@@ -158,7 +158,8 @@ exact self-corruption these rules exist to prevent. → Procedure: `skills/evolv
 **On a hard stop: STOP, do not work around it, escalate to the human, and wait
 for an explicit decision. Silence is not consent. Never rationalize past it.**
 
-→ Full procedure: `skills/secure-code-review/`. Adversarial review: `agents/review/security-reviewer.md`.
+→ Full procedure: `skills/secure-code-review/`. Adversarial review checklist: `agents/review/security-reviewer.md`
+  (load it as a skill or paste it as a fresh prompt — it is a checklist, not a tool).
 → Changing a skill/rule safely: `skills/evolve-harness/` (human-gated).
 
 ## Repo-specific rules
@@ -216,6 +217,7 @@ Skills load on demand; you do not need to read them until the task matches.
 | `write-design-doc` | Multi-page design for a system/subsystem or an expensive-to-reverse change |
 | `secure-code-review` | **Before** accepting external code, a new image/chart/model, or ANY new dependency |
 | `observability` | Metrics/logs/traces for the serving stack; SLOs/alerts; **live incident triage** |
+| `deploy-reviewer` · `security-reviewer` · `design-reviewer` | Review CHECKLISTS (from `agents/review/`): BLOCK/ALLOW on a ship, on external code, on an ADR. Run as a separate pass when the tool has subagents; otherwise read the file and apply it yourself in a fresh turn before the MR file |
 | 〈`…`〉 | 〈…〉 |
 
 <!-- setup-harness, evolve-harness, writing-for-agents are maintainer-only

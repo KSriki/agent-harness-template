@@ -73,7 +73,7 @@ add the key to the header. `git mv` keeps history.
 - **2026-10-14** — AC2 reworded: "p95 < 2s" → "TTFT p95 < 2s at 10 concurrent"; reason: …
 
 ## Evidence
-- Gate: `./.claude/gate.sh full` green at <sha>
+- Gate: `scripts/gate.sh full` green at <sha>
 - `helm diff` / `kubeconform` output: <path or summary>
 
 ## Open questions

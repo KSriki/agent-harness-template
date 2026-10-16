@@ -9,7 +9,7 @@ description: >
   The agent NEVER opens, edits, approves, or merges an MR and never touches GitLab
   settings — it writes `tickets/<KEY>.mr.md`; the human does the rest.
   Do NOT use for security/trust-boundary review of external code or dependencies
-  (`secure-code-review` / `security-reviewer`), for the gate commands
+  (`secure-code-review` / the `security-reviewer` checklist), for the gate commands
   (`run-tests`), for the ticket doc itself (`ticket-docs`), or for whether a
   component should exist at all (`write-design-doc` / `adr`).
 ---
@@ -51,7 +51,7 @@ The ticket doc's plan (`ticket-docs` §2) is the commit list. Each commit:
 
 - is **one step** — a failing test plus the minimal change that makes it pass
   (`tdd`), or one mechanical refactor, or one chart version bump with its diff;
-- **passes the gate on its own** (`./.claude/gate.sh fast` at least; `full` before
+- **passes the gate on its own** (`scripts/gate.sh fast` at least; `full` before
   the MR) — a reviewer must be able to check out any commit and have it work;
 - has a message in the house form (match `git log --oneline -20`; default
   conventional): `type(scope): why, in the imperative` + ticket key in the body or
@@ -69,7 +69,7 @@ The ticket doc's plan (`ticket-docs` §2) is the commit list. Each commit:
 ```bash
 git add -p                                  # stage by hunk — one idea per commit
 git commit                                  # message as above
-./.claude/gate.sh fast
+scripts/gate.sh fast                        # the repo's single gate script
 git log --oneline main..HEAD                # the story should read top to bottom
 git rebase -i main                          # own unpushed commits only: squash "fix typo" noise
 ```
@@ -111,13 +111,13 @@ without a schema entry, a chart `version` not bumped.
 - Migrations / CRDs / immutable fields: <none | explain>
 
 ## Test evidence
-- `./.claude/gate.sh full` green at <sha>
+- `scripts/gate.sh full` green at <sha>
 - `helm unittest` <n> passed · `kubeconform` clean for <k8s version>
 - `helm diff` (pasted or path): …
 
 ## Reviewer checklist
 - [ ] AC1–ACn in `tickets/ABC-123.md` have evidence
-- [ ] deploy-reviewer verdict: ALLOW (<date>) — or not yet run
+- [ ] deploy-review checklist (`agents/review/deploy-reviewer.md`) run: ALLOW (<date>) — or not yet run
 - [ ] Diagram/ADR updated if the flow changed
 ```
 
@@ -133,7 +133,7 @@ The agent cannot comment in GitLab, so the review is a file:
 git fetch origin <branch>                   # read-only
 git log --oneline main..origin/<branch>
 git diff main...origin/<branch>
-./.claude/gate.sh full                      # on a checkout of the branch, if asked
+scripts/gate.sh full                        # on a checkout of the branch, if asked
 ```
 
 Review in this order — highest signal first:
@@ -142,7 +142,7 @@ Review in this order — highest signal first:
 2. **Correctness and edges.** Error path, empty input, boundary, concurrency, partial failure, upgrade path (immutable fields, CRDs).
 3. **Design fit.** Layers/idioms respected? New dependency, service, egress, or GPU need its own gate (`secure-code-review` / `adr`)?
 4. **Tests.** Assert outcomes, not lines. Chart changes have `helm unittest`; manifests pass `kubeconform`.
-5. **Operability.** Probes, resources, PDB, rollback stated (`kubernetes-ops`, `deploy-reviewer`).
+5. **Operability.** Probes, resources, PDB, rollback stated (`kubernetes-ops`; the `deploy-reviewer` checklist).
 6. **Readability.** Six-months-later test; match surrounding style, don't relitigate it.
 
 Write-up format:
