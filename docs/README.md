@@ -30,9 +30,9 @@ different mechanisms.** Confusing them is the #1 way this setup silently fails.
 | `engineering-steering-doc.md` | **ALWAYS-ON** | Every turn. Imported by `AGENTS.md`. |
 | `architecture-patterns.md` | **On-demand** | Via the `architecture-patterns` skill |
 | `design-doc-template.md` | **On-demand** | Via the `write-design-doc` skill |
-| `multi-agent-orchestration.md` | **On-demand** | Via the `orchestrate-agents` skill |
-| `agents/work-types.md` | **On-demand** | Universal work classification — read by entry points (orchestrator step 2, main thread) at classify time |
-| `workflows.md` | **On-demand** | Diagrams of the common paths (spine, feature, bug, architecture, testing) — pictures over the canonical files |
+| `agents/work-types.md` | **On-demand** | Universal work classification — read by the main thread at classify time |
+| `workflows.md` | **On-demand** | Diagrams of the common paths (feature, bug, architecture, testing) — pictures over the canonical files |
+| `adr/` | **On-demand** | This repo's own ADRs (via the `adr` skill) — `0001` records why this branch is shaped the way it is |
 | `evals.md` | **On-demand** | Human manual for the eval runner (`evals/`) — agents route via the `eval-harness` skill |
 | `beads.md` | **On-demand** | Human manual for the Beads tracker — mental model, sync architecture, `bd human`, lock gotchas; agents get theirs from `bd prime` |
 | `architecture-patterns-FULL-KB.md` | **Reference-only** | Opened at a cited § — never read whole |

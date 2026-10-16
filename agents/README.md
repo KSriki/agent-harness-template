@@ -75,8 +75,8 @@ works. "It might need the big model" is not evidence; a failed cheap attempt is.
 | **Local SLM** | 〈Ollama/vLLM: `llama3.2:3b`, `qwen2.5:7b`〉 | High-volume mechanical work with a tight spec + schema: bulk classification/extraction/transforms, doc summarization at scale. Free + private; quality must be **spot-checked or eval-gated**, never assumed |
 | **Fast API** | 〈haiku〉 | Search/retrieval across many files, mechanical summarization, format conversions — `code-searcher` lives here |
 | **Mid** | 〈sonnet〉 | Day-to-day implementation, tests for existing code, well-specified bounded edits — `test-writer` lives here |
-| **Frontier** | 〈opus〉 | Judgment: adversarial review, security, architecture, weighing ambiguous evidence — all three reviewers + both researchers live here |
-| **inherit** | session model | Production-code workers (`implementer` + variants): the code ships, so it gets whatever tier you chose for the session |
+| **Frontier** | 〈opus〉 | Judgment: adversarial review, security, architecture, weighing ambiguous evidence — all three reviewers live here |
+| **inherit** | session model | Production-code worker (`implementer`): the code ships, so it gets whatever tier you chose for the session |
 
 **Five routing rules (in order):**
 1. **Mechanical vs judgment** — can a competent junior do it with a checklist?
@@ -94,9 +94,8 @@ works. "It might need the big model" is not evidence; a failed cheap attempt is.
    that produced it. Shared model = shared blind spots; `eval-harness` applies the
    same rule to judges (self-judging inflates).
 
-Static assignments live in each agent's `model:` frontmatter. When orchestrating
-ad-hoc (`orchestrate-agents`, one-off subagent spawns), apply the same ladder in
-the spawn — the orchestrator names the tier deliberately, not by default.
+Static assignments live in each agent's `model:` frontmatter. For one-off subagent
+spawns, apply the same ladder in the spawn — name the tier deliberately, not by default.
 
 **`effort` is the primary cost dial on Opus 5 — before you change tiers.**
 Anthropic: `low`/`medium` effort produce strong quality at a fraction of the
@@ -104,8 +103,7 @@ tokens/latency; adjust based on YOUR evals (an effort sweep, not a guess), and
 re-run the sweep when the model changes. Tier-switching is the second lever.
 
 **Where model config actually lives (three control points, most→least specific):**
-1. **Per-invocation** — the Agent tool's `model` parameter at spawn time (what the
-   `orchestrator` uses to route per-slice).
+1. **Per-invocation** — the Agent tool's `model` parameter at spawn time.
 2. **Per-agent** — the `model:` frontmatter in these files. **This is the versioned
    registry**: model choice is behavior, so it changes by PR like everything else.
 3. **Fleet-wide** — `CLAUDE_CODE_SUBAGENT_MODEL` env overrides ALL subagents (e.g.
@@ -118,9 +116,7 @@ re-run the sweep when the model changes. Tier-switching is the second lever.
    (no default; at the cap: refuses spawns, stops background subagents, exits
    `error_max_budget_usd`). These enforce what prompts only request — Opus 5
    over-delegates, and Anthropic's own guidance is *set the limits, don't just
-   instruct*. This repo pins depth 3 / concurrent 8 in `.claude/settings.json`;
-   the orchestrator's `check-budget` remains the warn band + ABORT bookkeeping
-   inside these hard walls.
+   instruct*. This repo pins depth 3 / concurrent 8 in `.claude/settings.json`.
 
 **Other frontmatter worth knowing:** `skills:` (preload a skill's full content —
 how workers get `tdd` as law; keep to 1–2, it's paid on every spawn) · `Skill` in
@@ -134,16 +130,10 @@ harness**; an agent that skips permission checks is outside the guardrail model.
 |---|---|
 | `research/code-searcher.md` | Locating code/behavior across the repo without polluting main context |
 | `qa/test-writer.md` | Writing tests for a specified module against the quality gates |
-| `review/design-reviewer.md` | Reviewing a design/PR against the rung check + cross-cutting constraints |
-| `research/debug-research.md` | External research (library bugs, API checks, lib evaluation) without dragging forum noise into main context |
+| `review/design-reviewer.md` | Reviewing a design / ADR / MR against the ladder + cross-cutting constraints |
 | `review/security-reviewer.md` | Adversarial BLOCK/ALLOW review: egress, injection, supply chain, insecure patterns |
-| `review/deploy-reviewer.md` | Adversarial BLOCK/ALLOW review of a **ship**: rollback, migration safety, blast radius, contract compat, data safety |
-| `review/premise-reviewer.md` | Adversarial PROCEED/RETHINK review of a **premise** ("should this exist?"): outside-view disconfirming research with provenance-tiered sources; proposes kill criteria; human can override with a recorded bet. Dispatched by `grill-me` Round 0 |
-| `research/trend-scout.md` | Periodic ecosystem/harness-practice survey → ranked **proposals** for `evolve-harness`. Read-untrusted-only, **propose-never-apply** |
-| `engineering/implementer.md` | Worktree-isolated worker: builds one owned slice in a parallel fan-out (`orchestrate-agents`), returns a branch + summary. **Never merges/deploys**. The DEFAULT for mixed/unclear slices |
-| `engineering/frontend-implementer.md` | `implementer` specialized for UI slices: React+TS idiom, local-first state, behavior-through-the-rendered-interface tests, a11y as correctness |
-| `engineering/backend-implementer.md` | `implementer` specialized for server slices: dependency-points-inward, parameterized SQL, backward-compatible migrations, idempotent consumers |
-| `orchestration/orchestrator.md` | **The manager**: plans, contracts, dispatches workers (it CAN spawn subagents), arbitrates `DEFECTS.md`, merge-validates, exits by class (success/escalation/abort). **Writes no product code** |
+| `review/deploy-reviewer.md` | Adversarial BLOCK/ALLOW review of a **ship**: rollback, migration safety, blast radius, contract compat, data safety — every Helm release and infra change |
+| `engineering/implementer.md` | Worktree-isolated worker: builds one ticket test-first (chart, manifest, pipeline job, service slice), returns a branch + report. **Never merges/deploys** |
 
 ## The rule that keeps this honest
 

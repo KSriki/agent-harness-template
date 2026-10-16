@@ -36,23 +36,31 @@ the universal classification — if they drift, that file wins):
 
 | You say | What fires |
 |---|---|
-| "grill me about 〈idea〉" | `grill-me` — Round 0 premise gate (outside view + kill criteria, human can override), then frontier rounds of questions until understanding is confirmed |
-| "write the PRD" → "break it into tickets" | `write-a-prd` → `prd-to-issues` (Beads: `bd ready` = the frontier) |
-| "build 〈one ticket〉" | one worker, test-first (`tdd`) — most asks need exactly one agent |
-| "use the orchestrator: build 〈these tickets〉" | classify type → route → managed fleet (worktrees, ledger, gates) |
-| "review this 〈diff / design / release〉" | the matching read-only reviewer, verdict only |
-| "research 〈question / library〉" | `debug-research` — verdict with citations |
-| "how does 〈X〉 reach 〈Y〉" | `code-searcher` / `graphify` |
-| "/wait-what" | the last answer, re-pitched in plain English |
+| "grill me about 〈idea〉" | `grill-me` — Round 0 premise check (offline: ADRs + what you know, kill criteria, you can override), then frontier rounds of questions until understanding is confirmed |
+| "write the PRD" → "break it into tickets" | `write-a-prd` → `prd-to-issues` → `tickets/NN-*.md` docs you create in Jira |
+| "build 〈ticket〉" | one worker, test-first (`tdd`) — `helm-charts` / `kubernetes-ops` / `ci-cd` as the ticket needs |
+| "commit this" / "write the MR" | `review-pr` — small commits from the ticket plan; `tickets/<KEY>.mr.md` for you to paste (the agent never opens the MR) |
+| "the acceptance criteria changed" | `ticket-docs` — dated change in `tickets/<KEY>.md` + a Jira paste block |
+| "ADR this" / "why is it like this" | `adr` — one page in `docs/adr/`; `architecture-diagrams` for the picture, in the house format |
+| "review this 〈diff / design / release〉" | the matching read-only reviewer, verdict only (`deploy-reviewer` on every Helm release) |
+| "get 〈image / chart / model〉 into prod" | `air-gapped-delivery` — mirror by digest, manifest, offline flags |
+| "size / deploy 〈model〉", "LiteLLM 401" | `ai-serving-stack` |
+| "what is the Azure equivalent of…" | `azure-platform` |
+| "how does 〈X〉 reach 〈Y〉" | `code-searcher` |
 | "you keep getting 〈X〉 wrong" | `evolve-harness` — turn the correction into a rule (you approve it) |
 
 **Done = the gate passes** (lint · typecheck · tests · coverage) — enforced by
 hooks and CI, not by the model's opinion. **And the rule of scale:** the pipeline
-is for non-trivial work; a typo fix goes straight to build, and most asks need
-one agent, not a fleet.
+is for non-trivial work; a typo fix goes straight to build, and every ask is one
+agent, one ticket, one worktree — there is no fleet on this branch.
+
+**This branch** (`harness/enterprise-ai-platform`) assumes: no internet in the
+agent environment · credentials from the shell · a shared GitLab the agent never
+administers or opens MRs on · Jira written by you from the agent's ticket docs.
+Why it is cut this way: [`docs/adr/0001-enterprise-ai-platform-focus.md`](./docs/adr/0001-enterprise-ai-platform-focus.md).
 
 Deeper: [`SETUP.md`](./SETUP.md) (install paths, verification) ·
-[`agents/README.md`](./agents/README.md) (the fleet + model routing) ·
+[`agents/README.md`](./agents/README.md) (the agents + model routing) ·
 [`docs/README.md`](./docs/README.md) (the doc tiers).
 
 ---
@@ -92,31 +100,32 @@ a cited § when a decision is expensive to reverse.)
 **Skills** (loaded on demand)
 | Skill | Fires when |
 |---|---|
+| `tdd` | Test-first build loop: red before green — for charts, the failing unittest/kubeconform case first |
 | `run-tests` | Running/writing tests; a CI gate fails |
-| `secure-code-review` | **Before** accepting external code or ANY new dependency |
+| `helm-charts` | Chart authoring, validation ladder, versioning, OCI publish, helmfile |
+| `kubernetes-ops` | Manifests, probes, resources, RBAC, GPU scheduling, NetworkPolicy, kubectl triage |
+| `azure-platform` | Azure for newcomers: hierarchy, identity, AKS, ACR, Key Vault, private networking |
+| `air-gapped-delivery` | Images / charts / models / wheels INTO the no-egress estate, by digest, with a manifest |
+| `ai-serving-stack` | vLLM sizing + config, LiteLLM gateway, kagent, chat UIs |
+| `ci-cd` | GitLab CI jobs, environments, promotion, release, rollback — YAML only, never Settings |
+| `review-pr` | Small commits from the ticket plan; `tickets/<KEY>.mr.md`; local review notes — never opens an MR |
+| `ticket-docs` | `tickets/<KEY>.md` mirror of the Jira ticket; AC changes; the Jira paste block |
+| `prd-to-issues` | Spec → tracer-bullet ticket docs with blocking edges |
+| `grill-me` | Interrogate the premise (offline Round 0, kill criteria) then the plan, in frontier rounds |
+| `write-a-prd` | Discussion → spec |
+| `adr` · `architecture-diagrams` | One decision, one page in `docs/adr/`; the diagram in the house format |
+| `write-design-doc` | A multi-page design for an expensive-to-reverse change |
 | `architecture-patterns` | Choosing a pattern; sync-vs-async; caching; scaling |
-| `new-service` | Adding a component — **enforces the complexity-rung check** |
-| `write-design-doc` | A decision that's expensive to reverse |
-| `debug-research` | The bug is in a *library*, not your code |
-| `eval-harness` | Evals, LLM-as-judge, HITL gates |
-| `ci-cd` | Pipeline, deploy, promotion, release, and rollback |
+| `secure-code-review` | **Before** accepting external code, a new image/chart/model, or ANY new dependency |
 | `observability` | Instrument logs/metrics/traces; SLOs; **triage a live incident** |
-| `review-pr` | Preparing a PR, or reviewing one for correctness + blast radius |
-| `orchestrate-agents` | Run **parallel agents** in worktrees to ship a multi-part change; fan-out + merge-validate |
-| `grill-me` · `wayfinder` | Interrogate the premise (Round 0: `premise-reviewer`, kill criteria) then the plan; map fuzzy scope as decision tickets |
-| `write-a-prd` · `prd-to-issues` | Discussion → spec → tracer-bullet tickets with blocking edges |
-| `tdd` | Test-first build loop: red before green, one vertical slice at a time |
-| `codebase-design` · `domain-modeling` | Deep-module vocabulary; the glossary + light ADRs |
-| `improve-codebase-architecture` | Audit existing code for deepening/refactor opportunities |
+| `eval-harness` | Golden sets + judges for model / quantisation / prompt changes |
 | `handoff` | Compact a session for a fresh agent to resume |
-| `graphify` | Query the repo as a knowledge graph — connections, blast radius, hubs (local-first) |
 | `writing-for-agents` | The craft of agent-facing docs: pointers, hierarchy, completion criteria, pruning |
-| `wait-what` | User-invoked: "re-pitch that in plain English" when an answer doesn't land |
 | `evolve-harness` | Grow the harness itself — new skill/rule from a repeated correction, **human-gated** |
-| `setup-harness` | Per-project first pass: context (AGENTS.md + CLAUDE.md + docs), gate + CI, tracker, config doc — no installer script |
+| `setup-harness` | Per-project first pass: context (AGENTS.md + CLAUDE.md + docs), gate + CI, tickets dir, config doc |
 
 **Subagents** (own context window)
-`orchestrator` (the manager — spawns the fleet, backed by the deterministic `orchestrator_engine/`) · `code-searcher` · `test-writer` · `design-reviewer` · `debug-research` · `security-reviewer` · `deploy-reviewer` · `premise-reviewer` · `trend-scout` · `implementer` (+ `frontend-` / `backend-` variants) — organized in `agents/` by department: orchestration · engineering · qa · review · research
+`implementer` (one ticket, test-first, own worktree) · `test-writer` · `code-searcher` · `design-reviewer` · `security-reviewer` · `deploy-reviewer` — organized in `agents/` by department: engineering · qa · review · research. No network-dependent agents on this branch.
 
 **Docs** — steering doc (always-on) + architecture patterns (compressed 14% + full KB)
 
@@ -148,8 +157,9 @@ harness itself — the human gate in `skills/evolve-harness/` (guardrail #6).
 ## Make it yours
 
 `docs/engineering-steering-doc.md` encodes **one specific engineer's** standards
-(Python/uv, Go, React+TS, rebase, Mermaid, KISS-over-cleverness). **Rewrite it**, or
-your agent will optimize for someone else's preferences.
+(Python/uv, Helm, Terraform, rebase, Mermaid, KISS-over-cleverness) — on this branch
+already adapted to the GitLab · AKS · no-egress estate (v1.1.0). **Rewrite it** for
+your team, or your agent will optimize for someone else's preferences.
 
 ## Maintenance
 

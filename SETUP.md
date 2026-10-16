@@ -190,28 +190,28 @@ skills/
   run-tests/            ← keep if you have tests (you do)
   secure-code-review/   ← KEEP. See §3.
   evolve-harness/       ← KEEP. How the harness grows safely (human-gated); pairs with guardrail #6
-  architecture-patterns/
-  write-design-doc/
-  new-service/
-  debug-research/
-  eval-harness/         ← delete if nothing here is non-deterministic
-  ci-cd/                ← delete if you don't own the pipeline / deploys here
+  architecture-patterns/ write-design-doc/ adr/ architecture-diagrams/   ← choose · design · record · draw (house format)
+  eval-harness/         ← keep: model/quantisation changes are behaviour changes, eval-gated
+  ci-cd/                ← GitLab-native: MR pipelines, protected envs, helm deploy jobs, rollback
   observability/        ← delete if something else owns prod monitoring + on-call
-  review-pr/            ← keep if you review PRs (you do)
-  orchestrate-agents/   ← keep if you ship with parallel agents (the multi-agent setup)
+  review-pr/            ← merge requests (MRs) — keep
   setup-harness/        ← keep; the per-project first pass: context + gate + CI + tracker + config doc
-  grill-me/ wayfinder/ write-a-prd/ prd-to-issues/ tdd/   ← the SDLC loop (steering §4.5)
-  codebase-design/ domain-modeling/ improve-codebase-architecture/ handoff/  ← design vocab + upkeep
-  graphify/             ← delete if you don't use the graphify CLI (needs `uv tool install graphifyy`)
-  writing-for-agents/ wait-what/   ← agent-doc craft; plain-English re-pitch corrective
+  grill-me/ write-a-prd/ prd-to-issues/ ticket-docs/ tdd/ handoff/   ← the SDLC loop (steering §4.5); tickets are files, Jira is pasted by you
+  helm-charts/ kubernetes-ops/ azure-platform/     ← the platform: charts · workloads · the cloud under them
+  air-gapped-delivery/ ai-serving-stack/           ← getting bits into the no-egress estate · vLLM/LiteLLM/kagent
+  writing-for-agents/   ← agent-doc craft (editing skills, AGENTS.md)
 
 agents/
   code-searcher/ test-writer/ design-reviewer/
-  debug-research/ security-reviewer/   ← KEEP security-reviewer
-  deploy-reviewer/      ← keep if you ship/deploy from here
-  trend-scout/          ← optional: feeds evolve-harness on a schedule (see that skill)
-  implementer/          ← the worktree worker that orchestrate-agents fans out
+  security-reviewer/    ← KEEP
+  deploy-reviewer/      ← KEEP: every Helm release / infra change gets its verdict
+  implementer/          ← the worktree worker for one ticket
+  (no research agents: the target environment has no internet)
 ```
+
+This branch (`harness/enterprise-ai-platform`) is already pruned for an
+enterprise AI-platform team — GitLab · AKS · Helm · no-egress servers. The
+why-what-was-cut record is `docs/adr/0001-enterprise-ai-platform-focus.md`.
 
 ---
 

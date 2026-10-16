@@ -32,7 +32,7 @@ The full you-say/what-fires table is in [`HARNESS.md`](./HARNESS.md).
 
 ```mermaid
 flowchart LR
-    G["grill-me<br/>(premise gate + confirm understanding)"] --> P["write-a-prd"] --> T["prd-to-issues<br/>(tracer bullets + edges)"] --> B["build test-first<br/>(tdd · orchestrate-agents)"] --> S["ship<br/>(ci-cd)"]
+    G["grill-me<br/>(offline premise check + confirm understanding)"] --> P["write-a-prd"] --> T["prd-to-issues<br/>(ticket docs + edges)"] --> B["build test-first<br/>(tdd · helm-charts · kubernetes-ops)"] --> R["review-pr<br/>(small commits · MR.md you paste)"] --> S["ship<br/>(ci-cd · deploy-reviewer)"]
     B --> GATE["gate.sh: lint · types · tests · coverage<br/>hooks block 'done' on red · CI blocks merge"]
     GATE --> B
 ```
@@ -40,38 +40,42 @@ flowchart LR
 **Done = the gate passes.** One script (`.claude/gate.sh`) is the single
 definition of done — edit-time hooks, turn-end hooks, and CI all run it.
 And the rule of scale: the pipeline is for non-trivial work; a typo fix goes
-straight to build, and most asks need one agent, not a fleet.
+straight to build, and every ask is one agent, one ticket, one worktree.
 
 Every ask is **classified first** against the universal work-type table
 ([`docs/agents/work-types.md`](./docs/agents/work-types.md)) — feature, bug,
 hotfix, debt, architecture decision, judge, research… — and the type sets the
-pipeline depth and dispatch shape.
+pipeline depth. Diagrams of the common paths, including the platform-change path
+(adr → build → validate → MR → deploy-reviewer → ci-cd):
+[`docs/workflows.md`](./docs/workflows.md).
 
-**Managed multi-agent builds** walk the orchestrator's 12-step workflow —
-startup (target → classify → assess scale → state), the build loop (plan →
-contract → dispatch → arbitrate → review → merge-validate), and the close
-(record → exit by class: SUCCESS / ESCALATION / ABORT). Skipping a step is an
-escalation, not a shortcut:
+## This branch: enterprise AI platform
 
-```mermaid
-flowchart LR
-    A["1–4 startup<br/>target · classify ·<br/>scale · state"] --> B["5–10 build loop<br/>plan · contract · dispatch ·<br/>arbitrate · review · merge-validate"] --> C["11–12 close<br/>record · exit by class"]
-    A -. "single-verdict types<br/>(judge · research · locate)" .-> C
-```
+`harness/enterprise-ai-platform` is the template cut down and re-aimed for an
+enterprise platform team — **GitLab CI · AKS · Helm/helmfile · podman · Azure ·
+servers with no internet · Jira** — deploying an AI serving stack (LiteLLM
+gateway, vLLM model servers, kagent agents, chat UIs). It assumes the agent
+environment itself has **no internet**, takes **credentials from the shell**, and
+must **never administer GitLab or open MRs** or **write to Jira**: it writes
+`tickets/<KEY>.mr.md` and `tickets/<KEY>.md` for a human to paste.
 
-Full diagrams — the 12-step spine plus the per-type paths (feature, bug fix,
-architecture decision, testing/gate): [`docs/workflows.md`](./docs/workflows.md).
+Added: `adr` · `architecture-diagrams` · `helm-charts` · `kubernetes-ops` ·
+`azure-platform` · `air-gapped-delivery` · `ai-serving-stack` · `ticket-docs`.
+Removed: the multi-agent fleet, the network-dependent research agents, and the
+app-code module-design skills. The full why/what:
+[`docs/adr/0001-enterprise-ai-platform-focus.md`](./docs/adr/0001-enterprise-ai-platform-focus.md).
 
 ## What's inside
 
 | Path | What it is |
 |---|---|
-| `AGENTS.md` | Per-repo always-on context: 🔒 guardrails, commands, rules (template — filled per project) |
+| `AGENTS.md` | Per-repo always-on context: 🔒 guardrails, environment facts, commands, rules (pre-filled for the platform stack; 〈slots〉 per project) |
 | `docs/engineering-steering-doc.md` | The constitution: how the agent works, every turn, every repo |
-| `skills/` | ~25 on-demand procedures (SDLC loop, reviews, research, testing…) — loaded only when matched |
-| `agents/` | Subagent definitions: implementers, reviewers, orchestrator, researchers |
+| `skills/` | 24 on-demand procedures (SDLC loop, Helm/K8s/Azure/delivery/serving, ADRs, reviews, tickets) — loaded only when matched |
+| `agents/` | Subagent definitions: one implementer, a test-writer, three reviewers, a code-searcher |
+| `docs/adr/` | This repo's decision records — start with 0001 |
 | `gates/` | The enforcement layer: hook dispatch, gate template, CI workflow |
-| `orchestrator_engine/` | Deterministic run layer for multi-agent builds (state, budget, telemetry) |
+| `orchestrator_engine/` | Deterministic scaffolding kept as the model registry `harness_lint` checks |
 | `init.py` / `install.sh` | Machine bootstrap + project install |
 
 ## The rules that don't bend
@@ -84,10 +88,10 @@ every change to a governing file is a human-approved diff (`evolve-harness`).
 
 ## Customizing
 
-Ask *"where do I add a rule / change the gate / customize X?"* — the
-`harness-help` skill routes to the exact file and section. Durable changes to
-skills or rules go through `evolve-harness` (drafted by the agent, approved by
-you). Repo-specific decisions live in each project's `docs/agents/harness-config.md`
+*Where do I add a rule / change the gate / customize X?* —
+[`ARCHITECTURE.md`](./ARCHITECTURE.md) maps every file; rules and gotchas go in
+`AGENTS.md`, "done" is `.claude/gate.sh`. Durable changes to skills or rules go
+through `evolve-harness` (drafted by the agent, approved by you). Repo-specific decisions live in each project's `docs/agents/harness-config.md`
 (a living doc — see `docs/harness-config-template.md`).
 
 ## Doc map
@@ -98,7 +102,8 @@ you). Repo-specific decisions live in each project's `docs/agents/harness-config
 | [`SETUP.md`](./SETUP.md) | Install journeys (new machine / new project) + verification |
 | [`ARCHITECTURE.md`](./ARCHITECTURE.md) | Why it's built this way |
 | [`gates/README.md`](./gates/README.md) | The three enforcement layers |
-| [`agents/README.md`](./agents/README.md) | The fleet + model routing |
+| [`agents/README.md`](./agents/README.md) | The agents + model routing |
+| [`docs/adr/0001-enterprise-ai-platform-focus.md`](./docs/adr/0001-enterprise-ai-platform-focus.md) | Why this branch is cut the way it is |
 | [`docs/README.md`](./docs/README.md) | Doc tiers and provenance |
 
 ## License

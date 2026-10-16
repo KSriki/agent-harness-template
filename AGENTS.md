@@ -2,8 +2,8 @@
 
 <!--
   SOURCE OF TRUTH for agent context in this repo. Portable across Claude Code,
-  Cursor, Copilot, etc. If a tool needs its own file (CLAUDE.md, .cursorrules),
-  make it a ONE-LINE POINTER to this file. Never fork the content.
+  Devin, Cursor, Copilot, etc. If a tool needs its own file (CLAUDE.md,
+  .cursorrules), make it a ONE-LINE POINTER to this file. Never fork the content.
 
   ── THE ONE RULE FOR EDITING THIS FILE ───────────────────────────────────────
   This file is loaded on EVERY turn. Every line is paid for, every time.
@@ -12,18 +12,20 @@
   If this file grows past ~1 screen, you have put procedure in it. Move it out.
   ─────────────────────────────────────────────────────────────────────────────
 
-  Fill every 〈slot〉. Delete sections that don't apply — an empty heading is
-  worse than no heading, because the model will try to honor it.
+  THIS BRANCH (harness/enterprise-ai-platform) is pre-filled for an enterprise
+  AI-platform team: GitLab · AKS · Helm/helmfile · podman · Azure · no-internet
+  servers · Jira. Slots marked 〈…〉 are still per-project — fill them in the
+  target repo (setup-harness does it). Why it is cut this way: docs/adr/0001.
 -->
 
 ## What this is
 
-〈One or two sentences. What the system does and who uses it.
- e.g. "Ingest pipeline + CV inference tier for document scans. Internal API,
- consumed by the review UI and the batch reprocessor."〉
+〈One or two sentences. e.g. "Helm charts, pipelines, and runbooks for the AI
+ serving platform: LiteLLM gateway, vLLM model servers, kagent agents, chat UI —
+ on private AKS, deployed by GitLab CI, consumed by internal teams."〉
 
-**Stack:** 〈Python 3.12 / uv · Go 1.23 · React+TS · Postgres · Redis · S3 · Docker〉
-**Architecture rung:** 〈modular monolith | 3 services | …〉 — see `docs/design/`.
+**Stack:** Kubernetes (AKS) · Helm 3 + helmfile · GitLab CI (self-hosted runners) · podman · Azure (ACR, Key Vault, Private Link) · Terraform `azurerm` · Python 3.12 / uv for tooling · Bash
+**Architecture rung:** 〈a few services (gateway · N model servers · agents · UI), one cluster per env〉 — decisions in `docs/adr/`.
 
 ## Standing instructions
 
@@ -31,21 +33,9 @@
 
 <!--
   TIERING — this is deliberate, do not "helpfully" add the others here:
-
-    ALWAYS-ON (imported above):
-      docs/engineering-steering-doc.md   ~140 lines. HOW I WORK. Applies every turn.
-
-    ON-DEMAND (do NOT import — they load via skills when relevant):
-      docs/architecture-patterns.md      Agent-sized pattern reference
-                                         → via `architecture-patterns` skill
-      docs/design-doc-template.md        → via `write-design-doc` skill
-      The FULL patterns KB (~1,800 lines) → opened at a cited § only when the
-                                         decision is expensive/irreversible
-
-  Importing the architecture docs here would blow the context budget on material
-  that is irrelevant to most turns — and dilute the rules that AREN'T.
-  A model given 40 rules follows them worse than a model given 6.
-
+    ALWAYS-ON (imported above): docs/engineering-steering-doc.md — HOW I WORK.
+    ON-DEMAND (load via skills): docs/architecture-patterns.md, docs/design-doc-template.md,
+      the FULL patterns KB (opened at a cited § only when the decision is expensive).
   If your tool has no @-import: "Read docs/engineering-steering-doc.md before your
   first code change."
 -->
@@ -54,49 +44,61 @@ The steering doc governs *how* you work — it is **always on**.
 Architecture references load **on demand** via skills (see the skills table).
 The rules below are what's *specific to this repo* and cannot be inferred.
 
+## Environment facts (true here, every turn)
+
+- **No internet.** No web search, no package index, no public registry, no
+  Hub. Everything you need is on disk or in the internal registry/mirror. Say
+  "I can't verify that offline" rather than guessing current versions or docs.
+- **Credentials come from the shell.** `git`, `podman`/`docker`, `helm`/`helmfile`,
+  `kubectl`, `az` use whatever the environment already has. Never log in to
+  anything new, never print or copy a credential, never read one out of a file to
+  use it elsewhere.
+- **Shared GitLab — read-only to you.** You may `git commit` on the ticket branch
+  and `git push` it **only when asked**. You never run `glab`, call the GitLab API,
+  open/approve/merge an MR, or change any project setting. You write
+  `tickets/<KEY>.mr.md`; the human opens the MR (`review-pr`).
+- **Jira is written by the human.** You maintain `tickets/<KEY>.md` and a Jira
+  paste block (`ticket-docs`). A Jira token in the environment is not permission;
+  only an in-session credential plus an explicit ask is, and even then you show
+  the payload first.
+
 ## Commands
 
-<!-- The single highest-value section. Facts the model CANNOT guess.
-     If it's wrong here, the agent will invent something worse. Keep it current. -->
+<!-- Facts the model CANNOT guess. If it's wrong here, the agent invents something worse. -->
 
 | Task | Command |
 |---|---|
-| Install deps | 〈`uv sync`〉 |
-| Run tests | 〈`uv run pytest`〉 |
-| Run one test | 〈`uv run pytest path/to/test.py::test_name`〉 |
-| Lint / format | 〈`uv run ruff check --fix . && uv run ruff format .`〉 |
-| Typecheck | 〈`uv run mypy src/`〉 |
-| Coverage | 〈`uv run pytest --cov=src --cov-report=term-missing`〉 |
-| Start local stack | 〈`docker compose up -d`〉 |
-| Run migrations | 〈`uv run alembic upgrade head`〉 |
-| Run evals | 〈`uv run python -m evals.run --suite smoke`〉 |
-| Build | 〈`docker build -t 〈svc〉 .`〉 |
+| Chart lint | 〈`helm lint charts/<name> --strict -f charts/<name>/values-test.yaml`〉 |
+| Render + schema check | 〈`helm template rel charts/<name> -f charts/<name>/values-test.yaml \| kubeconform -strict -summary -kubernetes-version <ver> -schema-location /schemas/...`〉 |
+| Chart unit tests | 〈`helm unittest charts/<name>`〉 |
+| Release diff (test env) | 〈`helmfile -e test -l name=<release> diff`〉 |
+| Python tooling tests | 〈`uv run pytest`〉 |
+| Lint / format (python, bash) | 〈`uv run ruff check --fix . && uv run ruff format . && shellcheck scripts/*.sh`〉 |
+| Build an image locally | 〈`podman build -t <internal-registry>/team/<img>:dev .`〉 |
+| Smoke the gateway | 〈`scripts/smoke.sh https://litellm.test.internal`〉 |
+| Run evals (model change) | 〈`uv run python -m evals.run --suite smoke`〉 |
+| The gate (= done) | `./.claude/gate.sh fast` (edits) · `./.claude/gate.sh full` (before MR) |
 
-**Before you claim work is done, these must pass:** 〈tests · lint · typecheck · coverage ≥ 〈N〉%〉
+**Before you claim work is done, these must pass:** 〈chart lint + kubeconform + unittest · python tests · lint · gate full〉
 
 ## Layout
 
 ```
-〈src/            # app code
-  api/          # HTTP layer — thin, no business logic
-  domain/       # business logic — no I/O, unit-testable in isolation
-  adapters/     # DB, S3, queue, external APIs
-  workers/      # async consumers
-tests/
-  unit/         # fast, no I/O
-  integration/  # real deps via docker compose
-evals/          # LLM/agent evals — see skills/eval-harness
-intent/         # artifact chain: <slug>.intent.md + <slug>.spec.md (grill-me / write-a-prd)
-docs/design/    # design docs (template in repo root docs)
-migrations/
-infra/          # terraform
-skills/         # agent skills — loaded on demand
-agents/         # subagent definitions
-docs/
-  engineering-steering-doc.md    # ALWAYS-ON: how I work
-  architecture-patterns.md       # on-demand: compressed pattern reference
-  design-doc-template.md         # on-demand: the template
-  design/                        # filled-in design docs for THIS system〉
+〈charts/<name>/            # one chart per deployable; Chart.yaml · values.yaml · values.schema.json · values-<env>.yaml · templates/ · tests/
+helmfile.yaml envs/        # releases per environment — the deploy manifest
+releases/<release>/        # per-release values for charts used more than once (one vLLM chart, N models)
+.gitlab-ci.yml ci/         # pipeline + included templates (agent edits YAML; humans own Settings)
+scripts/                   # bash/python glue — shellcheck-clean, under ~100 lines each
+delivery/                  # manifest.yaml of mirrored images/charts/models with digests; SBOMs; checksums
+infra/                     # terraform (azurerm): AKS, ACR, Key Vault, VNet, private endpoints
+docs/adr/                  # ADR-NNNN decision records + README index
+docs/diagrams/             # diagram SOURCE (.mmd/.puml) — rendered output is derived
+docs/design/               # multi-page design docs
+tickets/                   # <KEY>.md ticket docs · <KEY>.mr.md MR text · README.md index
+intent/                    # <slug>.intent.md + <slug>.spec.md (grill-me / write-a-prd)
+evals/                     # golden sets + results for model/quantisation changes
+skills/ agents/            # the harness — loaded on demand
+docs/engineering-steering-doc.md   # ALWAYS-ON〉
 ```
 
 ## 🔒 GUARDRAILS — always on, never conditional
@@ -159,31 +161,42 @@ for an explicit decision. Silence is not consent. Never rationalize past it.**
 
 ## Repo-specific rules
 
-<!-- ONLY things that are true HERE and would surprise a competent engineer.
-     Delete any line that's just generic good practice — the steering doc has it. -->
+<!-- ONLY things that are true HERE and would surprise a competent engineer. -->
 
-- 〈`domain/` must not import from `adapters/`. Dependency points inward.〉
-- 〈Never edit `migrations/*` after merge — add a new migration.〉
-- 〈All money is integer cents. No floats, ever.〉
-- 〈External API calls go through `adapters/clients/` so they're mockable + budgeted.〉
-- 〈Secrets come from env only. Never commit `.env`; `.env.example` is the contract.〉
+- Images are referenced **by digest from the internal registry**; `:latest` and
+  public registries never appear in a chart or helmfile.
+- Every chart change bumps `Chart.yaml` `version`; every values key is in
+  `values.schema.json`; no secret value in any values file (`existingSecret`).
+- Only LiteLLM talks to a vLLM Service; everything else uses the gateway with a
+  virtual key. A second path is an ADR, not a convenience.
+- A new egress destination, image, chart, model, or wheel enters via
+  `delivery/manifest.yaml` with a digest/checksum — and is a hard stop until the
+  human approves it.
+- A settled decision becomes `docs/adr/NNNN-*.md` in the same MR as the change.
+  A changed flow updates its diagram in the same MR.
+- Prod deploys are manual jobs run by humans; the agent never triggers them.
+- 〈…〉
 
 ## Gotchas
 
-<!-- The tribal knowledge that costs an agent an hour to rediscover. High value.
-     Add to this every time you watch an agent (or a new hire) fall in a hole. -->
+<!-- The tribal knowledge that costs an agent an hour to rediscover. Add as learned. -->
 
-- 〈Integration tests need `docker compose up -d db` first, or they hang with no error.〉
-- 〈`uv run` — not bare `python`. Bare python resolves the wrong interpreter.〉
-- 〈The CV model weights are git-lfs; `git lfs pull` after clone or inference silently no-ops.〉
+- `helm upgrade --atomic` rolls back a *healthy* model server if `--timeout` is
+  shorter than the weight-load time; align it with the startup probe window.
+- GPU Deployments with `maxSurge: 1` hang forever when there is no spare GPU — use
+  `Recreate` or keep a spare node (`kubernetes-ops` §6).
+- `x509: certificate signed by unknown authority` is the corporate CA bundle
+  missing from the container, never a reason to pass `--insecure`.
+- A Hugging Face model id (instead of a local path) makes vLLM try the internet
+  even with the weights present; pass `--model /models/...` and `HF_HUB_OFFLINE=1`.
+- 〈…〉
 
 ## Definition of done
 
-<!-- Restated here (short) because it's the rule most often skipped. -->
-
-Code + **tests written and passing** · lint + typecheck clean · coverage not
-regressed · docs/diagrams updated if behavior changed · commit is idempotent and
-self-contained. **PRs do not merge on red.**
+Code + **tests written and passing** · chart lint + kubeconform + unittest clean ·
+lint clean · coverage not regressed · ADR/diagram updated if a decision or flow
+changed · ticket doc AC evidenced · commits small and self-contained · `tickets/<KEY>.mr.md`
+written. **Nothing merges on red** — and nothing merges by the agent.
 
 ## Skills available
 
@@ -191,109 +204,35 @@ Skills load on demand; you do not need to read them until the task matches.
 
 | Skill | Use when |
 |---|---|
-| `run-tests` | Running, debugging, or adding tests + quality gates |
-| `new-service` | Adding a service/module — includes the complexity-rung check |
-| `write-design-doc` | Any non-trivial change needing a design doc first |
-| `eval-harness` | Building/running evals for LLM or agent components |
-| `debug-research` | The bug is in a LIBRARY/API, not our code — external research |
-| `secure-code-review` | **Before** accepting external code or ANY new dependency |
+| `tdd` | Build test-FIRST: red before green — for charts, the failing `helm unittest` / `kubeconform` case comes before the template change |
+| `run-tests` | Running, debugging, or adding tests + quality gates; a gate fails |
+| `helm-charts` | Authoring, validating, versioning, publishing charts; helmfile releases |
+| `kubernetes-ops` | Manifests, probes, resources, RBAC, GPU scheduling, NetworkPolicy, kubectl triage |
+| `azure-platform` | Anything in Azure itself: identity/RBAC, AKS node pools, ACR, Key Vault, private networking, `az` |
+| `air-gapped-delivery` | Getting an image / chart / model / wheel INTO the no-egress estate; CA trust; telemetry off |
+| `ai-serving-stack` | vLLM sizing + config, LiteLLM gateway (keys, budgets, routing), kagent, chat UIs |
+| `ci-cd` | `.gitlab-ci.yml` jobs, environments, promotion, release, rollback — YAML only, never Settings |
+| `review-pr` | Small commits from the ticket plan; write `tickets/<KEY>.mr.md`; review a branch into a notes file |
+| `ticket-docs` | Create/update `tickets/<KEY>.md`; acceptance-criteria changes; the Jira paste block |
+| `prd-to-issues` | Spec → tracer-bullet ticket docs with blocking edges, in dependency order |
+| `grill-me` | Stress-test a plan — offline premise round, then frontier rounds until understanding is confirmed |
+| `write-a-prd` | Synthesize the discussion into a spec, `intent/<slug>.spec.md` |
+| `adr` | Record ONE decision as `docs/adr/NNNN-*.md`; look up why something is the way it is |
+| `architecture-diagrams` | Draw/update a diagram that matches the repo's existing diagram format |
+| `write-design-doc` | Multi-page design for a system/subsystem or an expensive-to-reverse change |
 | `architecture-patterns` | Choosing a pattern; sync-vs-async; caching; scaling; "is this over-engineered" |
-| `ci-cd` | Pipeline/deploy/promotion; cutting a release; rollback |
-| `observability` | Instrumenting logs/metrics/traces; SLOs/alerts; **live incident triage** |
-| `review-pr` | Opening a PR (description, blast radius) or reviewing one for correctness/design |
-| `orchestrate-agents` | Ship a multi-part change with **parallel agents** in worktrees; fan-out + merge-validate |
-| `grill-me` | Stress-test a plan — frontier rounds of recommended-answer questions until understanding is confirmed |
-| `writing-for-agents` | Creating/editing anything an AGENT reads: skills, AGENTS.md, agent files |
-| `wayfinder` | Fuzzy/oversized scope → map of DECISION tickets; re-entry for mid-build ideas |
-| `write-a-prd` | Synthesize the discussion into a spec/PRD, published `ready-for-agent` |
-| `prd-to-issues` | PRD → tracer-bullet tickets with blocking edges, in dependency order |
-| `tdd` | Build test-FIRST: red before green, one vertical slice at a time |
-| `codebase-design` | Deep-module vocabulary: interfaces, seams, design-it-twice |
-| `domain-modeling` | The glossary (`CONTEXT.md`) + sparingly-used ADRs |
-| `improve-codebase-architecture` | Audit existing code for deepening/refactor opportunities |
+| `secure-code-review` | **Before** accepting external code, a new image/chart/model, or ANY new dependency |
+| `observability` | Metrics/logs/traces for the serving stack; SLOs/alerts; **live incident triage** |
+| `eval-harness` | Golden sets + judges for model, quantisation, or prompt changes through the gateway |
 | `handoff` | Compact the session into a doc a fresh agent can resume from |
-| `graphify` | STRUCTURE questions over the code graph: "how does X reach Y", blast radius, hubs |
-| `evolve-harness` | Turning a repeated correction / researched practice into a **human-gated** harness change |
-| `setup-harness` | Per-project first pass: scaffold context (AGENTS.md + CLAUDE.md + docs), gate + CI, tracker, config doc |
-| `harness-help` | "Where do I add a rule / change the gate / customize X?" — routes to the file + section |
+| `writing-for-agents` | Creating/editing anything an AGENT reads: skills, AGENTS.md, agent files |
+| `evolve-harness` | Turning a repeated correction into a **human-gated** harness change |
+| `setup-harness` | Per-project first pass: scaffold context, gate + CI, tickets dir, config doc |
 | 〈`…`〉 | 〈…〉 |
 
-<!-- BEGIN BEADS INTEGRATION v:1 profile:minimal hash:970c3bf2 -->
-## Beads Issue Tracker
+## Work tracking (this branch)
 
-This project uses **bd (beads)** for issue tracking. Run `bd prime` to see full workflow context and commands.
-
-### Quick Reference
-
-```bash
-bd ready              # Find available work
-bd show <id>          # View issue details
-bd update <id> --claim  # Claim work
-bd close <id>         # Complete work
-```
-
-### Rules
-
-- Use `bd` for ALL task tracking — do NOT use TodoWrite, TaskCreate, or markdown TODO lists
-- Run `bd prime` for detailed command reference and session close protocol
-- Use `bd remember` for persistent knowledge — do NOT use MEMORY.md files
-
-**Architecture in one line:** issues live in a local Dolt DB; sync uses `refs/dolt/data` on your git remote; `.beads/issues.jsonl` is a passive export. See https://github.com/gastownhall/beads/blob/main/docs/SYNC_CONCEPTS.md for details and anti-patterns.
-
-## Agent Context Profiles
-
-The managed Beads block is task-tracking guidance, not permission to override repository, user, or orchestrator instructions.
-
-- **Conservative (default)**: Use `bd` for task tracking. Do not run git commits, git pushes, or Dolt remote sync unless explicitly asked. At handoff, report changed files, validation, and suggested next commands.
-- **Minimal**: Keep tool instruction files as pointers to `bd prime`; use the same conservative git policy unless active instructions say otherwise.
-- **Team-maintainer**: Only when the repository explicitly opts in, agents may close beads, run quality gates, commit, and push as part of session close. A current "do not commit" or "do not push" instruction still wins.
-
-## Session Completion
-
-This protocol applies when ending a Beads implementation workflow. It is subordinate to explicit user, repository, and orchestrator instructions.
-
-1. **File issues for remaining work** - Create beads for anything that needs follow-up
-2. **Run quality gates** (if code changed) - Tests, linters, builds
-3. **Update issue status** - Close finished work, update in-progress items
-4. **Handle git/sync by active profile**:
-   ```bash
-   # Conservative/minimal/default: report status and proposed commands; wait for approval.
-   git status
-
-   # Team-maintainer opt-in only, unless current instructions forbid it:
-   git pull --rebase
-   bd dolt push
-   git push
-   git status
-   ```
-5. **Hand off** - Summarize changes, validation, issue status, and any blocked sync/commit/push step
-
-**Critical rules:**
-- Explicit user or orchestrator instructions override this Beads block.
-- Do not commit or push without clear authority from the active profile or the current user request.
-- If a required sync or push is blocked, stop and report the exact command and error.
-<!-- END BEADS INTEGRATION -->
-
-<!-- BEGIN BEADS CODEX SETUP: generated by bd setup codex -->
-## Beads Issue Tracker
-
-Use Beads (`bd`) for durable task tracking in repositories that include it. Use the `beads` skill at `.agents/skills/beads/SKILL.md` (project install) or `~/.agents/skills/beads/SKILL.md` (global install) for Beads workflow guidance, then use the `bd` CLI for issue operations.
-
-### Quick Reference
-
-```bash
-bd ready                # Find available work
-bd show <id>            # View issue details
-bd update <id> --claim  # Claim work
-bd close <id>           # Complete work
-bd prime                # Refresh Beads context
-```
-
-### Rules
-
-- Use `bd` for all task tracking; do not create markdown TODO lists.
-- Run `bd prime` when Beads context is missing or stale. Codex 0.129.0+ can load Beads context automatically through native hooks; use `/hooks` to inspect or toggle them.
-- Keep persistent project memory in Beads via `bd remember`; do not create ad hoc memory files.
-
-**Architecture in one line:** issues live in a local Dolt DB; sync uses `refs/dolt/data` on your git remote; `.beads/issues.jsonl` is a passive export. See https://github.com/gastownhall/beads/blob/main/docs/SYNC_CONCEPTS.md for details and anti-patterns.
-<!-- END BEADS CODEX SETUP -->
+Tickets live in **Jira**, mirrored as `tickets/<KEY>.md` (`ticket-docs`). The
+agent never writes to Jira or GitLab; it writes files the human pastes. `bd`
+(Beads) is **not** used in the target environment — ignore any Beads guidance
+that reaches you from a machine-level file.

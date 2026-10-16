@@ -1,11 +1,11 @@
 ---
 doc: engineering-steering-doc
-version: 1.0.0
-updated: 2026-08-17
+version: 1.1.0
+updated: 2026-10-16
 status: active
 source: claude-project:AI Architecture/engineering-steering-doc.md
 source_version: 1.0.0
-derivation: verbatim        # kept byte-identical on purpose
+derivation: adapted         # enterprise-ai-platform branch: §4.5 (no fleet), §5 (GitLab/AKS/no-egress), §7 (Helm/Bicep). Everything else verbatim. See docs/adr/0001.
 load: always
 review_after: 2026-11-17
 ---
@@ -81,33 +81,32 @@ If you catch me over-building, say so directly — "the modular monolith covers 
 
 ## 4.5 Project workflow (the SDLC the agents follow)
 
-Two altitudes. When orchestrating agents, this is the workflow they follow — treat
-the stage boundaries as checkpoints, not bureaucracy.
+Two altitudes. This is the workflow the agent follows — treat the stage boundaries
+as checkpoints, not bureaucracy.
 
 **Once per project (bootstrap):** `write-design-doc` + `architecture-patterns` set
-the system-level shape. Revisit only on a major re-architecture.
+the system-level shape; each settled decision becomes an `adr`. Revisit only on a
+major re-architecture.
 
 **Per feature (the loop):**
 
 ```mermaid
 flowchart LR
-    G["grill-me"] --> P["write-a-prd"] --> T["prd-to-issues"] --> B["build tickets<br/>tdd · orchestrate-agents<br/>review-pr · secure-code-review"] --> S["ship<br/>ci-cd · deploy-reviewer"]
-    W["wayfinder<br/>(fuzzy scope / open decisions)"] --> P
-    B -. new idea / workaround .-> W
-    B -. debt .-> IA["improve-codebase-architecture"] -.-> B
+    G["grill-me"] --> P["write-a-prd"] --> T["prd-to-issues"] --> B["build tickets<br/>tdd · helm-charts · kubernetes-ops<br/>review-pr · secure-code-review"] --> S["ship<br/>ci-cd · deploy-reviewer"]
+    B -. decision surfaces .-> A["adr"] -.-> B
+    S -. new image / chart / model .-> AG["air-gapped-delivery"]
 ```
 
-- **grill-me** before writing anything — Round 0 premise gate first (outside-view
-  verdict + kill criteria via `premise-reviewer`; an informed, recorded human
+- **grill-me** before writing anything — Round 0 premise check first (offline:
+  existing ADRs + what the human knows, kill criteria recorded; an informed human
   override is first-class), then confirmed shared understanding is the entry
-  checkpoint. **wayfinder** when scope is fuzzy or too big for one session (and the
-  re-entry point when a new idea/workaround surfaces mid-build — chart it, don't
-  improvise it).
+  checkpoint. A new idea or workaround that surfaces mid-build gets its own
+  grill/ADR — don't improvise it into the build.
 - **write-a-prd → prd-to-issues**: synthesis, then tracer-bullet tickets with
   blocking edges, labeled `ready-for-agent`.
-- **Build test-first** (`tdd`: red before green), in parallel where tickets allow
-  (`orchestrate-agents`); refactors surface via `improve-codebase-architecture`,
-  vocabulary via `domain-modeling` / `codebase-design`.
+- **Build test-first** (`tdd`: red before green) — for charts that means
+  `helm unittest` / `kubeconform` before the template change; one `implementer`
+  per ticket, in parallel only when tickets own disjoint files.
 - **Right-size it (the escape valve):** the pipeline is for non-trivial work. A
   trivial, reversible change goes straight to build — you don't write a PRD to fix a
   typo. Over-processing is over-engineering (§2).
@@ -118,6 +117,7 @@ flowchart LR
 
 - **Separate test / QA / prod environments.** Design with this separation assumed.
 - **Terraform for IaC**; **Docker for fast, reproducible service startup.** Fast local/dev spin-up is a cost-control feature — treat startup speed and teardown as first-class.
+- **The estate is GitLab · AKS · Helm, and prod has no internet egress.** Every artifact (image, chart, model, wheel) enters through an internal registry by digest with a committed manifest (`air-gapped-delivery`); a new outbound destination is a guardrail-2 hard stop. "Works in dev" is not evidence unless dev has the same default-deny. Azure specifics → `azure-platform`; I'm new to Azure, so name the Azure concept and its AWS/GCP equivalent the first time it appears.
 - **Cost management is a design input, not an afterthought.** When a design implies spend (managed services, external APIs, always-on compute, LLM tokens), flag the cost shape and the cheaper alternative. Prefer scale-to-zero / elastic where the workload is spiky.
 - **Budget management for external services** — if a design calls external/paid APIs (including LLM providers), call out rate limits, token/cost budgets, and where a cheaper local/self-hosted path exists.
 
@@ -137,8 +137,10 @@ Use these unless a project says otherwise. If you'd recommend departing, say why
 
 - **Python** — primary for data/ML/pipelines. **`uv` + `pyproject.toml`** for env and deps (not pip/requirements.txt, not poetry unless asked). Support profiling/perf measurement as a matter of course.
 - **Go** — server code and fast text processing. Play to its strengths: structs, efficient file ingest/streaming, concurrency. Reach for Go when throughput/latency on text or I/O matters.
-- **TypeScript / JavaScript** — heavily used across the stack; TS by default, types are not optional.
-- **Frontend: React + TypeScript.** I'm aware the ecosystem is moving toward **shadcn/ui + Tailwind** (and colocated/simpler state) over the classic Redux-heavy approach — lean modern here; don't default to Redux for state unless the app genuinely needs a global store. Keep state as local as the problem allows.
+- **Helm + Kubernetes YAML** — the deployable unit. Charts are code: `helm lint`, `kubeconform`, `helm unittest`, a `values.schema.json`, and a version bump on every change (`helm-charts`). No secrets in values; images by digest from the internal registry.
+- **Bash** for glue inside pipelines and images — `set -euo pipefail`, shellcheck-clean, under ~100 lines or it becomes Python.
+- **IaC: Terraform `azurerm`** (Bicep acceptable where the team already has it). Portal is read-only.
+- **TypeScript / JavaScript** — where a UI or Node tool exists; TS by default, types are not optional. Frontend work is rare here; if it appears, React + TypeScript, state as local as possible.
 - **ML/AI** — computer vision experience; actively building **agents / subagents / SLM workers**, LLM-as-judge, human-in-the-loop, pub/sub. When designing agentic systems, keep as much logic as possible *deterministic* (in code) and reserve model-authored control flow for where it's genuinely needed — and make the decision path observable, not just I/O (KB §0.9.5).
 
 ---

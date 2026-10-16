@@ -1,5 +1,31 @@
 # Context Changelog
 
+## 2026-10-16 — branch `harness/enterprise-ai-platform`
+
+- **Enterprise AI-platform cut** (MAJOR for this branch — skills removed/added;
+  decision record: `docs/adr/0001-enterprise-ai-platform-focus.md`). Target: a
+  no-internet agent environment on GitLab · AKS · Helm/helmfile · podman · Azure ·
+  Jira, deploying LiteLLM / vLLM / kagent.
+  - **Removed skills:** `orchestrate-agents`, `wayfinder`, `codebase-design`,
+    `improve-codebase-architecture`, `domain-modeling`, `new-service`, `graphify`,
+    `wait-what`, `harness-help`, `debug-research`. **Removed agents:** `orchestrator`,
+    `frontend-implementer`, `backend-implementer`, `debug-research`, `trend-scout`,
+    `premise-reviewer`. Removed `docs/multi-agent-orchestration.md` and
+    `skills/evolve-harness/scheduled-trend-research.md`. `orchestrator_engine/models.py`
+    DEFAULTS trimmed to the remaining agents.
+  - **Added skills:** `adr`, `architecture-diagrams`, `helm-charts`, `kubernetes-ops`,
+    `azure-platform`, `air-gapped-delivery`, `ai-serving-stack`, `ticket-docs`
+    (`adr` and `kubernetes-ops` adapted from affaan-m/ECC, MIT).
+  - **Rewritten:** `ci-cd` (GitLab-native, YAML-only boundary), `review-pr` (small
+    commits + `tickets/<KEY>.mr.md`, never opens an MR), `prd-to-issues` (ticket
+    docs, no tracker writes), `grill-me` Round 0 (offline premise check),
+    `implementer` agent (standalone worker), `AGENTS.md` (environment facts, stack,
+    commands, skills table, Jira/ticket-docs section replaces Beads).
+  - **Steering doc 1.1.0** (`derivation: adapted`): §4.5 no fleet, §5 estate +
+    no-egress rule, §7 Helm/Bash/Terraform. `work-types.md` 1.1.0, `workflows.md`
+    1.1.0 (orchestrator spine → platform-change path). Indexes updated:
+    HARNESS.md, README.md, ARCHITECTURE.md, SETUP.md §2, agents/README.md, docs/README.md.
+
 ## 2026-09-26
 
 - **Enforcement hooks** (MINOR — additive; **re-run `python3 init.py

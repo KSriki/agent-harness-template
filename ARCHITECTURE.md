@@ -52,58 +52,50 @@ repo/
 │   ├── engineering-steering-doc.md   # ALWAYS-ON (imported by AGENTS.md)
 │   ├── architecture-patterns.md      # on-demand: COMPRESSED pattern reference
 │   ├── design-doc-template.md        # on-demand: via write-design-doc
-│   ├── multi-agent-orchestration.md  # on-demand: via orchestrate-agents skill
+│   ├── adr/                          # this repo's ADRs (0001 = why this branch is cut this way)
 │   └── design/                       # filled-in design docs for this system
 │
 ├── skills/                      # TIER 2 — loaded on demand
 │   ├── _TEMPLATE/SKILL.md       #   how to write one (read this first)
 │   ├── run-tests/               #   the quality gates
-│   ├── new-service/             #   ← enforces the complexity-rung check
-│   ├── write-design-doc/        #   right-sizing + rejected alternatives
-│   ├── eval-harness/            #   the loop: evals, judges, HITL
-│   ├── debug-research/          #   ← the bug is in THEIR code, not ours
-│   ├── secure-code-review/      #   ← egress, injection, supply chain
-│   ├── architecture-patterns/   #   ← routes to the pattern reference
-│   ├── ci-cd/                   #   ← pipeline, deploy, release, rollback
-│   ├── observability/           #   ← instrument + live incident triage
-│   ├── review-pr/               #   ← open a PR / review one (not security)
-│   ├── orchestrate-agents/      #   ← parallel agents in worktrees; fan-out + merge-validate
-│   ├── grill-me/                #   ← interrogate the plan first (SDLC entry)
-│   ├── wayfinder/               #   ← fuzzy scope → decision tickets; mid-build re-entry
-│   ├── write-a-prd/             #   ← discussion → spec, ready-for-agent
-│   ├── prd-to-issues/           #   ← spec → tracer-bullet tickets + blocking edges
 │   ├── tdd/                     #   ← red before green, one vertical slice at a time
-│   ├── codebase-design/         #   ← deep modules, seams, design-it-twice
-│   ├── domain-modeling/         #   ← CONTEXT.md glossary + sparing ADRs
-│   ├── improve-codebase-architecture/  # ← audit existing code for deepening
+│   ├── write-design-doc/        #   right-sizing + rejected alternatives (multi-page designs)
+│   ├── adr/                     #   ← ONE decision, one page, docs/adr/NNNN — first-class here
+│   ├── architecture-diagrams/   #   ← diagrams that MATCH the repo's existing format (Mermaid/PlantUML/C4)
+│   ├── architecture-patterns/   #   ← routes to the pattern reference
+│   ├── eval-harness/            #   the loop: evals, judges, HITL — gates model/quantisation changes
+│   ├── secure-code-review/      #   ← egress, injection, supply chain
+│   ├── ci-cd/                   #   ← GitLab CI: MR pipelines, protected envs, helm deploy, rollback (YAML only — no GitLab settings)
+│   ├── observability/           #   ← instrument + live incident triage
+│   ├── review-pr/               #   ← small commits + write MR.md for the human to paste; never opens the MR
+│   ├── grill-me/                #   ← interrogate the plan first (SDLC entry; offline premise round)
+│   ├── write-a-prd/             #   ← discussion → spec, ready-for-agent
+│   ├── prd-to-issues/           #   ← spec → tracer-bullet ticket docs + blocking edges
+│   ├── ticket-docs/             #   ← tickets/<KEY>.md mirror of the Jira ticket: AC, changes log, copy-paste ready
 │   ├── handoff/                 #   ← compact session → resumable doc
-│   ├── graphify/                #   ← structure queries over the code graph (local-first)
+│   ├── helm-charts/             #   ← author · validate · version · publish charts (OCI); helmfile
+│   ├── kubernetes-ops/          #   ← manifests, probes, RBAC, GPU scheduling, NetworkPolicy, triage
+│   ├── azure-platform/          #   ← Azure for newcomers: hierarchy, identity, AKS, ACR, Key Vault, private networking
+│   ├── air-gapped-delivery/     #   ← images/charts/models/wheels INTO the no-egress estate, by digest
+│   ├── ai-serving-stack/        #   ← vLLM sizing + LiteLLM gateway + kagent + chat UIs
 │   ├── writing-for-agents/      #   ← the craft of agent-facing docs (pointers, pruning)
-│   ├── wait-what/               #   ← user-invoked: re-pitch the last answer plainly
 │   ├── evolve-harness/          #   ← grow the harness itself (human-gated)
 │   └── setup-harness/           #   ← per-project first pass: context + gate + CI + tracker + config doc
 │
 ├── agents/                      # TIER 4 — delegated, own context (departments)
 │   ├── README.md                #   when to delegate · model routing · frontmatter guide
-│   ├── orchestration/
-│   │   └── orchestrator.md      #   the manager: dispatches the fleet, arbitrates the
-│   │                            #   ledger, merge-validates. Writes no product code
 │   ├── engineering/
-│   │   ├── implementer.md       #   worktree-isolated worker (default for mixed slices)
-│   │   ├── frontend-implementer.md  # UI slices: React+TS, a11y as correctness
-│   │   └── backend-implementer.md   # server slices: domain/adapters, safe migrations
+│   │   └── implementer.md       #   worktree-isolated worker: one ticket, test-first, returns a branch
 │   ├── qa/
 │   │   └── test-writer.md       #   senior test judgment for EXISTING code
 │   ├── review/                  #   adversarial, read-only, BLOCK/ALLOW
 │   │   ├── security-reviewer.md #   egress, injection, supply chain
 │   │   ├── design-reviewer.md   #   finds what's over-built
-│   │   ├── deploy-reviewer.md   #   ship gate: rollback/migration/blast radius
-│   │   └── premise-reviewer.md  #   premise gate: outside view, kill criteria
-│   │                            #   (has network, unlike its siblings — verdict-only quarantine)
-│   └── research/                #   context firewalls for untrusted input
-│       ├── code-searcher.md     #   read-only, huge input → tiny output
-│       ├── debug-research.md    #   external research → verdicts
-│       └── trend-scout.md       #   trend survey → proposals only (never applies)
+│   │   └── deploy-reviewer.md   #   ship gate: rollback/migration/blast radius — every Helm release
+│   └── research/
+│       └── code-searcher.md     #   read-only, huge input → tiny output
+│                                #   (no network-dependent agents on this branch: the target
+│                                #    environment has no internet — docs/adr/0001)
 │
 ├── evals/                       # the loop's artifacts
 │   ├── golden/                  #   frozen, versioned, seeded from REAL failures
@@ -121,13 +113,11 @@ repo/
 ├── harness_lint/                # validates the agent layer is WIRED: frontmatter · preloads ·
 │                                #   models.py registry · AGENTS.md skills table · pointers
 │
-└── orchestrator_engine/         # DETERMINISTIC orchestration scaffolding (python, stdlib)
-    ├── state.py                 #   the registry: .orchestrator/state.json + product-docs/
-    │                            #   scaffold (PRODUCT.md + REGISTRY.md knowledge catalog)
-    ├── complexity.py budget.py  #   assess_complexity · check_budget
+└── orchestrator_engine/         # DETERMINISTIC scaffolding (python, stdlib). On this branch the
+    │                            #   fleet driver (orchestrator agent) is removed; the engine stays
+    │                            #   as the MODEL REGISTRY harness_lint checks + gated code
     ├── models.py ledger.py      #   get_model_for_agent · log_agent_completion (runs.jsonl)
-    ├── deploy.py abort.py       #   topo-sorted merge plans · recorded aborts + wind-down
-    ├── research.py cli.py       #   research dispatch plans · the CLI the orchestrator calls
+    ├── state.py complexity.py budget.py deploy.py abort.py research.py cli.py
     └── tests/                   #   stdlib unittest — the engine is code, so it has tests
 ```
 
@@ -164,15 +154,14 @@ A **tool** is a *capability* (fetch a URL, run bash, write a file). A **skill** 
 *procedural knowledge* (how to research a library bug well). They're granted in
 different places and they solve different problems:
 
-> Granting a fetch tool tells the agent it *can* search the web.
-> The `debug-research` skill tells it **how to search well** — pin the version
-> first, read the installed source before the internet, distrust a 2019 Stack
-> Overflow answer for a library now on v5, and **verify locally before believing
-> anything**.
+> Granting `helm` and `kubectl` tells the agent it *can* deploy.
+> The `helm-charts` skill tells it **how to do it well** — bump the chart version,
+> `helm template | kubeconform` against the cluster version, `helm diff` into the
+> MR, `--atomic` with a timeout longer than the model load, and **verify before
+> believing a green exit code**.
 
-The capability without the method is how you get a confident answer sourced from a
-stale blog post. Grant the tool in the agent's `tools:` list; encode the method as
-a skill.
+The capability without the method is how you get a confident deploy of the wrong
+thing. Grant the tool in the agent's `tools:` list; encode the method as a skill.
 
 ---
 
@@ -199,8 +188,9 @@ has made it look irrelevant.** Conditional security is not security.
 - `skills/secure-code-review/` → the full checklist + hard-stop protocol
 - `agents/review/security-reviewer.md` → adversarial BLOCK/ALLOW pass. **Read-only, no
   network** — a reviewer that can fetch is a reviewer that can be injected.
-- `skills/debug-research/` §3.5 → mandatory security gate, because *that* skill is
-  the one whose job is ingesting untrusted third-party text.
+- `skills/air-gapped-delivery/` §7 → provenance for everything that enters the
+  estate (digest, SBOM, checksum), because on this branch *that* is the path by
+  which untrusted third-party bits arrive.
 - `skills/evolve-harness/` → the human gate on changing the harness itself, so a
   "learned" practice can never rewrite your own rules (guardrail #6).
 
